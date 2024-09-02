@@ -1,7 +1,6 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CurrencyValues;
@@ -19,6 +18,12 @@ public class SpendDaoJdbc implements SpendDao {
 
   private static final Config CFG = Config.getInstance();
 
+  private final Connection connection;
+
+  public SpendDaoJdbc(Connection connection) {
+    this.connection = connection;
+  }
+
   @Override
   public SpendEntity create(SpendEntity spend) {
     String sql = "INSERT INTO spend (username, spend_date, currency, amount, description, category_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -29,17 +34,16 @@ public class SpendDaoJdbc implements SpendDao {
         setSpendParams(ps, spend);
         ps.executeUpdate();
 
-        final UUID generatedKey;
-        try (ResultSet rs = ps.getGeneratedKeys()) {
-          if (rs.next()) {
-            generatedKey = rs.getObject("id", UUID.class);
-          } else {
-            throw new SQLException("Can`t find id in ResultSet");
-          }
+      final UUID generatedKey;
+      try (ResultSet rs = ps.getGeneratedKeys()) {
+        if (rs.next()) {
+          generatedKey = rs.getObject("id", UUID.class);
+        } else {
+          throw new SQLException("Can`t find id in ResultSet");
         }
-        spend.setId(generatedKey);
-        return spend;
       }
+      spend.setId(generatedKey);
+      return spend;
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
