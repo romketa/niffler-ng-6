@@ -36,6 +36,25 @@ public class JdbcTest {
 
     System.out.println(spend);
   }
+//
+//  @Test
+//  void xaTxTest() {
+//    UsersDbClient usersDbClient = new UsersDbClient();
+//    UserJson user = usersDbClient.createUser(
+//        new UserJson(
+//            null,
+//            "valentin-4",
+//            null,
+//            null,
+//            null,
+//            CurrencyValues.RUB,
+//            null,
+//            null,
+//            null
+//        )
+//    );
+//    System.out.println(user);
+//  }
 
   @Test
   void userFxTest() {
