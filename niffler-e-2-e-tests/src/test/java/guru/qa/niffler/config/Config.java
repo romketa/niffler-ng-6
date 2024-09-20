@@ -6,6 +6,8 @@ public interface Config {
     return LocalConfig.INSTANCE;
   }
 
+  String ghUrl();
+
   String frontUrl();
 
   String spendUrl();

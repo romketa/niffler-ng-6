@@ -10,7 +10,7 @@ import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@WebTest
+@ExtendWith(BrowserExtension.class)
 public class SpendingWebTest {
 
   private static final Config CFG = Config.getInstance();

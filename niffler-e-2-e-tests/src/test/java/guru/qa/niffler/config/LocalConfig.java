@@ -22,4 +22,9 @@ enum LocalConfig implements Config {
   public String profileUrl() {
     return "http://127.0.0.1:3000/profile";
   }
+
+  @Override
+  public String ghUrl() {
+    return "http://127.0.0.1:3000/profile";
+  }
 }
