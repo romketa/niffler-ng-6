@@ -1,6 +1,7 @@
-package guru.qa.niffler.jupiter;
+package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.SpendApiClient;
+import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -10,9 +11,10 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.Date;
 
-public class CreateSpendingExtension implements BeforeEachCallback {
+public class SpendingExtension implements BeforeEachCallback {
 
-  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CreateSpendingExtension.class);
+  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
+      SpendingExtension.class);
 
   private final SpendApiClient spendApiClient = new SpendApiClient();
 

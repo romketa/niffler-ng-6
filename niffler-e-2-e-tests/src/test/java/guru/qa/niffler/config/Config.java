@@ -9,4 +9,8 @@ public interface Config {
   String frontUrl();
 
   String spendUrl();
+
+  String registerUrl();
+
+  String profileUrl();
 }
