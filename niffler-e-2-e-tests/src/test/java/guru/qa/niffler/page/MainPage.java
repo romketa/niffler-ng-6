@@ -28,10 +28,4 @@ public class MainPage {
     $x(NEW_SPENDING_BTN_LOC).shouldBe(visible, enabled);
     return this;
   }
-
-  public MainPage checkThatPageLoaded() {
-    statComponent.should(visible).shouldHave(text("Statistics"));
-    spendingTable.should(visible).shouldHave(text("History of Spendings"));
-    return this;
-  }
 }
