@@ -1,21 +1,19 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.SelenideElement;
-
 import static com.codeborne.selenide.Selenide.$;
 
 public class EditSpendingPage {
 
-  private final SelenideElement descriptionInput = $("#description");
-  private final SelenideElement saveBtn = $("#save");
+  private static final String DESC_INPUT_LOC = "#description";
+  private static final String SAVE_BTN_LOC = "#save";
 
   public EditSpendingPage setNewSpendingDescription(String description) {
-    descriptionInput.clear();
-    descriptionInput.setValue(description);
+    $(DESC_INPUT_LOC).clear();
+    $(DESC_INPUT_LOC).setValue(description);
     return this;
   }
 
   public void save() {
-    saveBtn.click();
+    $(SAVE_BTN_LOC).click();
   }
 }
