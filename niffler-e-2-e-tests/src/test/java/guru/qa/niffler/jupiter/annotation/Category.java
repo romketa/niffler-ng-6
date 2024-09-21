@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public @interface Category {
   String username();
 
+  String title() default "";
+
   boolean archived();
 
 }

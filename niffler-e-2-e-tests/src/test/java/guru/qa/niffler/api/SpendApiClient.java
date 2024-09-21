@@ -72,8 +72,8 @@ public class SpendApiClient {
     return response.body();
   }
 
-  public SpendJson deleteSpend(String username, List<String> ids) {
-    final Response<SpendJson> response;
+  public void deleteSpend(String username, List<String> ids) {
+    final Response<Void> response;
     try {
       response = spendApi.deleteSpend(username, ids)
           .execute();
@@ -81,7 +81,6 @@ public class SpendApiClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body();
   }
 
   public CategoryJson getCategories(String username, boolean excludeArchived) {

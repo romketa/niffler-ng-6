@@ -1,6 +1,5 @@
 package guru.qa.niffler.page;
 
-import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$x;
 
@@ -13,17 +12,17 @@ public class ProfilePage {
   private static final String SEND_CATEGORY_TO_ARCHIVE_BTN_LOC = "button[aria-label='Archive category']";
 
 
-  public void verifyThatActiveCategoryWasAdded(String categoryName) {
+  public void verifyThatCategoryDisplayed(String categoryName, boolean isArchived) {
     SelenideElement category = $x(String.format(CATEGORY_LOC, categoryName));
     category.shouldBe(visible);
-    category.sibling(0).$(SEND_CATEGORY_TO_ARCHIVE_BTN_LOC)
-        .shouldBe(attribute("aria-label", "Archive category"));
+    if (isArchived) {
+      category.sibling(0).shouldBe(visible);
+    }
+    category.sibling(0).$(SEND_CATEGORY_TO_ARCHIVE_BTN_LOC).shouldBe(visible);
   }
 
-  public void verifyThatArchivedCategoryWasAdded(String categoryName) {
+  public ProfilePage showArchivedCategories() {
     $x(SHOW_ARCHIVED_LOC).click();
-    SelenideElement category = $x(String.format(CATEGORY_LOC, categoryName));
-    category.shouldBe(visible);
-    category.sibling(0).shouldBe(attribute("aria-label", "Unarchive category"));
+    return this;
   }
 }

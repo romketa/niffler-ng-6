@@ -31,7 +31,7 @@ public interface SpendApi {
   Call<SpendJson> editSpend(@Body SpendJson spend);
 
   @DELETE("internal/spends/remove")
-  Call<SpendJson> deleteSpend(@Query("username") String username, @Query("ids") List<String> ids);
+  Call<Void> deleteSpend(@Query("username") String username, @Query("ids") List<String> ids);
 
   @GET("internal/categories/all")
   Call<CategoryJson> getCategories(@Query("username") String username,

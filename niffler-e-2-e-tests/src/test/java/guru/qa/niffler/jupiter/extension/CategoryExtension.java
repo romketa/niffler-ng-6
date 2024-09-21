@@ -27,11 +27,12 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
         .ifPresent(anno -> {
           UUID uuid = UUID.randomUUID();
+          String title = anno.title().isEmpty() ? fakeData.app().name() : anno.title();
           CategoryJson category = new CategoryJson(
               uuid,
-              fakeData.app().name(),
+              title,
               anno.username(),
-              anno.archived()
+              false
           );
           CategoryJson createdCategory = spendApiClient.addCategories(category);
           if (anno.archived()) {
@@ -52,20 +53,18 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
 
   @Override
   public void afterTestExecution(ExtensionContext context) throws Exception {
-    AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
-        .ifPresent(anno -> {
-          CategoryJson categoryJson = context.getStore(NAMESPACE)
-              .get(context.getUniqueId(), CategoryJson.class);
-          if (!anno.archived()) {
-            categoryJson = new CategoryJson(
-                categoryJson.id(),
-                categoryJson.name(),
-                categoryJson.username(),
-                true
-            );
-            spendApiClient.updateCategory(categoryJson);
-          }
-        });
+
+    CategoryJson categoryJson = context.getStore(NAMESPACE)
+        .get(context.getUniqueId(), CategoryJson.class);
+    if (categoryJson.archived()) {
+      categoryJson = new CategoryJson(
+          categoryJson.id(),
+          categoryJson.name(),
+          categoryJson.username(),
+          true
+      );
+      spendApiClient.updateCategory(categoryJson);
+    }
   }
 
   @Override

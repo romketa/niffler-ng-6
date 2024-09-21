@@ -37,8 +37,8 @@ public class RegistrationTest {
         .createNewAccount()
         .fillRegisterPage(user.getUsername(), user.getPassword(), user.getPassword())
         .submitRegistration();
-
-    new RegisterPage().verifyErrorAccountAlreadyExist(user.getUsername());
+    String errorMessage = String.format("Username `%s` already exists", user.getUsername());
+    new RegisterPage().verifyErrorMessage(errorMessage);
   }
 
   @Test
@@ -50,7 +50,8 @@ public class RegistrationTest {
         .fillRegisterPage(user.getUsername(), user.getPassword(), "2345")
         .submitRegistration();
 
-    new RegisterPage().verifyErrorPasswordShouldBeEqual();
+    String errorMessage = "Passwords should be equal";
+    new RegisterPage().verifyErrorMessage(errorMessage);
   }
 
   @Test
