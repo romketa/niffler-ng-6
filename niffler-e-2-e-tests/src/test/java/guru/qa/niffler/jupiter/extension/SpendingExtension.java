@@ -16,7 +16,8 @@ import java.util.Date;
 
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
-  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
+  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
+      SpendingExtension.class);
 
   private final SpendApiClient spendApiClient = new SpendApiClient();
 
