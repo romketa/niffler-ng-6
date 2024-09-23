@@ -17,7 +17,7 @@ enum LocalConfig implements Config {
   public String ghUrl() {
     return "https://api.github.com/";
   }
-  
+
   @Override
   public String registerUrl() {
     return "http://127.0.0.1:9000/register";
@@ -27,4 +27,11 @@ enum LocalConfig implements Config {
   public String profileUrl() {
     return "http://127.0.0.1:3000/profile";
   }
+
+  @Override
+  public String friendsUrl() {
+    return "http://127.0.0.1:3000/people/friends";
+  }
+
+
 }
