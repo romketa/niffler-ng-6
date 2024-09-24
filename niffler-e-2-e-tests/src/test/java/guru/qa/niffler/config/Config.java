@@ -6,8 +6,6 @@ public interface Config {
     return LocalConfig.INSTANCE;
   }
 
-  String ghUrl();
-
   String frontUrl();
 
   String spendUrl();
@@ -17,4 +15,6 @@ public interface Config {
   String registerUrl();
 
   String profileUrl();
+
+  String friendsUrl();
 }
