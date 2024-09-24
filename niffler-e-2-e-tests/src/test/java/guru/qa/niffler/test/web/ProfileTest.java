@@ -27,7 +27,7 @@ public class ProfileTest {
         .login(user.getUsername(), user.getPassword());
     Selenide.open(CFG.profileUrl(), ProfilePage.class)
         .showArchivedCategories()
-        .verifyThatCategoryDisplayed(category.name(), category.archived());
+        .verifyThatCategoryDisplayed(category.name());
   }
 
   @Category(
@@ -39,6 +39,6 @@ public class ProfileTest {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .login(user.getUsername(), user.getPassword());
     Selenide.open(CFG.profileUrl(), ProfilePage.class)
-        .verifyThatCategoryDisplayed(category.name(), category.archived());
+        .verifyThatCategoryDisplayed(category.name());
   }
 }

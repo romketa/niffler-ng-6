@@ -69,14 +69,7 @@ public class UsersQueueExtension implements
               Optional<StaticUser> user = Optional.empty();
               StopWatch sw = StopWatch.createStarted();
               while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-                switch (ut.value()) {
-                  case EMPTY -> user = Optional.ofNullable(EMPTY_USERS.poll());
-                  case WITH_FRIEND -> user = Optional.ofNullable(WITH_FRIENDS_USERS.poll());
-                  case WITH_INCOME_REQUEST ->
-                      user = Optional.ofNullable(WITH_INCOME_REQUESTS_USERS.poll());
-                  case WITH_OUTCOME_REQUEST ->
-                      user = Optional.ofNullable(WITH_OUTCOME_REQUESTS_USERS.poll());
-                }
+                user = Optional.ofNullable(getQueueForUserType(ut.value()).poll());
               }
               Allure.getLifecycle().updateTestCase(testCase ->
                   testCase.setStart(new Date().getTime())
@@ -102,13 +95,17 @@ public class UsersQueueExtension implements
         .get(context.getUniqueId(), Map.class);
 
     for (Map.Entry<UserType, StaticUser> el : utMap.entrySet()) {
-      switch (el.getKey().value()) {
-        case EMPTY -> EMPTY_USERS.add(el.getValue());
-        case WITH_FRIEND -> WITH_FRIENDS_USERS.add(el.getValue());
-        case WITH_INCOME_REQUEST -> WITH_INCOME_REQUESTS_USERS.add(el.getValue());
-        case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUESTS_USERS.add(el.getValue());
-      }
+      getQueueForUserType(el.getKey().value()).add(el.getValue());
     }
+  }
+
+  private Queue<StaticUser> getQueueForUserType(UserType.Type type) {
+    return switch (type) {
+      case EMPTY -> EMPTY_USERS;
+      case WITH_FRIEND -> WITH_FRIENDS_USERS;
+      case WITH_INCOME_REQUEST -> WITH_INCOME_REQUESTS_USERS;
+      case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUESTS_USERS;
+    };
   }
 
   @Override

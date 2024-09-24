@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 import java.util.Arrays;
@@ -37,13 +38,10 @@ public class FriendsPage {
   }
 
   public FriendsPage checkExistingOutcomeInvitations(String... expectedUsernames) {
-    List<String> listOfOutcomeInvites = $(ALL_TABLE).$$("tr")
-        .stream()
-        .filter(el -> el.$("span").getText().contains("Waiting"))
-        .map(element -> element.$("td").getText())
-        .toList();
-
-    Assertions.assertLinesMatch(listOfOutcomeInvites, Arrays.asList(expectedUsernames));
+    $(ALL_TABLE)
+        .$$("tr")
+        .filterBy(text("Waiting"))
+        .shouldHave(textsInAnyOrder(expectedUsernames));
     return this;
   }
 }
