@@ -4,6 +4,7 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.User;
 import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
@@ -14,7 +15,7 @@ import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(UsersQueueExtension.class)
+@WebTest
 public class FriendsTest {
 
   private static final Config CFG = Config.getInstance();
