@@ -1,6 +1,5 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.data.User;
 import io.qameta.allure.Allure;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -31,7 +30,7 @@ public class UsersQueueExtension implements
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
       UsersQueueExtension.class);
 
-  public record StaticUser(User user, String friend, String income, String outcome) {
+  public record StaticUser(String username, String password, String friend, String income, String outcome) {
 
   }
 
@@ -41,12 +40,12 @@ public class UsersQueueExtension implements
   private static final Queue<StaticUser> WITH_OUTCOME_REQUESTS_USERS = new ConcurrentLinkedQueue<>();
 
   static {
-    EMPTY_USERS.add(new StaticUser(new User("Venonat", "12345"), null, null, null));
-    WITH_FRIENDS_USERS.add(new StaticUser(new User("moon", "moon123"), "larisa", null, null));
+    EMPTY_USERS.add(new StaticUser("Venonat", "12345", null, null, null));
+    WITH_FRIENDS_USERS.add(new StaticUser("moon", "moon123", "larisa", null, null));
     WITH_INCOME_REQUESTS_USERS.add(
-        new StaticUser(new User("larisa", "larisa123"), null, "vadim123", null));
+        new StaticUser("larisa", "larisa123", null, "vadim123", null));
     WITH_OUTCOME_REQUESTS_USERS.add(
-        new StaticUser(new User("vadim123", "vadim123"), null, null, "larisa"));
+        new StaticUser("vadim123", "vadim123", null, null, "larisa"));
   }
 
   @Target(ElementType.PARAMETER)
@@ -61,6 +60,7 @@ public class UsersQueueExtension implements
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public void beforeTestExecution(ExtensionContext context) {
     Arrays.stream(context.getRequiredTestMethod().getParameters())
         .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class) && p.getType()
@@ -91,6 +91,7 @@ public class UsersQueueExtension implements
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public void afterTestExecution(ExtensionContext context) {
     Map<UserType, StaticUser> utMap = context.getStore(NAMESPACE)
         .get(context.getUniqueId(), Map.class);
@@ -118,6 +119,7 @@ public class UsersQueueExtension implements
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public StaticUser resolveParameter(ParameterContext parameterContext,
       ExtensionContext extensionContext) throws ParameterResolutionException {
     UserType userType = parameterContext.getParameter().getAnnotation(UserType.class);

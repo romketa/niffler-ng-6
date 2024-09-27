@@ -17,4 +17,10 @@ public interface Config {
   String profileUrl();
 
   String friendsUrl();
+
+  String authUrl();
+
+  String gatewayUrl();
+
+  String userdataUrl();
 }
