@@ -23,6 +23,6 @@ public class RandomDataUtils {
   }
 
   public static String randomSentence(int wordsCount) {
-    return "";
+    return fakeData.lorem().sentence(wordsCount);
   }
 }

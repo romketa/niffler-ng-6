@@ -60,16 +60,14 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
 
     CategoryJson categoryJson = context.getStore(NAMESPACE)
         .get(context.getUniqueId(), CategoryJson.class);
-    if (categoryJson != null) {
-      if (categoryJson.archived()) {
-        categoryJson = new CategoryJson(
-            categoryJson.id(),
-            categoryJson.name(),
-            categoryJson.username(),
-            true
-        );
-        spendApiClient.updateCategory(categoryJson);
-      }
+    if (categoryJson != null && categoryJson.archived()) {
+      categoryJson = new CategoryJson(
+          categoryJson.id(),
+          categoryJson.name(),
+          categoryJson.username(),
+          true
+      );
+      spendApiClient.updateCategory(categoryJson);
     }
   }
 
