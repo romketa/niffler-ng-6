@@ -28,8 +28,6 @@ public interface Config {
 
   String userdataJdbcUrl();
 
-  String spendUrl();
-
   String spendJdbcUrl();
 
   String currencyJdbcUrl();
