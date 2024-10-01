@@ -19,7 +19,7 @@ public class RandomDataUtils {
   }
 
   public static String randomCategoryName() {
-    return fakeData.beer().name();
+    return fakeData.animal().name();
   }
 
   public static String randomSentence(int wordsCount) {

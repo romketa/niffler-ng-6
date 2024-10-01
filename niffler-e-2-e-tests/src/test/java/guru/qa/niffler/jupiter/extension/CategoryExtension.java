@@ -1,9 +1,12 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.SpendApiClient;
+import guru.qa.niffler.data.dao.CategoryDao;
+import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.service.SpendDbClient;
 import java.util.UUID;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -20,7 +23,7 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
       CategoryExtension.class);
 
-  private final SpendApiClient spendApiClient = new SpendApiClient();
+  private final SpendDbClient spendDbClient = new SpendDbClient();
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
@@ -38,7 +41,7 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
               anno.username(),
               false
           );
-          CategoryJson createdCategory = spendApiClient.addCategories(category);
+          CategoryJson createdCategory = spendDbClient.createCategory(category);
           if (categoryAnno.archived()) {
             CategoryJson archivedCategory = new CategoryJson(
                 createdCategory.id(),
@@ -46,7 +49,7 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
                 createdCategory.username(),
                 true
             );
-            createdCategory = spendApiClient.updateCategory(archivedCategory);
+            createdCategory = spendDbClient.updateCategory(archivedCategory);
           }
           context.getStore(NAMESPACE).put(
               context.getUniqueId(),
@@ -67,7 +70,7 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
           categoryJson.username(),
           true
       );
-      spendApiClient.updateCategory(categoryJson);
+      spendDbClient.updateCategory(categoryJson);
     }
   }
 

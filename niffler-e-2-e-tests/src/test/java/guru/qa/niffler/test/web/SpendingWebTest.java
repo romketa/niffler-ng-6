@@ -5,10 +5,14 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import guru.qa.niffler.service.SpendDbClient;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import utils.RandomDataUtils;
 
 @WebTest
 public class SpendingWebTest {
@@ -18,8 +22,8 @@ public class SpendingWebTest {
   @User(
       username = "moon",
       spending = @Spending(
-        category = "Toy",
-        description = "Tool",
+        category = "New category",
+        description = "Keep",
         amount = 990
       )
   )
