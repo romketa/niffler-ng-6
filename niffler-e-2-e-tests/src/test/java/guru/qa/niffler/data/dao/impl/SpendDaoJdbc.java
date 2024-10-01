@@ -3,7 +3,6 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.SpendDao;
-import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CurrencyValues;
 import java.sql.Connection;
@@ -56,7 +55,7 @@ public class SpendDaoJdbc implements SpendDao {
 
         try (ResultSet rs = ps.getResultSet()) {
           if (rs.next()) {
-            SpendEntity se = createSpendEntity(rs);
+            SpendEntity se = pullSpendEntity(rs);
             return Optional.of(se);
           } else {
             return Optional.empty();
@@ -79,7 +78,7 @@ public class SpendDaoJdbc implements SpendDao {
         List<SpendEntity> spendEntities = new ArrayList<>();
         try (ResultSet rs = ps.getResultSet()) {
           while (rs.next()) {
-            SpendEntity se = createSpendEntity(rs);
+            SpendEntity se = pullSpendEntity(rs);
             spendEntities.add(se);
           }
           return spendEntities;
@@ -103,20 +102,16 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
-  private SpendEntity createSpendEntity(ResultSet rs) throws SQLException {
+  private SpendEntity pullSpendEntity(ResultSet rs) throws SQLException {
     SpendEntity se = new SpendEntity();
     se.setId(rs.getObject("id", UUID.class));
     se.setUsername(rs.getString("username"));
-    se.setCurrency(rs.getObject("currency", CurrencyValues.class));
+    se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
     se.setSpendDate(rs.getDate("spend_date"));
     se.setAmount(rs.getDouble("amount"));
     se.setDescription(rs.getString("description"));
-    UUID categoryId = rs.getObject("category_id", UUID.class);
-    if (categoryId != null) {
-      CategoryEntity category = new CategoryEntity();
-      category.setId(categoryId);
-      se.setCategory(category);
-    }
+    se.setCategory(new CategoryDaoJdbc().findCategoryById(rs.getObject("category_id", UUID.class))
+        .orElseThrow(() -> new SQLException("There is no such category in Category table")));
     return se;
   }
 

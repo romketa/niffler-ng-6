@@ -21,9 +21,9 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public UserEntity createUser(UserEntity user) {
-    String sql = "INSERT INTO user (username, currency, firstname, surname, photo, photo_small, full_name)"
+    String sql = "INSERT INTO 'user' (username, currency, firstname, surname, photo, photo_small, full_name)"
         + " VALUES (?, ?, ?, ?, ?, ?, ?)";
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
+    try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(sql,
           Statement.RETURN_GENERATED_KEYS)) {
         setUserParams(ps, user);
@@ -47,8 +47,8 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public Optional<UserEntity> findById(UUID id) {
-    String sql = "SELECT * FROM user WHERE id = ?";
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
+    String sql = "SELECT * FROM 'user' WHERE id = ?";
+    try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(sql)) {
         ps.setObject(1, id);
         ps.execute();
@@ -70,8 +70,8 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public Optional<UserEntity> findByUsername(String username) {
-    String sql = "SELECT * FROM user WHERE username = ?";
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
+    String sql = "SELECT * FROM 'user' WHERE username = ?";
+    try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(sql)) {
         ps.setString(1, username);
         ps.execute();
@@ -93,8 +93,8 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public void delete(UserEntity user) {
-    String sql = "DELETE FROM user WHERE id = ?";
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl());
+    String sql = "DELETE FROM 'user' WHERE id = ?";
+    try (Connection connection = Databases.connection(CFG.userdataJdbcUrl());
         PreparedStatement ps = connection.prepareStatement(sql)) {
 
       ps.setObject(1, user.getId());

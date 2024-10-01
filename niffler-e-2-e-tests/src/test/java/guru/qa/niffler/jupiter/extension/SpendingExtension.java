@@ -32,7 +32,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
           SpendJson spend = new SpendJson(
               null,
               new Date(),
-              spendDbClient.findCategoryByUsernameAndName(anno.username(), spendingAnno.category()),
+              spendDbClient.findOrCreateCategoryByUsernameAndName(anno.username(), spendingAnno.category()),
               CurrencyValues.RUB,
               spendingAnno.amount(),
               spendingAnno.description(),

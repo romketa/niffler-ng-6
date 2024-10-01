@@ -39,18 +39,9 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
               uuid,
               title,
               anno.username(),
-              false
+              categoryAnno.archived()
           );
           CategoryJson createdCategory = spendDbClient.createCategory(category);
-          if (categoryAnno.archived()) {
-            CategoryJson archivedCategory = new CategoryJson(
-                createdCategory.id(),
-                createdCategory.name(),
-                createdCategory.username(),
-                true
-            );
-            createdCategory = spendDbClient.updateCategory(archivedCategory);
-          }
           context.getStore(NAMESPACE).put(
               context.getUniqueId(),
               createdCategory
@@ -63,14 +54,8 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
 
     CategoryJson categoryJson = context.getStore(NAMESPACE)
         .get(context.getUniqueId(), CategoryJson.class);
-    if (categoryJson != null && categoryJson.archived()) {
-      categoryJson = new CategoryJson(
-          categoryJson.id(),
-          categoryJson.name(),
-          categoryJson.username(),
-          true
-      );
-      spendDbClient.updateCategory(categoryJson);
+    if (categoryJson != null) {
+      spendDbClient.deleteCategory(categoryJson);
     }
   }
 

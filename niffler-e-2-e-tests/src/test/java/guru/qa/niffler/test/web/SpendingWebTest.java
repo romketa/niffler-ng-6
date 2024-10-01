@@ -29,7 +29,7 @@ public class SpendingWebTest {
   )
   @Test
   void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
-    final String newDescription = "Обучение Niffler Next Generation";
+    final String newDescription = "some desc";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .login("moon", "moon123")
