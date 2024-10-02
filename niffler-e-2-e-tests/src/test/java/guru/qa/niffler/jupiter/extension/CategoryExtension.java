@@ -1,9 +1,12 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.SpendApiClient;
+import guru.qa.niffler.data.dao.CategoryDao;
+import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.service.SpendDbClient;
 import java.util.UUID;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -20,7 +23,7 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
       CategoryExtension.class);
 
-  private final SpendApiClient spendApiClient = new SpendApiClient();
+  private final SpendDbClient spendDbClient = new SpendDbClient();
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
@@ -36,18 +39,9 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
               uuid,
               title,
               anno.username(),
-              false
+              categoryAnno.archived()
           );
-          CategoryJson createdCategory = spendApiClient.addCategories(category);
-          if (categoryAnno.archived()) {
-            CategoryJson archivedCategory = new CategoryJson(
-                createdCategory.id(),
-                createdCategory.name(),
-                createdCategory.username(),
-                true
-            );
-            createdCategory = spendApiClient.updateCategory(archivedCategory);
-          }
+          CategoryJson createdCategory = spendDbClient.createCategory(category);
           context.getStore(NAMESPACE).put(
               context.getUniqueId(),
               createdCategory
@@ -60,14 +54,8 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
 
     CategoryJson categoryJson = context.getStore(NAMESPACE)
         .get(context.getUniqueId(), CategoryJson.class);
-    if (categoryJson != null && categoryJson.archived()) {
-      categoryJson = new CategoryJson(
-          categoryJson.id(),
-          categoryJson.name(),
-          categoryJson.username(),
-          true
-      );
-      spendApiClient.updateCategory(categoryJson);
+    if (categoryJson != null) {
+      spendDbClient.deleteCategory(categoryJson);
     }
   }
 
