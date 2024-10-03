@@ -4,6 +4,7 @@ import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.sql.DataSource;
@@ -29,10 +30,26 @@ public class Databases {
   public record XaConsumer(Consumer<Connection> function, String jdbcUrl) {
   }
 
-  public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+  public enum TransactionIsolation {
+    TRANSACTION_NONE(0),
+    TRANSACTION_READ_UNCOMMITTED(1),
+    TRANSACTION_READ_COMMITTED(2),
+    TRANSACTION_REPEATABLE_READ(4),
+    TRANSACTION_SERIALIZABLE(8);
+
+    @Getter
+    final int levelIsolation;
+
+    TransactionIsolation(int levelIsolation) {
+      this.levelIsolation = levelIsolation;
+    }
+  }
+
+  public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, TransactionIsolation transactionIsolation) {
     Connection connection = null;
     try {
       connection = connection(jdbcUrl);
+      connection.setTransactionIsolation(transactionIsolation.getLevelIsolation());
       connection.setAutoCommit(false);
       T result = function.apply(connection);
       connection.commit();
@@ -72,10 +89,11 @@ public class Databases {
   }
 
 
-  public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+  public static void transaction(Consumer<Connection> consumer, String jdbcUrl, TransactionIsolation transactionIsolation) {
     Connection connection = null;
     try {
       connection = connection(jdbcUrl);
+      connection.setTransactionIsolation(transactionIsolation.getLevelIsolation());
       connection.setAutoCommit(false);
       consumer.accept(connection);
       connection.commit();
