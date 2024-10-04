@@ -24,7 +24,7 @@ public class UserDaoJdbc implements UserDao {
   @Override
   public UserEntity createUser(UserEntity user) {
     String sql =
-        "INSERT INTO 'user' (username, currency, firstname, surname, photo, photo_small, full_name)"
+        "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name)"
             + " VALUES (?, ?, ?, ?, ?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(sql,
         Statement.RETURN_GENERATED_KEYS)) {
@@ -48,7 +48,7 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public Optional<UserEntity> findById(UUID id) {
-    String sql = "SELECT * FROM 'user' WHERE id = ?";
+    String sql = "SELECT * FROM \"user\" WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(sql)) {
       ps.setObject(1, id);
       ps.execute();
@@ -69,7 +69,7 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public Optional<UserEntity> findByUsername(String username) {
-    String sql = "SELECT * FROM 'user' WHERE username = ?";
+    String sql = "SELECT * FROM \"user\" WHERE username = ?";
     try (PreparedStatement ps = connection.prepareStatement(sql)) {
       ps.setString(1, username);
       ps.execute();
@@ -90,7 +90,7 @@ public class UserDaoJdbc implements UserDao {
 
   @Override
   public void delete(UserEntity user) {
-    String sql = "DELETE FROM 'user' WHERE id = ?";
+    String sql = "DELETE FROM \"user\" WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
       ps.setObject(1, user.getId());
@@ -102,7 +102,7 @@ public class UserDaoJdbc implements UserDao {
 
   private void setUserParams(PreparedStatement ps, UserEntity user) throws SQLException {
     ps.setString(1, user.getUsername());
-    ps.setObject(2, user.getCurrency());
+    ps.setString(2, user.getCurrency().name());
     ps.setString(3, user.getFirstname());
     ps.setString(4, user.getSurname());
     ps.setBytes(5, user.getPhoto());

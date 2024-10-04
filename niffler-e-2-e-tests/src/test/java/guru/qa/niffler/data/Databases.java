@@ -27,7 +27,7 @@ public class Databases {
   public record XaFunction<T>(Function<Connection, T> function, String jdbcUrl) {
   }
 
-  public record XaConsumer(Consumer<Connection> function, String jdbcUrl) {
+  public record XaConsumer(Consumer<Connection> consumer, String jdbcUrl) {
   }
 
   public enum TransactionIsolation {
@@ -116,7 +116,7 @@ public class Databases {
     try {
       ut.begin();
       for (XaConsumer action : actions) {
-        action.function.accept(connection(action.jdbcUrl));
+        action.consumer.accept(connection(action.jdbcUrl));
       }
       ut.commit();
     } catch (Exception e) {

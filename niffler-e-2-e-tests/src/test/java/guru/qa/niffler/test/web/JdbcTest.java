@@ -3,13 +3,15 @@ package guru.qa.niffler.test.web;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
+import guru.qa.niffler.service.UserDbClient;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-@Disabled
+
 public class JdbcTest {
 
   @Test
@@ -34,5 +36,23 @@ public class JdbcTest {
     );
 
     System.out.println(spend);
+  }
+
+  @Test
+  void userFxTest() {
+    UserDbClient userDbClient = new UserDbClient();
+
+    UserJson userMark = new UserJson(
+        null,
+        "markeloff",
+        "mark",
+        "awper",
+        "mark awper",
+        CurrencyValues.RUB,
+        null,
+        null
+    );
+
+    userDbClient.createUser(userMark);
   }
 }
