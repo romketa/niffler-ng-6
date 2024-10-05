@@ -27,8 +27,7 @@ public class SpendDbClient {
               new SpendDaoJdbc(connection).create(spendEntity)
           );
         },
-        CFG.spendJdbcUrl(),
-        TRANSACTION_READ_COMMITTED
+        CFG.spendJdbcUrl()
     );
   }
 
@@ -39,8 +38,7 @@ public class SpendDbClient {
               new CategoryDaoJdbc(connection).create(categoryEntity)
           );
         },
-        CFG.spendJdbcUrl(),
-        TRANSACTION_READ_COMMITTED);
+        CFG.spendJdbcUrl());
   }
 
   public void deleteCategory(CategoryJson category) {
@@ -50,8 +48,7 @@ public class SpendDbClient {
               new CategoryDaoJdbc(connection).create(categoryEntity)
           );
         },
-        CFG.spendJdbcUrl(),
-        TRANSACTION_READ_COMMITTED);
+        CFG.spendJdbcUrl());
   }
 
   public CategoryJson findOrCreateCategoryByUsernameAndName(String username, String name) {
@@ -60,7 +57,6 @@ public class SpendDbClient {
               .map(CategoryJson::fromEntity)
               .orElse(new CategoryJson(null, name, username, false));
         },
-        CFG.spendJdbcUrl(),
-        TRANSACTION_READ_COMMITTED);
+        CFG.spendJdbcUrl());
   }
 }

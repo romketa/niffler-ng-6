@@ -1,5 +1,7 @@
 package guru.qa.niffler.data;
 
+import static guru.qa.niffler.data.Databases.TransactionIsolation.TRANSACTION_READ_COMMITTED;
+
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import jakarta.transaction.SystemException;
@@ -46,6 +48,14 @@ public class Databases {
   }
 
   public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, TransactionIsolation transactionIsolation) {
+    return applyTransaction(function, jdbcUrl, transactionIsolation);
+  }
+
+  public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+    return applyTransaction(function, jdbcUrl, TRANSACTION_READ_COMMITTED);
+  }
+
+  private static <T> T applyTransaction(Function<Connection, T> function, String jdbcUrl, TransactionIsolation transactionIsolation) {
     Connection connection = null;
     try {
       connection = connection(jdbcUrl);
@@ -90,6 +100,15 @@ public class Databases {
 
 
   public static void transaction(Consumer<Connection> consumer, String jdbcUrl, TransactionIsolation transactionIsolation) {
+    acceptTransaction(consumer, jdbcUrl, transactionIsolation);
+  }
+
+  public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+    acceptTransaction(consumer, jdbcUrl, TRANSACTION_READ_COMMITTED);
+  }
+
+  private static void acceptTransaction(Consumer<Connection> consumer, String jdbcUrl,
+      TransactionIsolation transactionIsolation) {
     Connection connection = null;
     try {
       connection = connection(jdbcUrl);
