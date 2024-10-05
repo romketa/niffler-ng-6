@@ -1,9 +1,12 @@
 package guru.qa.niffler.data;
 
+import static guru.qa.niffler.data.Databases.TransactionIsolation.TRANSACTION_READ_COMMITTED;
+
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.sql.DataSource;
@@ -26,13 +29,37 @@ public class Databases {
   public record XaFunction<T>(Function<Connection, T> function, String jdbcUrl) {
   }
 
-  public record XaConsumer(Consumer<Connection> function, String jdbcUrl) {
+  public record XaConsumer(Consumer<Connection> consumer, String jdbcUrl) {
+  }
+
+  public enum TransactionIsolation {
+    TRANSACTION_NONE(0),
+    TRANSACTION_READ_UNCOMMITTED(1),
+    TRANSACTION_READ_COMMITTED(2),
+    TRANSACTION_REPEATABLE_READ(4),
+    TRANSACTION_SERIALIZABLE(8);
+
+    @Getter
+    final int levelIsolation;
+
+    TransactionIsolation(int levelIsolation) {
+      this.levelIsolation = levelIsolation;
+    }
+  }
+
+  public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, TransactionIsolation transactionIsolation) {
+    return applyTransaction(function, jdbcUrl, transactionIsolation);
   }
 
   public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+    return applyTransaction(function, jdbcUrl, TRANSACTION_READ_COMMITTED);
+  }
+
+  private static <T> T applyTransaction(Function<Connection, T> function, String jdbcUrl, TransactionIsolation transactionIsolation) {
     Connection connection = null;
     try {
       connection = connection(jdbcUrl);
+      connection.setTransactionIsolation(transactionIsolation.getLevelIsolation());
       connection.setAutoCommit(false);
       T result = function.apply(connection);
       connection.commit();
@@ -72,10 +99,20 @@ public class Databases {
   }
 
 
+  public static void transaction(Consumer<Connection> consumer, String jdbcUrl, TransactionIsolation transactionIsolation) {
+    acceptTransaction(consumer, jdbcUrl, transactionIsolation);
+  }
+
   public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+    acceptTransaction(consumer, jdbcUrl, TRANSACTION_READ_COMMITTED);
+  }
+
+  private static void acceptTransaction(Consumer<Connection> consumer, String jdbcUrl,
+      TransactionIsolation transactionIsolation) {
     Connection connection = null;
     try {
       connection = connection(jdbcUrl);
+      connection.setTransactionIsolation(transactionIsolation.getLevelIsolation());
       connection.setAutoCommit(false);
       consumer.accept(connection);
       connection.commit();
@@ -98,7 +135,7 @@ public class Databases {
     try {
       ut.begin();
       for (XaConsumer action : actions) {
-        action.function.accept(connection(action.jdbcUrl));
+        action.consumer.accept(connection(action.jdbcUrl));
       }
       ut.commit();
     } catch (Exception e) {
