@@ -9,6 +9,8 @@ import guru.qa.niffler.service.UserDbClient;
 import java.util.Date;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 
 public class JdbcTest {
@@ -194,8 +196,20 @@ public class JdbcTest {
     userDbClient.addFriends(user, friend);
   }
 
-  @Test
-  void userJdbcAddInvitationTest() {
+    static UsersDbClient usersDbClient = new UsersDbClient();
 
-  }
+  @ValueSource(strings = {
+      "valentin-10"
+  })
+  @ParameterizedTest
+  void springJdbcTest(String uname) {
+
+    UserJson user = usersDbClient.createUser(
+        uname,
+        "12345"
+    );
+
+    usersDbClient.addIncomeInvitation(user, 1);
+    usersDbClient.addOutcomeInvitation(user, 1);
+	}
 }
