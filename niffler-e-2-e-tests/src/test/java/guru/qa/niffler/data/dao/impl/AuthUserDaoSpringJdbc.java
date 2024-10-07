@@ -3,15 +3,15 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-
-import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.Optional;
-import java.util.UUID;
 
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
@@ -27,16 +27,17 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
       PreparedStatement ps = con.prepareStatement(
-          "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
+          "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) "
+              +
               "VALUES (?,?,?,?,?,?)",
           Statement.RETURN_GENERATED_KEYS
       );
       ps.setString(1, user.getUsername());
       ps.setString(2, user.getPassword());
-      ps.setBoolean(3, user.getEnabled());
-      ps.setBoolean(4, user.getAccountNonExpired());
-      ps.setBoolean(5, user.getAccountNonLocked());
-      ps.setBoolean(6, user.getCredentialsNonExpired());
+      ps.setBoolean(3, user.isEnabled());
+      ps.setBoolean(4, user.isAccountNonExpired());
+      ps.setBoolean(5, user.isAccountNonLocked());
+      ps.setBoolean(6, user.isCredentialsNonExpired());
       return ps;
     }, kh);
 
@@ -55,5 +56,12 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
             id
         )
     );
+  }
+
+  @Override
+  public List<AuthUserEntity> findAll() {
+    String sql = "SELECT * FROM \"user\"";
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    return jdbcTemplate.query(sql, AuthUserEntityRowMapper.instance);
   }
 }

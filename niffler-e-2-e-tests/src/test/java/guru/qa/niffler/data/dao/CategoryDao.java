@@ -1,5 +1,6 @@
 package guru.qa.niffler.data.dao;
 
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface CategoryDao {
   List<CategoryEntity> findAllByUsername(String username);
 
   void deleteCategory(CategoryEntity category);
+
+  List<CategoryEntity> findAll();
 }
