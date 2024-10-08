@@ -1,20 +1,20 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UserDao;
-import guru.qa.niffler.data.entity.spend.UserEntity;
+import guru.qa.niffler.data.entity.auth.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class UserDaoJdbc implements UserDao {
 
-  private static final Config CFG = Config.getInstance();
   private final Connection connection;
 
   public UserDaoJdbc(Connection connection) {
@@ -95,6 +95,25 @@ public class UserDaoJdbc implements UserDao {
 
       ps.setObject(1, user.getId());
       ps.executeUpdate();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public List<UserEntity> findAll() {
+    String sql = "SELECT * FROM \"user\"";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+      ps.execute();
+      List<UserEntity> userEntities = new ArrayList<>();
+      try (ResultSet rs = ps.getResultSet()) {
+        while (rs.next()) {
+          UserEntity ue = new UserEntity();
+          pullUserEntity(ue, rs);
+        }
+        return userEntities;
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

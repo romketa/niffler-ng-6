@@ -1,6 +1,5 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import java.sql.Connection;
@@ -8,12 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class AuthUserDaoJdbc implements AuthUserDao {
-
-  private static final Config CFG = Config.getInstance();
 
   private final Connection connection;
 
@@ -60,13 +59,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
       try (ResultSet rs = ps.getResultSet()) {
         if (rs.next()) {
           AuthUserEntity au = new AuthUserEntity();
-          au.setId(rs.getObject("id", UUID.class));
-          au.setUsername(rs.getString("username"));
-          au.setPassword(rs.getString("password"));
-          au.setEnabled(rs.getBoolean("enabled"));
-          au.setAccountNonExpired(rs.getBoolean("account_non_expired"));
-          au.setAccountNonLocked(rs.getBoolean("account_non_locked"));
-          au.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+          pullAuthUserEntities(au, rs);
           return Optional.of(au);
         } else {
           return Optional.empty();
@@ -75,5 +68,35 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public List<AuthUserEntity> findAll() {
+    String sql = "SELECT * FROM \"category\"";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+      ps.execute();
+      List<AuthUserEntity> authUserEntities = new ArrayList<>();
+      try (ResultSet rs = ps.getResultSet()) {
+        while (rs.next()) {
+          AuthUserEntity au = new AuthUserEntity();
+          pullAuthUserEntities(au, rs);
+          authUserEntities.add(au);
+        }
+        return authUserEntities;
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void pullAuthUserEntities(AuthUserEntity au, ResultSet rs) throws SQLException {
+    au.setId(rs.getObject("id", UUID.class));
+    au.setUsername(rs.getString("username"));
+    au.setPassword(rs.getString("password"));
+    au.setEnabled(rs.getBoolean("enabled"));
+    au.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+    au.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+    au.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
   }
 }
