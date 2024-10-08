@@ -1,6 +1,5 @@
 package guru.qa.niffler.data.mapper;
 
-import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CurrencyValues;
@@ -25,11 +24,9 @@ public class SpendEntityRowMapper implements RowMapper<SpendEntity> {
     result.setSpendDate(rs.getDate("spend_date"));
     result.setAmount(rs.getDouble("amount"));
     result.setDescription(rs.getString("description"));
-//    result.setCategory(new CategoryDaoJdbc(connection).findCategoryById(rs.getObject("category_id", UUID.class));
+    CategoryEntity ce = new CategoryEntity();
+    ce.setId(rs.getObject("category_id", UUID.class));
+    result.setCategory(ce);
     return result;
   }
-
-
-//    se.setCategory(new CategoryDaoJdbc(connection).findCategoryById(rs.getObject("category_id", UUID.class))
-//        .orElseThrow(() -> new SQLException("There is no such category in Category table")));
 }
