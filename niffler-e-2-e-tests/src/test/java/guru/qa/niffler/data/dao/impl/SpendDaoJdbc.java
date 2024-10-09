@@ -1,9 +1,12 @@
 package guru.qa.niffler.data.dao.impl;
 
+import static guru.qa.niffler.data.tpl.Connections.holder;
+
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
+import guru.qa.niffler.data.tpl.Connections;
 import guru.qa.niffler.model.CurrencyValues;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,16 +20,12 @@ import java.util.UUID;
 
 public class SpendDaoJdbc implements SpendDao {
 
-  private final Connection connection;
-
-  public SpendDaoJdbc(Connection connection) {
-    this.connection = connection;
-  }
+  private static final Config CFG = Config.getInstance();
 
   @Override
   public SpendEntity create(SpendEntity spend) {
     String sql = "INSERT INTO \"spend\" (username, spend_date, currency, amount, description, category_id) VALUES (?, ?, ?, ?, ?, ?)";
-    try (PreparedStatement ps = connection.prepareStatement(sql,
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(sql,
         Statement.RETURN_GENERATED_KEYS)) {
 
       setSpendParams(ps, spend);
@@ -51,7 +50,7 @@ public class SpendDaoJdbc implements SpendDao {
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     String sql = "SELECT * FROM \"spend\" WHERE id = ?";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(sql)) {
       ps.setObject(1, id);
       ps.execute();
 
@@ -71,7 +70,7 @@ public class SpendDaoJdbc implements SpendDao {
   @Override
   public List<SpendEntity> findAllByUsername(String username) {
     String sql = "SELECT * FROM \"spend\" WHERE username = ?";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(sql)) {
       ps.setString(1, username);
 
       ps.execute();
@@ -91,7 +90,7 @@ public class SpendDaoJdbc implements SpendDao {
   @Override
   public void deleteSpend(SpendEntity spendEntity) {
     String sql = "DELETE FROM \"spend\" WHERE id = ?";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(sql)) {
 
       ps.setObject(1, spendEntity.getId());
       ps.executeUpdate();
@@ -103,7 +102,7 @@ public class SpendDaoJdbc implements SpendDao {
   @Override
   public List<SpendEntity> findAll() {
     String sql = "SELECT * FROM \"spend\"";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(sql)) {
 
       ps.execute();
       List<SpendEntity> spendEntities = new ArrayList<>();
@@ -128,7 +127,7 @@ public class SpendDaoJdbc implements SpendDao {
     se.setSpendDate(rs.getDate("spend_date"));
     se.setAmount(rs.getDouble("amount"));
     se.setDescription(rs.getString("description"));
-    se.setCategory(new CategoryDaoJdbc(connection).findCategoryById(rs.getObject("category_id", UUID.class))
+    se.setCategory(new CategoryDaoJdbc().findCategoryById(rs.getObject("category_id", UUID.class))
         .orElseThrow(() -> new SQLException("There is no such category in Category table")));
     return se;
   }

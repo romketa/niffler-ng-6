@@ -1,5 +1,8 @@
 package guru.qa.niffler.data.dao.impl;
 
+import static guru.qa.niffler.data.tpl.Connections.holder;
+
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import java.sql.Connection;
@@ -14,17 +17,13 @@ import java.util.UUID;
 
 public class AuthUserDaoJdbc implements AuthUserDao {
 
-  private final Connection connection;
-
-  public AuthUserDaoJdbc(Connection connection) {
-    this.connection = connection;
-  }
+  private static final Config CFG = Config.getInstance();
 
   @Override
   public AuthUserEntity create(AuthUserEntity authUser) {
     String sql =
         "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) VALUES (?, ?, ?, ?, ?, ?)";
-    try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS
     )) {
       ps.setString(1, authUser.getUsername());
       ps.setString(2, authUser.getPassword());
@@ -53,7 +52,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
   @Override
   public Optional<AuthUserEntity> findById(UUID id) {
     String sql = "SELECT * FROM \"user\"  WHERE id = ?";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(sql)) {
       ps.setObject(1, id);
       ps.execute();
       try (ResultSet rs = ps.getResultSet()) {
@@ -73,7 +72,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
   @Override
   public List<AuthUserEntity> findAll() {
     String sql = "SELECT * FROM \"category\"";
-    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(sql)) {
 
       ps.execute();
       List<AuthUserEntity> authUserEntities = new ArrayList<>();

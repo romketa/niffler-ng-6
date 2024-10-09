@@ -6,15 +6,16 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UserDbClient;
-import org.junit.jupiter.api.Test;
-
 import java.util.Date;
+import org.junit.jupiter.api.Test;
 
 
 public class JdbcTest {
 
+  UserDbClient userDbClient = new UserDbClient();
+
   @Test
-  void txTest() {
+  void txSpendTest() {
     SpendDbClient spendDbClient = new SpendDbClient();
 
     SpendJson spend = spendDbClient.createSpend(
@@ -36,51 +37,33 @@ public class JdbcTest {
 
     System.out.println(spend);
   }
-//
-//  @Test
-//  void xaTxTest() {
-//    UsersDbClient usersDbClient = new UsersDbClient();
-//    UserJson user = usersDbClient.createUser(
-//        new UserJson(
-//            null,
-//            "valentin-4",
-//            null,
-//            null,
-//            null,
-//            CurrencyValues.RUB,
-//            null,
-//            null,
-//            null
-//        )
-//    );
-//    System.out.println(user);
-//  }
 
+// в этом тесте по идее пользователь должен создаться по первой транзакции, во второй нет и не добавиться в user data
+// т.к. встречается ошибка при выполнении второй транзакции
+//  почитал доку, был уверен что поведение именно такое, НО сколько бы я эксперементировал, у меня выполняется первая транзкция, фейлится вторая
+//  НО записи не добавляются ни в одну ни во вторую таблицу, непонимаю.
   @Test
-  void userFxTest() {
-    UserDbClient userDbClient = new UserDbClient();
-
-    UserJson userMark = new UserJson(
+  void userChainedTx() {
+    UserJson user = userDbClient.createUserChainedTx(new UserJson(
         null,
-        "markeloff",
-        "mark",
-        "awper",
-        "mark awper",
+        "valentin-9",
+        null,
+        null,
+        null,
         CurrencyValues.RUB,
         null,
+        null,
         null
-    );
-
-    userDbClient.createUser(userMark);
+    ));
+    System.out.println("Created user - " + user);
   }
 
   @Test
-  void springJdbcTest() {
-    UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUserSpringJdbc(
+  void userJdbcTxTest() {
+    UserJson user = userDbClient.createUserJdbcTx(
         new UserJson(
             null,
-            "valentin-5",
+            "valentin-7",
             null,
             null,
             null,
@@ -90,6 +73,60 @@ public class JdbcTest {
             null
         )
     );
-    System.out.println(user);
+    System.out.println("Created user - " + user);
+  }
+
+  @Test
+  void userSpringJdbcTxTest() {
+    UserJson userMark = new UserJson(
+        null,
+        "markeloff-1",
+        "mark",
+        "awper",
+        "mark awper",
+        CurrencyValues.RUB,
+        null,
+        null,
+        null
+    );
+
+    userDbClient.createUserSpringJdbcTx(userMark);
+    System.out.println("Created user - " + userMark);
+  }
+
+  @Test
+  void userSpringJdbcWithoutTxTest() {
+    UserJson user = userDbClient.createUserSpringJdbcWithoutTx(
+        new UserJson(
+            null,
+            "valentin-2",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+    System.out.println("Created user - " + user);
+  }
+
+  @Test
+  void userJdbcWithoutTxTest() {
+    UserJson user = userDbClient.createUserJdbcWithoutTx(
+        new UserJson(
+            null,
+            "valentin-3",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+    System.out.println("Created user - " + user);
   }
 }

@@ -4,6 +4,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
+import guru.qa.niffler.data.tpl.DataSources;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -16,16 +17,12 @@ import org.springframework.jdbc.support.KeyHolder;
 
 public class CategoryDaoSpringJdbc implements CategoryDao {
 
-  private final DataSource dataSource;
-
-  public CategoryDaoSpringJdbc(DataSource dataSource) {
-    this.dataSource = dataSource;
-  }
+  private static final Config CFG = Config.getInstance();
 
   @Override
   public CategoryEntity create(CategoryEntity category) {
     String sql = "INSERT INTO \"category\" (username, name, archived) VALUES (?, ?, ?)";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
       PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -43,7 +40,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
   @Override
   public CategoryEntity update(CategoryEntity category) {
     String sql = "UPDATE \"category\" SET name = ?, username = ?, archived = ? where id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
     jdbcTemplate.update(con -> {
       PreparedStatement ps = con.prepareStatement(sql);
       ps.setString(1, category.getName());
@@ -58,7 +55,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
   @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     String sql = "SELECT * FROM \"category\" WHERE id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
             sql,
@@ -72,7 +69,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
   public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username,
       String categoryName) {
     String sql = "SELECT * FROM \"category\" WHERE username = ? and name = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
     return Optional.ofNullable(
         jdbcTemplate.queryForObject(
             sql,
@@ -86,21 +83,21 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
   @Override
   public List<CategoryEntity> findAllByUsername(String username) {
     String sql = "SELECT * FROM \"category\" WHERE username = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
     return jdbcTemplate.query(sql, CategoryEntityRowMapper.instance, username);
   }
 
   @Override
   public void deleteCategory(CategoryEntity category) {
     String sql = "DELETE FROM \"category\" WHERE id = ?";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
     jdbcTemplate.update(sql, category.getId());
   }
 
   @Override
   public List<CategoryEntity> findAll() {
     String sql = "SELECT * FROM \"category\"";
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
     return jdbcTemplate.query(sql, CategoryEntityRowMapper.instance);
   }
 }
