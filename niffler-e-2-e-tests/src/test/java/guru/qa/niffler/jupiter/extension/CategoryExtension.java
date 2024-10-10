@@ -10,7 +10,6 @@ import guru.qa.niffler.service.SpendDbClient;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -18,7 +17,13 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-public class CategoryExtension implements AfterTestExecutionCallback, BeforeEachCallback,
+import java.util.ArrayList;
+import java.util.List;
+
+import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
+
+public class CategoryExtension implements
+    BeforeEachCallback,
     ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
@@ -65,25 +70,14 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
   }
 
   @Override
-  public void afterTestExecution(ExtensionContext context) throws Exception {
-
-    CategoryJson categoryJson = context.getStore(NAMESPACE)
-        .get(context.getUniqueId(), CategoryJson.class);
-    if (categoryJson != null) {
-      spendDbClient.removeCategory(categoryJson);
-    }
+  public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    return parameterContext.getParameter().getType().isAssignableFrom(CategoryJson[].class);
   }
 
   @Override
-  public boolean supportsParameter(ParameterContext parameterContext,
-      ExtensionContext extensionContext) throws ParameterResolutionException {
-    return parameterContext.getParameter().getType().isAssignableFrom(CategoryJson.class);
-  }
-
-  @Override
-  public CategoryJson resolveParameter(ParameterContext parameterContext,
-      ExtensionContext extensionContext) throws ParameterResolutionException {
-    return extensionContext.getStore(NAMESPACE)
-        .get(extensionContext.getUniqueId(), CategoryJson.class);
+  @SuppressWarnings("unchecked")
+  public CategoryJson[] resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    return (CategoryJson[]) extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class)
+        .toArray();
   }
 }

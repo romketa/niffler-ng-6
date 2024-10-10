@@ -72,6 +72,10 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
             id
         )
     );
+    } catch (
+        EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
   }
 
   @Override

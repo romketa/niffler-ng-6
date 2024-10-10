@@ -65,6 +65,10 @@ public class SpendDaoSpringJdbc implements SpendDao {
             id
         )
     );
+    } catch (
+        EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
   }
 
   @Override
