@@ -7,6 +7,7 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UserDbClient;
 import java.util.Date;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 
@@ -38,7 +39,7 @@ public class JdbcTest {
     System.out.println(spend);
   }
 
-// в этом тесте по идее пользователь должен создаться по первой транзакции, во второй нет и не добавиться в user data
+  // в этом тесте по идее пользователь должен создаться по первой транзакции, во второй нет и не добавиться в user data
 // т.к. встречается ошибка при выполнении второй транзакции
 //  почитал доку, был уверен что поведение именно такое, НО сколько бы я эксперементировал, у меня выполняется первая транзкция, фейлится вторая
 //  НО записи не добавляются ни в одну ни во вторую таблицу, непонимаю.
@@ -128,5 +129,73 @@ public class JdbcTest {
         )
     );
     System.out.println("Created user - " + user);
+  }
+
+  @Test
+  void userJdbcAddFriendTest() {
+    UserJson user = userDbClient.createUserJdbcTx(
+        new UserJson(
+            null,
+            "user-1",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+
+    UserJson friend = userDbClient.createUserJdbcTx(
+        new UserJson(
+            null,
+            "friend-1",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+
+    UserJson income = userDbClient.createUserJdbcTx(
+        new UserJson(
+            null,
+            "income-1",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+
+    UserJson outcome = userDbClient.createUserJdbcTx(
+        new UserJson(
+            null,
+            "outcome-1",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+
+    userDbClient.addInvitation(income, user);
+    userDbClient.addInvitation(user, outcome);
+    userDbClient.addFriends(user, friend);
+  }
+
+  @Test
+  void userJdbcAddInvitationTest() {
+
   }
 }

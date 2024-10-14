@@ -4,11 +4,8 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.SpendDao;
-import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-import guru.qa.niffler.data.tpl.Connections;
 import guru.qa.niffler.model.CurrencyValues;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -134,7 +131,7 @@ public class SpendDaoJdbc implements SpendDao {
 
   private void setSpendParams(PreparedStatement ps, SpendEntity spend) throws SQLException {
     ps.setString(1, spend.getUsername());
-    ps.setDate(2, spend.getSpendDate());
+    ps.setDate(2, new java.sql.Date(spend.getSpendDate().getTime()));
     ps.setString(3, spend.getCurrency().name());
     ps.setDouble(4, spend.getAmount());
     ps.setString(5, spend.getDescription());

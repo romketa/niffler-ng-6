@@ -1,5 +1,7 @@
 package guru.qa.niffler.data.mapper;
 
+import guru.qa.niffler.data.dao.AuthUserDao;
+import guru.qa.niffler.data.dao.impl.AuthUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import java.sql.ResultSet;
@@ -19,7 +21,8 @@ public class AuthorityEntityRowMapper implements RowMapper<AuthorityEntity> {
     AuthorityEntity result = new AuthorityEntity();
     result.setId(rs.getObject("id", UUID.class));
     result.setAuthority(rs.getObject("authority", Authority.class));
-    result.setUserId(rs.getObject("userId", UUID.class));
+    AuthUserDao authUserDao = new AuthUserDaoSpringJdbc();
+    result.setUser(authUserDao.findById(rs.getObject("userId", UUID.class)).orElseThrow());
     return result;
   }
 }

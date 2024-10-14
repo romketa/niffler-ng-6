@@ -16,6 +16,8 @@ import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.repository.UserdataUserRepository;
+import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryJdbc;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.UserJson;
@@ -40,6 +42,7 @@ public class UserDbClient {
   private final AuthUserDao authUserDaoJdbc = new AuthUserDaoJdbc();
   private final AuthAuthorityDao authAuthorityDaoJdbc = new AuthAuthorityDaoJdbc();
   private final UserDao userDaoJdbc = new UserDaoJdbc();
+  private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryJdbc();
 
   private final JdbcTransactionTemplate jdbcTxTemplate = new JdbcTransactionTemplate(
       CFG.userdataJdbcUrl()
@@ -73,7 +76,7 @@ public class UserDbClient {
       AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
           e -> {
             AuthorityEntity ae = new AuthorityEntity();
-            ae.setUserId(createdAuthUser.getId());
+            ae.setUser(createdAuthUser);
             ae.setAuthority(e);
             return ae;
           }
@@ -105,7 +108,7 @@ public class UserDbClient {
       AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
           e -> {
             AuthorityEntity ae = new AuthorityEntity();
-            ae.setUserId(createdAuthUser.getId());
+            ae.setUser(createdAuthUser);
             ae.setAuthority(e);
             return ae;
           }
@@ -136,7 +139,7 @@ public class UserDbClient {
     AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
         e -> {
           AuthorityEntity ae = new AuthorityEntity();
-          ae.setUserId(createdAuthUser.getId());
+          ae.setUser(createdAuthUser);
           ae.setAuthority(e);
           return ae;
         }
@@ -167,7 +170,7 @@ public class UserDbClient {
       AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
           e -> {
             AuthorityEntity ae = new AuthorityEntity();
-            ae.setUserId(createdAuthUser.getId());
+            ae.setUser(createdAuthUser);
             ae.setAuthority(e);
             return ae;
           }
@@ -199,7 +202,7 @@ public class UserDbClient {
     AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
         e -> {
           AuthorityEntity ae = new AuthorityEntity();
-          ae.setUserId(createdAuthUser.getId());
+          ae.setUser(createdAuthUser);
           ae.setAuthority(e);
           return ae;
         }
@@ -212,5 +215,23 @@ public class UserDbClient {
             UserEntity.fromJson(user)
         ), null
     );
+  }
+
+  @SuppressWarnings("unchecked")
+  public void addFriends(UserJson userRequester, UserJson userAddressee) {
+    xaJdbcTxTemplate.execute(() -> {
+      userdataUserRepository.addFriend(UserEntity.fromJson(userRequester),
+          UserEntity.fromJson(userAddressee));
+      return null;
+    });
+  }
+
+  @SuppressWarnings("unchecked")
+  public void addInvitation(UserJson userRequester, UserJson userAddressee) {
+    xaJdbcTxTemplate.execute(() -> {
+      userdataUserRepository.addInvitation(UserEntity.fromJson(userRequester),
+          UserEntity.fromJson(userAddressee));
+      return null;
+    });
   }
 }
