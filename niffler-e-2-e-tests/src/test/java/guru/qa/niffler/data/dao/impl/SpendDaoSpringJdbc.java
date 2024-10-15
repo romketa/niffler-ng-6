@@ -11,7 +11,6 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -78,7 +77,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
   private void setSpendParams(PreparedStatement ps, SpendEntity spend) throws SQLException {
     ps.setString(1, spend.getUsername());
-    ps.setDate(2, spend.getSpendDate());
+    ps.setDate(2, new java.sql.Date(spend.getSpendDate().getTime()));
     ps.setString(3, spend.getCurrency().name());
     ps.setDouble(4, spend.getAmount());
     ps.setString(5, spend.getDescription());

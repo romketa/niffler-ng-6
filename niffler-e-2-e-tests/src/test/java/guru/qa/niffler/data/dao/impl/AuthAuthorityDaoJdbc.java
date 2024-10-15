@@ -4,6 +4,7 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
+import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import java.sql.PreparedStatement;
@@ -22,7 +23,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     String sql = "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)";
     try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(sql)) {
       for (AuthorityEntity entity : authority) {
-        ps.setObject(1, entity.getUserId());
+        ps.setObject(1, entity.getUser().getId());
         ps.setString(2, entity.getAuthority().name());
 
         ps.executeUpdate();
@@ -34,7 +35,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
   @Override
   public List<AuthorityEntity> findAll() {
-    String sql = "SELECT * FROM \"category\"";
+    String sql = "SELECT * FROM \"authority\"";
     try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(sql)) {
 
       ps.execute();
@@ -44,7 +45,8 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
           AuthorityEntity ce = new AuthorityEntity();
           ce.setId(rs.getObject("id", UUID.class));
           ce.setAuthority(rs.getObject("authority", Authority.class));
-          ce.setUserId(rs.getObject("userId", UUID.class));
+          AuthUserDao authUserDao = new AuthUserDaoSpringJdbc();
+          ce.setUser(authUserDao.findById(rs.getObject("userId", UUID.class)).orElseThrow());
           authorityEntities.add(ce);
         }
         return authorityEntities;
