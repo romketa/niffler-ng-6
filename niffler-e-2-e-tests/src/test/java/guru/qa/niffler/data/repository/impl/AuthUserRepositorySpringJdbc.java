@@ -30,6 +30,11 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
   }
 
   @Override
+  public AuthUserEntity update(AuthUserEntity user) {
+    return null;
+  }
+
+  @Override
   public Optional<AuthUserEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
     String sql = """
@@ -47,5 +52,15 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     return Optional.ofNullable(jdbcTemplate.query(sql,
         AuthUserEntityExtractor.instance,
         id));
+  }
+
+  @Override
+  public Optional<AuthUserEntity> findByUsername(String username) {
+    return Optional.empty();
+  }
+
+  @Override
+  public void remove(AuthUserEntity user) {
+
   }
 }

@@ -5,9 +5,9 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
-import guru.qa.niffler.service.UserDbClient;
+import guru.qa.niffler.service.OldUserDbClient;
+import guru.qa.niffler.service.UsersDbClient;
 import java.util.Date;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class JdbcTest {
 
-  UserDbClient userDbClient = new UserDbClient();
+  OldUserDbClient oldUserDbClient = new OldUserDbClient();
 
   @Test
   void txSpendTest() {
@@ -47,7 +47,7 @@ public class JdbcTest {
 //  НО записи не добавляются ни в одну ни во вторую таблицу, непонимаю.
   @Test
   void userChainedTx() {
-    UserJson user = userDbClient.createUserChainedTx(new UserJson(
+    UserJson user = oldUserDbClient.createUserChainedTx(new UserJson(
         null,
         "valentin-9",
         null,
@@ -63,7 +63,7 @@ public class JdbcTest {
 
   @Test
   void userJdbcTxTest() {
-    UserJson user = userDbClient.createUserJdbcTx(
+    UserJson user = oldUserDbClient.createUserJdbcTx(
         new UserJson(
             null,
             "valentin-7",
@@ -81,25 +81,16 @@ public class JdbcTest {
 
   @Test
   void userSpringJdbcTxTest() {
-    UserJson userMark = new UserJson(
-        null,
-        "markeloff-1",
-        "mark",
-        "awper",
-        "mark awper",
-        CurrencyValues.RUB,
-        null,
-        null,
-        null
+    UserJson user = oldUsersDbClient.createUserSpringJdbcTx(
+        "mark-1",
+        "12345"
     );
-
-    userDbClient.createUserSpringJdbcTx(userMark);
-    System.out.println("Created user - " + userMark);
+    System.out.println("Created user - " + user.username());
   }
 
   @Test
   void userSpringJdbcWithoutTxTest() {
-    UserJson user = userDbClient.createUserSpringJdbcWithoutTx(
+    UserJson user = oldUserDbClient.createUserSpringJdbcWithoutTx(
         new UserJson(
             null,
             "valentin-2",
@@ -117,7 +108,7 @@ public class JdbcTest {
 
   @Test
   void userJdbcWithoutTxTest() {
-    UserJson user = userDbClient.createUserJdbcWithoutTx(
+    UserJson user = oldUserDbClient.createUserJdbcWithoutTx(
         new UserJson(
             null,
             "valentin-3",
@@ -135,7 +126,7 @@ public class JdbcTest {
 
   @Test
   void userJdbcAddFriendTest() {
-    UserJson user = userDbClient.createUserJdbcTx(
+    UserJson user = oldUserDbClient.createUserJdbcTx(
         new UserJson(
             null,
             "user-1",
@@ -149,7 +140,7 @@ public class JdbcTest {
         )
     );
 
-    UserJson friend = userDbClient.createUserJdbcTx(
+    UserJson friend = oldUserDbClient.createUserJdbcTx(
         new UserJson(
             null,
             "friend-1",
@@ -163,7 +154,7 @@ public class JdbcTest {
         )
     );
 
-    UserJson income = userDbClient.createUserJdbcTx(
+    UserJson income = oldUserDbClient.createUserJdbcTx(
         new UserJson(
             null,
             "income-1",
@@ -177,7 +168,7 @@ public class JdbcTest {
         )
     );
 
-    UserJson outcome = userDbClient.createUserJdbcTx(
+    UserJson outcome = oldUserDbClient.createUserJdbcTx(
         new UserJson(
             null,
             "outcome-1",
@@ -191,12 +182,12 @@ public class JdbcTest {
         )
     );
 
-    userDbClient.addInvitation(income, user);
-    userDbClient.addInvitation(user, outcome);
-    userDbClient.addFriends(user, friend);
+    oldUserDbClient.addInvitation(income, user);
+    oldUserDbClient.addInvitation(user, outcome);
+    oldUserDbClient.addFriends(user, friend);
   }
 
-    static UsersDbClient usersDbClient = new UsersDbClient();
+  static OldUserDbClient oldUsersDbClient = new OldUserDbClient();
 
   @ValueSource(strings = {
       "valentin-10"
@@ -204,12 +195,12 @@ public class JdbcTest {
   @ParameterizedTest
   void springJdbcTest(String uname) {
 
-    UserJson user = usersDbClient.createUser(
+    UserJson user = oldUsersDbClient.createUserSpringJdbcTx(
         uname,
         "12345"
     );
 
-    usersDbClient.addIncomeInvitation(user, 1);
-    usersDbClient.addOutcomeInvitation(user, 1);
-	}
+    oldUsersDbClient.addIncomeInvitation(user, 1);
+    oldUsersDbClient.addOutcomeInvitation(user, 1);
+  }
 }
