@@ -30,16 +30,6 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   }
 
   @Override
-  public Optional<UserEntity> findByUsername(String username) {
-    return Optional.empty();
-  }
-
-  @Override
-  public UserEntity update(UserEntity user) {
-    return null;
-  }
-
-  @Override
   public void addFriend(UserEntity requester, UserEntity addressee) {
     String sql = "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) VALUES (?, ?, ?, ?)";
     try (PreparedStatement requesterPs = holder(CFG.userdataJdbcUrl()).connection()
@@ -62,12 +52,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
   }
 
   @Override
-  public void remove(UserEntity user) {
-
-  }
-
-  @Override
-  public void sendInvitation(UserEntity requester, UserEntity addressee) {
+  public void addInvitation(UserEntity requester, UserEntity addressee) {
     String sql = "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) VALUES (?, ?, ?, ?)";
     try (PreparedStatement requesterPs = holder(CFG.userdataJdbcUrl()).connection()
         .prepareStatement(sql); ) {

@@ -1,7 +1,6 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.impl.UserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
@@ -47,13 +46,13 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
   }
 
   @Override
-  public UserEntity update(UserEntity user) {
+  public void addIncomeInvitation(UserEntity requester, UserEntity addressee) {
     entityManager.joinTransaction();
-    return entityManager.merge(user);
+    addressee.addFriends(FriendshipStatus.PENDING, requester);
   }
 
   @Override
-  public void sendInvitation(UserEntity requester, UserEntity addressee) {
+  public void addOutcomeInvitation(UserEntity requester, UserEntity addressee) {
     entityManager.joinTransaction();
     requester.addFriends(FriendshipStatus.PENDING, addressee);
   }
@@ -63,11 +62,5 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     entityManager.joinTransaction();
     requester.addFriends(FriendshipStatus.ACCEPTED, addressee);
     addressee.addFriends(FriendshipStatus.ACCEPTED, requester);
-  }
-
-  @Override
-  public void remove(UserEntity user) {
-    entityManager.joinTransaction();
-    entityManager.remove(user);
   }
 }

@@ -16,13 +16,10 @@ import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryJdbc;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
-import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import java.util.Arrays;
 import org.springframework.data.transaction.ChainedTransactionManager;
@@ -30,9 +27,8 @@ import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
-import utils.RandomDataUtils;
 
-public class OldUserDbClient {
+public class UserDbClient {
 
   private static final Config CFG = Config.getInstance();
   private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -41,7 +37,6 @@ public class OldUserDbClient {
   private final AuthUserDao authUserDaoSpringJdbc = new AuthUserDaoSpringJdbc();
   private final AuthAuthorityDao authAuthorityDaoSpringJdbc = new AuthAuthorityDaoSpringJdbc();
   private final UserDao userDaoSpringJdbc = new UserDaoSpringJdbc();
-  private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
 
   //  JDBC DAOs
   private final AuthUserDao authUserDaoJdbc = new AuthUserDaoJdbc();
@@ -90,17 +85,19 @@ public class OldUserDbClient {
       authAuthorityDaoSpringJdbc.create(authorityEntities);
 
       UserEntity createdUser = UserEntity.fromJson(user);
+      createdUser.setUsername(null);
+
       return UserJson.fromEntity(userDaoSpringJdbc.createUser(createdUser), null);
     });
   }
 
 
   //  Spring JDBC transactions
-  public UserJson createUserSpringJdbcTx(String username, String password) {
+  public UserJson createUserSpringJdbcTx(UserJson user) {
     return xaJdbcTxTemplate.execute(() -> {
       AuthUserEntity authUser = new AuthUserEntity();
-      authUser.setUsername(username);
-      authUser.setPassword(pe.encode(password));
+      authUser.setUsername(user.username());
+      authUser.setPassword(pe.encode("12345"));
       authUser.setEnabled(true);
       authUser.setAccountNonExpired(true);
       authUser.setAccountNonLocked(true);
@@ -121,7 +118,7 @@ public class OldUserDbClient {
 
       return UserJson.fromEntity(
           userDaoSpringJdbc.createUser(
-              userEntity(username)
+              UserEntity.fromJson(user)
           ), null);
     });
   }
@@ -232,77 +229,9 @@ public class OldUserDbClient {
   @SuppressWarnings("unchecked")
   public void addInvitation(UserJson userRequester, UserJson userAddressee) {
     xaJdbcTxTemplate.execute(() -> {
-      userdataUserRepository.sendInvitation(UserEntity.fromJson(userRequester),
+      userdataUserRepository.addInvitation(UserEntity.fromJson(userRequester),
           UserEntity.fromJson(userAddressee));
       return null;
     });
-  }
-
-  public void addIncomeInvitation(UserJson targetUser, int count) {
-    if (count > 0) {
-      UserEntity targetEntity = userdataUserRepository.findById(
-          targetUser.id()
-      ).orElseThrow();
-
-      for (int i = 0; i < count; i++) {
-        xaJdbcTxTemplate.execute(() -> {
-              String username = RandomDataUtils.randomUsername();
-              AuthUserEntity authUser = authUserEntity(username, "12345");
-              authUserRepository.create(authUser);
-              UserEntity adressee = userdataUserRepository.create(userEntity(username));
-              userdataUserRepository.sendInvitation(targetEntity, adressee);
-              return null;
-            }
-        );
-      }
-    }
-  }
-
-  public void addOutcomeInvitation(UserJson targetUser, int count) {
-    if (count > 0) {
-      UserEntity targetEntity = userdataUserRepository.findById(
-          targetUser.id()
-      ).orElseThrow();
-
-      for (int i = 0; i < count; i++) {
-        xaJdbcTxTemplate.execute(() -> {
-              String username = RandomDataUtils.randomUsername();
-              AuthUserEntity authUser = authUserEntity(username, "12345");
-              authUserRepository.create(authUser);
-              UserEntity adressee = userdataUserRepository.create(userEntity(username));
-              userdataUserRepository.sendInvitation(adressee, targetEntity);
-              return null;
-            }
-        );
-      }
-    }
-  }
-
-  private UserEntity userEntity(String username) {
-    UserEntity ue = new UserEntity();
-    ue.setUsername(username);
-    ue.setCurrency(CurrencyValues.RUB);
-    return ue;
-  }
-
-  private AuthUserEntity authUserEntity(String username, String password) {
-    AuthUserEntity authUser = new AuthUserEntity();
-    authUser.setUsername(username);
-    authUser.setPassword(pe.encode(password));
-    authUser.setEnabled(true);
-    authUser.setAccountNonExpired(true);
-    authUser.setAccountNonLocked(true);
-    authUser.setCredentialsNonExpired(true);
-    authUser.setAuthorities(
-        Arrays.stream(Authority.values()).map(
-            e -> {
-              AuthorityEntity ae = new AuthorityEntity();
-              ae.setUser(authUser);
-              ae.setAuthority(e);
-              return ae;
-            }
-        ).toList()
-    );
-    return authUser;
   }
 }
