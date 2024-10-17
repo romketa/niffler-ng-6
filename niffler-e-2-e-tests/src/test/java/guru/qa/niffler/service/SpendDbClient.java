@@ -11,7 +11,7 @@ import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 
-public class SpendDbClient {
+public class SpendDbClient implements SpendClient{
 
   private static final Config CFG = Config.getInstance();
 
@@ -21,6 +21,7 @@ public class SpendDbClient {
       CFG.spendJdbcUrl()
   );
 
+  @Override
   public SpendJson createSpend(SpendJson spend) {
     return jdbcTxTemplate.execute(() -> {
           SpendEntity spendEntity = SpendEntity.fromJson(spend);
@@ -35,6 +36,7 @@ public class SpendDbClient {
     );
   }
 
+  @Override
   public CategoryJson createCategory(CategoryJson category) {
     return jdbcTxTemplate.execute(() -> {
       CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
@@ -44,6 +46,7 @@ public class SpendDbClient {
     });
   }
 
+  @Override
   public void deleteCategory(CategoryJson category) {
     jdbcTxTemplate.execute(() -> {
       CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
@@ -54,6 +57,7 @@ public class SpendDbClient {
     });
   }
 
+  @Override
   public CategoryJson findOrCreateCategoryByUsernameAndName(String username, String name) {
     return jdbcTxTemplate.execute(
         () -> categoryDao.findCategoryByUsernameAndCategoryName(username, name)
