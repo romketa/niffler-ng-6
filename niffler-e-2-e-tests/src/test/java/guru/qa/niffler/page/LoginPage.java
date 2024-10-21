@@ -7,6 +7,13 @@ import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.SelenideElement;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selenide.$;
+
+@ParametersAreNonnullByDefault
 public class LoginPage {
 
   private static final String USERNAME_INPUT_LOC = "input[name='username']";
@@ -24,6 +31,7 @@ public class LoginPage {
     return new MainPage();
   }
 
+  @Nonnull
   public MainPage successLogin(String username, String password) {
     login(username, password);
     return new MainPage();
@@ -39,6 +47,7 @@ public class LoginPage {
     $(ERROR_MESSAGE).shouldBe(visible);
   }
 
+  @Nonnull
   public LoginPage checkError(String error) {
     errorContainer.shouldHave(text(error));
     return this;

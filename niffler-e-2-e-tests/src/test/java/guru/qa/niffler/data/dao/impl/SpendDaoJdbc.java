@@ -6,7 +6,9 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
-import guru.qa.niffler.model.CurrencyValues;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,10 +18,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.jdbc.Connections.holder;
+
+@ParametersAreNonnullByDefault
 public class SpendDaoJdbc implements SpendDao {
 
   private static final Config CFG = Config.getInstance();
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public SpendEntity create(SpendEntity spend) {
     String sql = "INSERT INTO \"spend\" (username, spend_date, currency, amount, description, category_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -44,6 +51,8 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public Optional<SpendEntity> findById(UUID id) {
     try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -65,6 +74,8 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     String sql = "SELECT * FROM \"spend\" WHERE id = ?";
@@ -137,6 +148,8 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public SpendEntity update(SpendEntity spend) {
     try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(

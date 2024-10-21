@@ -10,22 +10,18 @@ import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 
-import guru.qa.niffler.data.repository.AuthUserRepository;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.jdbc.Connections.holder;
-
+@ParametersAreNonnullByDefault
 public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
   private final AuthUserDao authUserDao = new AuthUserDaoJdbc();
   private final AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoJdbc();
 
+  @Nonnull
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
     authUserDao.create(user);
@@ -33,6 +29,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     return user;
   }
 
+  @Nonnull
   @Override
   public AuthUserEntity update(AuthUserEntity user) {
     throw new UnsupportedOperationException();
@@ -50,6 +47,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     return userEntity;
   }
 
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findByUsername(String username) {
     Optional<AuthUserEntity> userEntity = authUserDao.findByUsername(username);

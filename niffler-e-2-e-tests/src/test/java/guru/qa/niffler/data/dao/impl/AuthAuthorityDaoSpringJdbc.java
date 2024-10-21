@@ -5,6 +5,11 @@ import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.jdbc.DataSources;
 import guru.qa.niffler.data.mapper.AuthorityEntityRowMapper;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -12,6 +17,7 @@ import java.util.UUID;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+@ParametersAreNonnullByDefault
 public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
   private static final Config CFG = Config.getInstance();
@@ -37,6 +43,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     );
   }
 
+  @Nonnull
   @Override
   public List<AuthorityEntity> findAll() {
     String sql = "SELECT * from \"authority\"";
@@ -44,6 +51,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     return jdbcTemplate.query(sql, AuthorityEntityRowMapper.instance);
   }
 
+  @Nonnull
   @Override
   public List<AuthorityEntity> findAllByUserId(UUID userId) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));

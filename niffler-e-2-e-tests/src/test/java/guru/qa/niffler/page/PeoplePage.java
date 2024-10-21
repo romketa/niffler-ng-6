@@ -2,10 +2,13 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Condition.exist;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
+@ParametersAreNonnullByDefault
 public class PeoplePage {
 
   private static final String PEOPLE_TAB_LOC = "a[href='/people/friends']";
@@ -14,6 +17,7 @@ public class PeoplePage {
   private static final String SEARCH_LOC = "input[aria-label='search']";
 
 
+  @Nonnull
   public PeoplePage checkInvitationSentToUser(String username) {
     SelenideElement friendRow = $(PEOPLE_TABLE_LOC).$$("tr").find(text(username));
     friendRow.shouldHave(text("Waiting..."));

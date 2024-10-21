@@ -8,6 +8,9 @@ import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthorityEntityRowMapper;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,11 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.jdbc.Connections.holder;
+
+@ParametersAreNonnullByDefault
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
   private static final Config CFG = Config.getInstance();
   private final String url = CFG.authJdbcUrl();
 
+  @SuppressWarnings("resource")
   @Override
   public void create(AuthorityEntity... authority) {
     String sql = "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)";
@@ -35,6 +42,8 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public List<AuthorityEntity> findAll() {
     String sql = "SELECT * FROM \"authority\"";
@@ -58,6 +67,8 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public List<AuthorityEntity> findAllByUserId(UUID userId) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(

@@ -10,10 +10,15 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.extractor.AuthUserEntityExtractor;
 import guru.qa.niffler.data.jdbc.DataSources;
 import guru.qa.niffler.data.repository.AuthUserRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+@ParametersAreNonnullByDefault
 public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
   private static final Config CFG = Config.getInstance();
@@ -21,6 +26,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
   private final AuthUserDao authUserDao = new AuthUserDaoSpringJdbc();
   private final AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoSpringJdbc();
 
+  @Nonnull
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
     authUserDao.create(user);
@@ -28,6 +34,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     return user;
   }
 
+  @Nonnull
   @Override
   public AuthUserEntity update(AuthUserEntity user) {
     throw new UnsupportedOperationException();
@@ -53,6 +60,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         id));
   }
 
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findByUsername(String username) {
     return Optional.empty();
