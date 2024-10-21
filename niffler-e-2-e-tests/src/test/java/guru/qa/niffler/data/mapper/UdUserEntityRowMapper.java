@@ -5,6 +5,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import javax.annotation.Nonnull;
 import org.springframework.jdbc.core.RowMapper;
 
+import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;

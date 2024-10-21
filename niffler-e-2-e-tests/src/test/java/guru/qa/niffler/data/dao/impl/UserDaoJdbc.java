@@ -3,7 +3,7 @@ package guru.qa.niffler.data.dao.impl;
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.UserDao;
+import guru.qa.niffler.data.dao.UserdataUserDao;
 import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserDaoJdbc implements UserDao {
+public class UserDaoJdbc implements UserdataUserDao {
 
   private static final Config CFG = Config.getInstance();
 
   @Override
-  public UserEntity createUser(UserEntity user) {
+  public UserEntity create(UserEntity user) {
     String sql =
         "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name)"
             + " VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -87,17 +87,6 @@ public class UserDaoJdbc implements UserDao {
     }
   }
 
-  @Override
-  public void remove(UserEntity user) {
-    String sql = "DELETE FROM \"user\" WHERE id = ?";
-    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(sql)) {
-
-      ps.setObject(1, user.getId());
-      ps.executeUpdate();
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   @Override
   public UserEntity update(UserEntity user) {

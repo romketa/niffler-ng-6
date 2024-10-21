@@ -1,8 +1,7 @@
 package guru.qa.niffler.data.repository.impl;
 
-import guru.qa.niffler.data.dao.UserDao;
-import guru.qa.niffler.data.dao.impl.UserDaoJdbc;
-import guru.qa.niffler.data.dao.impl.UserDaoSpringJdbc;
+import guru.qa.niffler.data.dao.UserdataUserDao;
+import guru.qa.niffler.data.dao.impl.UserdataUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
@@ -14,12 +13,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository {
 
-  private final UserDao userDao = new UserDaoSpringJdbc();
+  private final UserdataUserDao userDao = new UserdataUserDaoSpringJdbc();
 
   @Override
   @Nonnull
   public UserEntity create(UserEntity user) {
-    return userDao.createUser(user);
+    return userDao.create(user);
   }
 
   @Override
@@ -34,8 +33,8 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
     return userDao.findById(id);
   }
 
-  @Override
   @Nonnull
+  @Override
   public Optional<UserEntity> findByUsername(String username) {
     return userDao.findByUsername(username);
   }

@@ -5,13 +5,13 @@ import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.dao.AuthUserDao;
-import guru.qa.niffler.data.dao.UserDao;
+import guru.qa.niffler.data.dao.UserdataUserDao;
 import guru.qa.niffler.data.dao.impl.AuthAuthorityDaoJdbc;
 import guru.qa.niffler.data.dao.impl.AuthAuthorityDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.AuthUserDaoJdbc;
 import guru.qa.niffler.data.dao.impl.AuthUserDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.UserDaoJdbc;
-import guru.qa.niffler.data.dao.impl.UserDaoSpringJdbc;
+import guru.qa.niffler.data.dao.impl.UserdataUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
@@ -40,13 +40,13 @@ public class OldUserDbClient {
   //  Spring JDBC DAOs
   private final AuthUserDao authUserDaoSpringJdbc = new AuthUserDaoSpringJdbc();
   private final AuthAuthorityDao authAuthorityDaoSpringJdbc = new AuthAuthorityDaoSpringJdbc();
-  private final UserDao userDaoSpringJdbc = new UserDaoSpringJdbc();
+  private final UserdataUserDao userDaoSpringJdbc = new UserdataUserDaoSpringJdbc();
   private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
 
   //  JDBC DAOs
   private final AuthUserDao authUserDaoJdbc = new AuthUserDaoJdbc();
   private final AuthAuthorityDao authAuthorityDaoJdbc = new AuthAuthorityDaoJdbc();
-  private final UserDao userDaoJdbc = new UserDaoJdbc();
+  private final UserdataUserDao userDaoJdbc = new UserDaoJdbc();
   private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryJdbc();
 
   private final JdbcTransactionTemplate jdbcTxTemplate = new JdbcTransactionTemplate(
@@ -90,7 +90,7 @@ public class OldUserDbClient {
       authAuthorityDaoSpringJdbc.create(authorityEntities);
 
       UserEntity createdUser = UserEntity.fromJson(user);
-      return UserJson.fromEntity(userDaoSpringJdbc.createUser(createdUser), null);
+      return UserJson.fromEntity(userDaoSpringJdbc.create(createdUser), null);
     });
   }
 
@@ -120,7 +120,7 @@ public class OldUserDbClient {
       authAuthorityDaoSpringJdbc.create(authorityEntities);
 
       return UserJson.fromEntity(
-          userDaoSpringJdbc.createUser(
+          userDaoSpringJdbc.create(
               userEntity(username)
           ), null);
     });
@@ -151,7 +151,7 @@ public class OldUserDbClient {
     authAuthorityDaoSpringJdbc.create(authorityEntities);
 
     return UserJson.fromEntity(
-        userDaoSpringJdbc.createUser(
+        userDaoSpringJdbc.create(
             UserEntity.fromJson(user)
         ), null
     );
@@ -182,7 +182,7 @@ public class OldUserDbClient {
       authAuthorityDaoJdbc.create(authorityEntities);
 
       return UserJson.fromEntity(
-          userDaoJdbc.createUser(
+          userDaoJdbc.create(
               UserEntity.fromJson(user)
           ), null
       );
@@ -214,7 +214,7 @@ public class OldUserDbClient {
     authAuthorityDaoJdbc.create(authorityEntities);
 
     return UserJson.fromEntity(
-        userDaoJdbc.createUser(
+        userDaoJdbc.create(
             UserEntity.fromJson(user)
         ), null
     );

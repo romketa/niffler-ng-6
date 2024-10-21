@@ -12,6 +12,9 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import guru.qa.niffler.data.repository.SpendRepository;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,8 +32,8 @@ public class SpendRepositoryJdbc implements SpendRepository {
   private final SpendDao spendDao = new SpendDaoJdbc();
   private final CategoryDao categoryDao = new CategoryDaoJdbc();
 
-  @Override
   @Nonnull
+  @Override
   public SpendEntity create(SpendEntity spend) {
     final UUID categoryId = spend.getCategory().getId();
     if (categoryId == null && categoryDao.findById(categoryId).isEmpty()) {
@@ -48,7 +51,6 @@ public class SpendRepositoryJdbc implements SpendRepository {
     categoryDao.update(spend.getCategory());
     return spend;
   }
-
   @Override
   @Nonnull
   public CategoryEntity createCategory(CategoryEntity category) {
@@ -68,8 +70,9 @@ public class SpendRepositoryJdbc implements SpendRepository {
     return categoryDao.findById(id);
   }
 
-  @Override
+  @SuppressWarnings("resource")
   @Nonnull
+  @Override
   public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(
         "SELECT * FROM category WHERE username = ? and name = ?"
@@ -91,14 +94,15 @@ public class SpendRepositoryJdbc implements SpendRepository {
     }
   }
 
-  @Override
   @Nonnull
+  @Override
   public Optional<SpendEntity> findById(UUID id) {
     return spendDao.findById(id);
   }
 
-  @Override
+  @SuppressWarnings("resource")
   @Nonnull
+  @Override
   public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(
         "SELECT * FROM spend WHERE username = ? and description = ?"
@@ -120,6 +124,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
     }
   }
 
+  @SuppressWarnings("resource")
   @Override
   @Nonnull
   public void remove(SpendEntity spend) {
@@ -133,6 +138,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
     }
   }
 
+  @SuppressWarnings("resource")
   @Override
   public void removeCategory(CategoryEntity category) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(

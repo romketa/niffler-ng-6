@@ -22,8 +22,7 @@ public class RegistrationTest {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .createNewAccount()
         .fillRegisterPage(RandomDataUtils.randomUsername(), "12345", "12345")
-        .submitRegistration()
-        .signInAfterRegistration()
+        .successSubmit()
         .login(RandomDataUtils.randomUsername(), "12345")
         .verifyThatLoginWasSuccessful();
   }
@@ -34,9 +33,9 @@ public class RegistrationTest {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .createNewAccount()
         .fillRegisterPage(RandomDataUtils.randomUsername(), "12345", "12345")
-        .submitRegistration();
+        .submit();
     String errorMessage = String.format("Username `%s` already exists", "12345");
-    new RegisterPage().verifyErrorMessage(errorMessage);
+    new RegisterPage().checkAlertMessage(errorMessage);
   }
 
   @Test
@@ -45,10 +44,10 @@ public class RegistrationTest {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .createNewAccount()
         .fillRegisterPage(RandomDataUtils.randomUsername(), "12345", "2345")
-        .submitRegistration();
+        .successSubmit();
 
     String errorMessage = "Passwords should be equal";
-    new RegisterPage().verifyErrorMessage(errorMessage);
+    new RegisterPage().checkAlertMessage(errorMessage);
   }
 
   @Test

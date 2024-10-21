@@ -11,17 +11,12 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 
 import guru.qa.niffler.data.repository.AuthUserRepository;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 @ParametersAreNonnullByDefault
 public class AuthUserRepositoryJdbc implements AuthUserRepository {
@@ -56,8 +51,8 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     return userEntity;
   }
 
-  @Override
   @Nonnull
+  @Override
   public Optional<AuthUserEntity> findByUsername(String username) {
     Optional<AuthUserEntity> userEntity = authUserDao.findByUsername(username);
     userEntity.ifPresent(authUserEntity ->

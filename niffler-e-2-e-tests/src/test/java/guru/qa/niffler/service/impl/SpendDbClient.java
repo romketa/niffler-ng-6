@@ -12,9 +12,11 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
-import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static java.util.Objects.requireNonNull;
 
 @ParametersAreNonnullByDefault
 public class SpendDbClient implements SpendClient {
@@ -29,38 +31,52 @@ public class SpendDbClient implements SpendClient {
       CFG.spendJdbcUrl()
   );
 
-  @Override
   @Nonnull
+  @Override
   public SpendJson createSpend(SpendJson spend) {
-    return Objects.requireNonNull(xaTransactionTemplate.execute(() -> SpendJson.fromEntity(
-            spendRepository.create(SpendEntity.fromJson(spend))
+    return requireNonNull(
+        xaTransactionTemplate.execute(
+            () -> SpendJson.fromEntity(
+                spendRepository.create(
+                    SpendEntity.fromJson(spend)
+                )
+            )
         )
-    ));
+    );
   }
 
-  @Override
   @Nonnull
+  @Override
   public CategoryJson createCategory(CategoryJson category) {
-    return Objects.requireNonNull(xaTransactionTemplate.execute(() -> CategoryJson.fromEntity(
-            spendRepository.createCategory(CategoryEntity.fromJson(category))
+    return requireNonNull(
+        xaTransactionTemplate.execute(
+            () -> CategoryJson.fromEntity(
+                spendRepository.createCategory(
+                    CategoryEntity.fromJson(category)
+                )
+            )
         )
-    ));
+    );
   }
 
   @Override
   public void removeCategory(CategoryJson category) {
-    xaTransactionTemplate.execute(() -> {
-      spendRepository.removeCategory(CategoryEntity.fromJson(category));
-      return null;
-    });
+    xaTransactionTemplate.execute(
+        () -> {
+          spendRepository.removeCategory(
+              CategoryEntity.fromJson(category)
+          );
+          return null;
+        }
+    );
   }
 
   @Override
   @Nonnull
   public CategoryJson findOrCreateCategoryByUsernameAndName(String username, String name) {
-    return jdbcTxTemplate.execute(
+    return requireNonNull(jdbcTxTemplate.execute(
         () -> categoryDao.findCategoryByUsernameAndCategoryName(username, name)
             .map(CategoryJson::fromEntity)
-            .orElse(new CategoryJson(null, name, username, false)));
+            .orElse(new CategoryJson(null, name, username, false))));
   }
 }

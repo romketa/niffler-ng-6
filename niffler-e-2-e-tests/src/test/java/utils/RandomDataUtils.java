@@ -3,6 +3,8 @@ package utils;
 import com.github.javafaker.Faker;
 import javax.annotation.Nonnull;
 
+import javax.annotation.Nonnull;
+
 public class RandomDataUtils {
 
   private static final Faker fakeData = new Faker();

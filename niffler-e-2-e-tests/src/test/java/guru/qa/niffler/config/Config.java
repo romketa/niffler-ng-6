@@ -14,12 +14,6 @@ public interface Config {
   String frontUrl();
 
   @Nonnull
-  String spendUrl();
-
-  @Nonnull
-  String ghUrl();
-
-  @Nonnull
   String registerUrl();
 
   @Nonnull
@@ -44,8 +38,14 @@ public interface Config {
   String userdataJdbcUrl();
 
   @Nonnull
+  String spendUrl();
+
+  @Nonnull
   String spendJdbcUrl();
 
   @Nonnull
   String currencyJdbcUrl();
+
+  @Nonnull
+  String ghUrl();
 }

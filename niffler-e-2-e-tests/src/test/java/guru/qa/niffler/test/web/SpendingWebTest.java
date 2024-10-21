@@ -52,7 +52,7 @@ public class SpendingWebTest {
         .addDescription("Description")
         .save();
 
-    new ProfilePage().verifyThatCategoryDisplayed("Category name");
+    new MainPage().checkThatTableContainsSpending("Category name");
   }
 }
 

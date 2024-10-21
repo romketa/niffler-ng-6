@@ -1,5 +1,6 @@
 package guru.qa.niffler.test.web;
 
+import guru.qa.niffler.jupiter.extension.UsersClientExtension;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -8,10 +9,12 @@ import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.service.OldUserDbClient;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 
+@ExtendWith(UsersClientExtension.class)
 public class JdbcTest {
 
   OldUserDbClient oldUserDbClient = new OldUserDbClient();
@@ -197,7 +200,7 @@ public class JdbcTest {
   static OldUserDbClient oldUsersDbClient = new OldUserDbClient();
 
   @ValueSource(strings = {
-      "valentin-10"
+      "valentin-11"
   })
   @ParameterizedTest
   void springJdbcTest(String uname) {

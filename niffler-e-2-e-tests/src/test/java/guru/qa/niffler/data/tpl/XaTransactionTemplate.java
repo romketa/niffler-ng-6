@@ -3,10 +3,12 @@ package guru.qa.niffler.data.tpl;
 import com.atomikos.icatch.jta.UserTransactionImp;
 import guru.qa.niffler.data.jdbc.Connections;
 import guru.qa.niffler.data.jdbc.JdbcConnectionHolders;
-import jakarta.annotation.Nonnull;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -21,7 +23,6 @@ public class XaTransactionTemplate {
   public XaTransactionTemplate(String... jdbcUrl) {
     this.holders = Connections.holders(jdbcUrl);
   }
-
 
   @Nonnull
   public XaTransactionTemplate holdConnectionAfterAction() {

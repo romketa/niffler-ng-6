@@ -1,5 +1,6 @@
 package guru.qa.niffler.api;
 
+import guru.qa.niffler.api.core.RestClient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import guru.qa.niffler.config.Config;
@@ -13,18 +14,26 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ParametersAreNonnullByDefault
-public class SpendApiClient {
+public class SpendApiClient extends RestClient {
 
-  private final Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl(Config.getInstance().spendUrl())
-      .addConverterFactory(JacksonConverterFactory.create())
-      .build();
+  private final SpendApi spendApi;
 
-  private final SpendApi spendApi = retrofit.create(SpendApi.class);
+  public SpendApiClient() {
+    super(CFG.spendUrl());
+    this.spendApi = retrofit.create(SpendApi.class);
+  }
 
   @Nullable
   public SpendJson createSpend(SpendJson spend) {
@@ -94,18 +103,6 @@ public class SpendApiClient {
     assertEquals(200, response.code());
   }
 
-  @Nonnull
-  public CategoryJson allCategories(String username, boolean excludeArchived) {
-    final Response<CategoryJson> response;
-    try {
-      response = spendApi.allCategories(username, excludeArchived)
-          .execute();
-    } catch (IOException e) {
-      throw new AssertionError(e);
-    }
-    assertEquals(200, response.code());
-    return response.body();
-  }
 
   @Nullable
   public CategoryJson createCategory(CategoryJson category) {
@@ -131,5 +128,20 @@ public class SpendApiClient {
     }
     assertEquals(200, response.code());
     return response.body();
+  }
+
+  @Nonnull
+  public List<CategoryJson> allCategory(String username) {
+    final Response<List<CategoryJson>> response;
+    try {
+      response = spendApi.allCategories(username)
+          .execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertEquals(200, response.code());
+    return response.body() != null
+        ? response.body()
+        : Collections.emptyList();
   }
 }

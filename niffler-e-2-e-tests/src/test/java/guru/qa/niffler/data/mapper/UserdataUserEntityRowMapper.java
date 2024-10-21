@@ -9,11 +9,11 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import org.springframework.jdbc.core.RowMapper;
 
-public class UserEntityRowMapper implements RowMapper<UserEntity> {
+public class UserdataUserEntityRowMapper implements RowMapper<UserEntity> {
 
-  public static final UserEntityRowMapper instance = new UserEntityRowMapper();
+  public static final UserdataUserEntityRowMapper instance = new UserdataUserEntityRowMapper();
 
-  private UserEntityRowMapper() {
+  private UserdataUserEntityRowMapper() {
   }
 
   @Override

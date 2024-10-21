@@ -1,17 +1,16 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.impl.UserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 
-import java.util.Optional;
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
+import java.util.UUID;
 
 import static guru.qa.niffler.data.jpa.EntityManagers.em;
 
@@ -28,6 +27,13 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     entityManager.joinTransaction();
     entityManager.persist(user);
     return user;
+  }
+
+  @Nonnull
+  @Override
+  public UserEntity update(UserEntity user) {
+    entityManager.joinTransaction();
+    return entityManager.merge(user);
   }
 
   @Override
@@ -50,13 +56,6 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     } catch (NoResultException e) {
       return Optional.empty();
     }
-  }
-
-  @Override
-  @Nonnull
-  public UserEntity update(UserEntity user) {
-    entityManager.joinTransaction();
-    return entityManager.merge(user);
   }
 
   @Override

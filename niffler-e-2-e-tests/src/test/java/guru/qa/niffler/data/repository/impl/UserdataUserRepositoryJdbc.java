@@ -1,17 +1,20 @@
 package guru.qa.niffler.data.repository.impl;
 
-import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.ACCEPTED;
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.PENDING;
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.UserDao;
+import guru.qa.niffler.data.dao.UserdataUserDao;
 import guru.qa.niffler.data.dao.impl.UserDaoJdbc;
+import guru.qa.niffler.data.dao.impl.UserdataUserDaoJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -20,13 +23,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
-  private final UserDao userDao = new UserDaoJdbc();
+  private final UserdataUserDao userDao = new UserDaoJdbc();
   private final Config CFG = Config.getInstance();
 
   @Override
   @Nonnull
   public UserEntity create(UserEntity user) {
-    return userDao.createUser(user);
+    return userDao.create(user);
   }
 
   @Override

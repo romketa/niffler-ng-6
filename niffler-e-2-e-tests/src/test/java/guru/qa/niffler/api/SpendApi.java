@@ -34,8 +34,7 @@ public interface SpendApi {
   Call<Void> removeSpends(@Query("username") String username, @Query("ids") List<String> ids);
 
   @GET("internal/categories/all")
-  Call<CategoryJson> allCategories(@Query("username") String username,
-      @Query("excludeArchived") boolean excludeArchived);
+  Call<List<CategoryJson>> allCategories(@Query("username") String username);
 
   @POST("internal/categories/add")
   Call<CategoryJson> addCategory(@Body CategoryJson category);

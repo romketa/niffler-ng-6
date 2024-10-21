@@ -1,6 +1,9 @@
 package guru.qa.niffler.data.repository;
 
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;

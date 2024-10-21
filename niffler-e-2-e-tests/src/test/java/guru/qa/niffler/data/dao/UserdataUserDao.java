@@ -8,10 +8,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public interface UserDao {
+public interface UserdataUserDao {
 
   @Nonnull
-  UserEntity createUser(UserEntity user);
+  UserEntity create(UserEntity user);
+
+  @Nonnull
+  UserEntity update(UserEntity user);
 
   @Nonnull
   Optional<UserEntity> findById(UUID id);
@@ -19,11 +22,6 @@ public interface UserDao {
   @Nonnull
   Optional<UserEntity> findByUsername(String username);
 
-  void remove(UserEntity user);
-
   @Nonnull
   List<UserEntity> findAll();
-
-  @Nonnull
-  UserEntity update(UserEntity user);
 }

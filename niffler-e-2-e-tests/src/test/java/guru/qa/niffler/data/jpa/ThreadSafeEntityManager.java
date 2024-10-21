@@ -15,6 +15,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.metamodel.Metamodel;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;

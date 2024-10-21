@@ -8,13 +8,18 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static guru.qa.niffler.data.jpa.EntityManagers.em;
+
 @ParametersAreNonnullByDefault
-public class SendRepositoryHibernate implements SpendRepository {
+public class SpendRepositoryHibernate implements SpendRepository {
 
   private static final Config CFG = Config.getInstance();
 
@@ -83,7 +88,6 @@ public class SendRepositoryHibernate implements SpendRepository {
         entityManager.find(SpendEntity.class, id)
     );
   }
-
   @Override
   @Nonnull
   public Optional<SpendEntity> findByUsernameAndSpendDescription(String username,
@@ -105,12 +109,12 @@ public class SendRepositoryHibernate implements SpendRepository {
   @Override
   public void remove(SpendEntity spend) {
     entityManager.joinTransaction();
-    entityManager.remove(spend);
+    entityManager.remove(entityManager.contains(spend) ? spend : entityManager.merge(spend));
   }
 
   @Override
   public void removeCategory(CategoryEntity category) {
     entityManager.joinTransaction();
-    entityManager.remove(category);
+    entityManager.remove(entityManager.contains(category) ? category : entityManager.merge(category));
   }
 }

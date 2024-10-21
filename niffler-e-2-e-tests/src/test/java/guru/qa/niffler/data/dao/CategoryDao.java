@@ -3,6 +3,8 @@ package guru.qa.niffler.data.dao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,6 +21,9 @@ public interface CategoryDao {
   Optional<CategoryEntity> findById(UUID id);
 
   @Nonnull
+  List<CategoryEntity> findAll();
+
+  @Nonnull
   CategoryEntity update(CategoryEntity category);
 
   @Nonnull
@@ -31,7 +36,4 @@ public interface CategoryDao {
   List<CategoryEntity> findAllByUsername(String username);
 
   void deleteCategory(CategoryEntity category);
-
-  @Nonnull
-  List<CategoryEntity> findAll();
 }

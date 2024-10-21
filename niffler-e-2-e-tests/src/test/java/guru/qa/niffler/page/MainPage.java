@@ -1,6 +1,12 @@
 package guru.qa.niffler.page;
 
 import static com.codeborne.selenide.Condition.enabled;
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -13,6 +19,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class MainPage {
 
+  private final SelenideElement header = $("#root header");
+  private final SelenideElement headerMenu = $("ul[role='menu']");
   private final String TABLE_ROWS = "#spendings tbody";
   private static final String STATISTICS_BLOCK_LOC = "//div[h2[contains(text(), 'Statistics')]]";
   private static final String HISTORY_OF_SPENDING_LOC = "//div[h2[contains(text(), 'History of Spendings')]]";
@@ -21,6 +29,19 @@ public class MainPage {
   private static final String STAT_COMP_LOC = "#stat";
   private static final String SPENDING_TABLE_LOC = "#spendings";
 
+  @Nonnull
+  public FriendsPage friendsPage() {
+    header.$("button").click();
+    headerMenu.$$("li").find(text("Friends")).click();
+    return new FriendsPage();
+  }
+
+  @Nonnull
+  public PeoplePage allPeoplesPage() {
+    header.$("button").click();
+    headerMenu.$$("li").find(text("All People")).click();
+    return new PeoplePage();
+    }
   public void searchForSpending(String spendingDescription) {
     $(SEARCH_INPUT_LOC).setValue(spendingDescription).pressEnter();
   }

@@ -2,7 +2,10 @@ package guru.qa.niffler.data.tpl;
 
 import guru.qa.niffler.data.jdbc.Connections;
 import guru.qa.niffler.data.jdbc.JdbcConnectionHolder;
-import jakarta.annotation.Nonnull;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,7 +30,7 @@ public class JdbcTransactionTemplate {
     return this;
   }
 
-  @Nonnull
+  @Nullable
   public <T> T execute(Supplier<T> action, int isolationLvl) {
     Connection connection = null;
     try {
@@ -55,7 +58,7 @@ public class JdbcTransactionTemplate {
     }
   }
 
-  @Nonnull
+  @Nullable
   public <T> T execute(Supplier<T> action) {
     return execute(action, TRANSACTION_READ_COMMITTED);
   }
