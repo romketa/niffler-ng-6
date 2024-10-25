@@ -1,31 +1,41 @@
 package guru.qa.niffler.page;
 
-import static com.codeborne.selenide.Condition.enabled;
+import guru.qa.niffler.page.component.Header;
+import guru.qa.niffler.page.component.SpendingTable;
+import guru.qa.niffler.page.component.StatComponent;
+import io.qameta.allure.Step;
+
+import javax.annotation.Nonnull;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
 
-public class MainPage {
+public class MainPage extends BasePage<MainPage> {
 
-  private final String TABLE_ROWS = "#spendings tbody";
-  private static final String STATISTICS_BLOCK_LOC = "//div[h2[contains(text(), 'Statistics')]]";
-  private static final String HISTORY_OF_SPENDING_LOC = "//div[h2[contains(text(), 'History of Spendings')]]";
-  private static final String NEW_SPENDING_BTN_LOC = "//a[contains(text(), 'New spending')]";
+  public static final String URL = CFG.frontUrl() + "main";
 
-  public EditSpendingPage editSpending(String spendingDescription) {
-    $(TABLE_ROWS).$$("tr").find(text(spendingDescription)).$$("td").get(5).click();
-    return new EditSpendingPage();
+  protected final Header header = new Header();
+  protected final SpendingTable spendingTable = new SpendingTable();
+  protected final StatComponent statComponent = new StatComponent();
+
+  @Nonnull
+  public Header getHeader() {
+    return header;
   }
 
-  public void checkThatTableContainsSpending(String spendingDescription) {
-    $(TABLE_ROWS).$$("tr").find(text(spendingDescription)).should(visible);
+  @Nonnull
+  public SpendingTable getSpendingTable() {
+    spendingTable.getSelf().scrollIntoView(true);
+    return spendingTable;
   }
 
-  public MainPage verifyThatLoginWasSuccessful() {
-    $x(STATISTICS_BLOCK_LOC).shouldBe(visible);
-    $x(HISTORY_OF_SPENDING_LOC).shouldBe(visible);
-    $x(NEW_SPENDING_BTN_LOC).shouldBe(visible, enabled);
+  @Step("Check that page is loaded")
+  @Override
+  @Nonnull
+  public MainPage checkThatPageLoaded() {
+    header.getSelf().should(visible).shouldHave(text("Niffler"));
+    statComponent.getSelf().should(visible).shouldHave(text("Statistics"));
+    spendingTable.getSelf().should(visible).shouldHave(text("History of Spendings"));
     return this;
   }
 }

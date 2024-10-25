@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+@Deprecated
 public class UsersQueueExtension implements
     BeforeTestExecutionCallback,
     AfterTestExecutionCallback,

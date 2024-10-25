@@ -1,33 +1,72 @@
 package guru.qa.niffler.page;
 
-import static com.codeborne.selenide.Condition.exactText;
+import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
+
+import javax.annotation.Nonnull;
+
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class LoginPage {
+public class LoginPage extends BasePage<LoginPage> {
 
-  private static final String USERNAME_INPUT_LOC = "input[name='username']";
-  private static final String PASSWORD_INPUT_LOC = "input[name='password']";
-  private static final String SUBMIT_BTN_LOC = "button[type='submit']";
+  public static final String URL = CFG.authUrl() + "login";
 
-  private static final String CREATE_NEW_ACC = ".form__register";
-  private static final String TITLE_EL = "h1";
-  private static final String ERROR_MESSAGE = ".form__error";
+  private final SelenideElement usernameInput = $("input[name='username']");
+  private final SelenideElement passwordInput = $("input[name='password']");
+  private final SelenideElement submitButton = $("button[type='submit']");
+  private final SelenideElement registerButton = $("a[href='/register']");
+  private final SelenideElement errorContainer = $(".form__error");
 
-  public MainPage login(String username, String password) {
-    $(USERNAME_INPUT_LOC).setValue(username);
-    $(PASSWORD_INPUT_LOC).setValue(password);
-    $(SUBMIT_BTN_LOC).click();
-    return new MainPage();
-  }
-
-  public RegisterPage createNewAccount() {
-    $(CREATE_NEW_ACC).shouldBe(visible).click();
+  @Nonnull
+  public RegisterPage doRegister() {
+    registerButton.click();
     return new RegisterPage();
   }
 
-  public void verifyThatUserStayedOnLoginPageAfterUnsuccessfulLogin() {
-    $(TITLE_EL).shouldHave(exactText("Log in"));
-    $(ERROR_MESSAGE).shouldBe(visible);
+  @Step("Fill login page with credentials: username: {0}, password: {1}")
+  @Nonnull
+  public LoginPage fillLoginPage(String login, String password) {
+    setUsername(login);
+    setPassword(password);
+    return this;
+  }
+
+  @Step("Set username: {0}")
+  @Nonnull
+  public LoginPage setUsername(String username) {
+    usernameInput.setValue(username);
+    return this;
+  }
+
+  @Step("Set password: {0}")
+  @Nonnull
+  public LoginPage setPassword(String password) {
+    passwordInput.setValue(password);
+    return this;
+  }
+
+  @Step("Submit login")
+  @Nonnull
+  public <T extends BasePage<?>> T submit(T expectedPage) {
+    submitButton.click();
+    return expectedPage;
+  }
+
+  @Step("Check error on page: {error}")
+  @Nonnull
+  public LoginPage checkError(String error) {
+    errorContainer.shouldHave(text(error));
+    return this;
+  }
+
+  @Step("Check that page is loaded")
+  @Override
+  @Nonnull
+  public LoginPage checkThatPageLoaded() {
+    usernameInput.should(visible);
+    passwordInput.should(visible);
+    return this;
   }
 }

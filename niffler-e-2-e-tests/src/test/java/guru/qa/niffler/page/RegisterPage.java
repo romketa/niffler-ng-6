@@ -1,36 +1,83 @@
 package guru.qa.niffler.page;
 
-import static com.codeborne.selenide.Condition.exactText;
+import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
+
+import javax.annotation.Nonnull;
+
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class RegisterPage {
+public class RegisterPage extends BasePage<RegisterPage> {
 
-  private static final String USERNAME_INPUT_LOC = "#username";
-  private static final String PASSWORD_INPUT_LOC = "#password";
-  private static final String PASSWORD_SUBMIT_LOC = "#passwordSubmit";
-  private static final String SIGN_UP_BTN_LOC = "button[type='submit']";
-  private static final String ERROR_MESSAGE_LOC = ".form__error";
-  private static final String SING_IN_LOC = ".form_sign-in";
+  public static final String URL = CFG.authUrl() + "register";
 
+  private final SelenideElement usernameInput = $("input[name='username']");
+  private final SelenideElement passwordInput = $("input[name='password']");
+  private final SelenideElement passwordSubmitInput = $("input[name='passwordSubmit']");
+  private final SelenideElement submitButton = $("button[type='submit']");
+  private final SelenideElement proceedLoginButton = $(".form_sign-in");
+  private final SelenideElement errorContainer = $(".form__error");
 
-  public RegisterPage fillRegisterPage(String username, String password, String passwordSubmit) {
-    $(USERNAME_INPUT_LOC).setValue(username);
-    $(PASSWORD_INPUT_LOC).setValue(password);
-    $(PASSWORD_SUBMIT_LOC).setValue(passwordSubmit);
+  @Step("Fill register page with credentials: username: {0}, password: {1}, submit password: {2}")
+  @Nonnull
+  public RegisterPage fillRegisterPage(String login, String password, String passwordSubmit) {
+    setUsername(login);
+    setPassword(password);
+    setPasswordSubmit(passwordSubmit);
     return this;
   }
 
-  public RegisterPage submitRegistration() {
-    $(SIGN_UP_BTN_LOC).click();
+  @Step("Set username: {0}")
+  @Nonnull
+  public RegisterPage setUsername(String username) {
+    usernameInput.setValue(username);
     return this;
   }
 
-  public LoginPage signInAfterRegistration() {
-    $(SING_IN_LOC).click();
+  @Step("Set password: {0}")
+  @Nonnull
+  public RegisterPage setPassword(String password) {
+    passwordInput.setValue(password);
+    return this;
+  }
+
+  @Step("Confirm password: {0}")
+  @Nonnull
+  public RegisterPage setPasswordSubmit(String password) {
+    passwordSubmitInput.setValue(password);
+    return this;
+  }
+
+  @Step("Submit register")
+  @Nonnull
+  public LoginPage successSubmit() {
+    submitButton.click();
+    proceedLoginButton.click();
     return new LoginPage();
   }
 
-  public void verifyErrorMessage(String errorMessage) {
-    $(ERROR_MESSAGE_LOC).shouldHave(exactText(errorMessage));
+  @Step("Submit register")
+  @Nonnull
+  public RegisterPage errorSubmit() {
+    submitButton.click();
+    return this;
+  }
+
+  @Step("Check that page is loaded")
+  @Override
+  @Nonnull
+  public RegisterPage checkThatPageLoaded() {
+    usernameInput.should(visible);
+    passwordInput.should(visible);
+    passwordSubmitInput.should(visible);
+    return this;
+  }
+
+  @Nonnull
+  public RegisterPage checkAlertMessage(String errorMessage) {
+    errorContainer.shouldHave(text(errorMessage));
+    return this;
   }
 }
