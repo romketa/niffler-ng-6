@@ -56,6 +56,7 @@ public class JdbcTest {
         CurrencyValues.RUB,
         null,
         null,
+        null,
         null
     ));
     System.out.println("Created user - " + user);
@@ -71,6 +72,7 @@ public class JdbcTest {
             null,
             null,
             CurrencyValues.RUB,
+            null,
             null,
             null,
             null
@@ -100,6 +102,7 @@ public class JdbcTest {
             CurrencyValues.RUB,
             null,
             null,
+            null,
             null
         )
     );
@@ -116,6 +119,7 @@ public class JdbcTest {
             null,
             null,
             CurrencyValues.RUB,
+            null,
             null,
             null,
             null
@@ -136,6 +140,7 @@ public class JdbcTest {
             CurrencyValues.RUB,
             null,
             null,
+            null,
             null
         )
     );
@@ -148,6 +153,7 @@ public class JdbcTest {
             null,
             null,
             CurrencyValues.RUB,
+            null,
             null,
             null,
             null
@@ -164,6 +170,7 @@ public class JdbcTest {
             CurrencyValues.RUB,
             null,
             null,
+            null,
             null
         )
     );
@@ -176,6 +183,7 @@ public class JdbcTest {
             null,
             null,
             CurrencyValues.RUB,
+            null,
             null,
             null,
             null

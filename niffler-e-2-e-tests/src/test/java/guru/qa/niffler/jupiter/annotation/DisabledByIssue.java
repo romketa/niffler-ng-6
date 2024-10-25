@@ -12,11 +12,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DisabledByIssue {
-  String category() default "";
-
-  String description();
-
-  double amount();
-
-  CurrencyValues currency() default CurrencyValues.RUB;
+  String value();
 }

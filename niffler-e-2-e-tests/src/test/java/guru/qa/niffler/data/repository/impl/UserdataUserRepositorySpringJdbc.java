@@ -1,8 +1,6 @@
 package guru.qa.niffler.data.repository.impl;
 
-import guru.qa.niffler.data.dao.UdUserDao;
 import guru.qa.niffler.data.dao.UserDao;
-import guru.qa.niffler.data.dao.impl.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.dao.impl.UserDaoJdbc;
 import guru.qa.niffler.data.dao.impl.UserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;

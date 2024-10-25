@@ -16,12 +16,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
-
 public class CategoryExtension implements
     BeforeEachCallback,
     ParameterResolver {
