@@ -2,11 +2,12 @@ package guru.qa.niffler.data.repository.impl;
 
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.ACCEPTED;
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.PENDING;
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UserDao;
 import guru.qa.niffler.data.dao.impl.UserDaoJdbc;
+import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import java.sql.PreparedStatement;
@@ -31,7 +32,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
   @Override
   public Optional<UserEntity> findByUsername(String username) {
-    return Optional.empty();
+    return userDao.findByUsername(username);
   }
 
   @Override
@@ -41,24 +42,10 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
   @Override
   public void addFriend(UserEntity requester, UserEntity addressee) {
-    String sql = "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) VALUES (?, ?, ?, ?)";
-    try (PreparedStatement requesterPs = holder(CFG.userdataJdbcUrl()).connection()
-        .prepareStatement(sql); PreparedStatement addresseePs = holder(
-        CFG.userdataJdbcUrl()).connection().prepareStatement(sql)) {
-      requesterPs.setObject(1, requester.getId());
-      requesterPs.setObject(2, addressee.getId());
-      requesterPs.setString(3, ACCEPTED.name());
-      requesterPs.setDate(4, new java.sql.Date(System.currentTimeMillis()));
-      requesterPs.executeUpdate();
-
-      addresseePs.setObject(1, addressee.getId());
-      addresseePs.setObject(2, requester.getId());
-      addresseePs.setString(3, ACCEPTED.name());
-      addresseePs.setDate(4, new java.sql.Date(System.currentTimeMillis()));
-      addresseePs.executeUpdate();
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    requester.addFriends(FriendshipStatus.ACCEPTED, addressee);
+    addressee.addFriends(FriendshipStatus.ACCEPTED, requester);
+    userDao.update(requester);
+    userDao.update(addressee);
   }
 
   @Override

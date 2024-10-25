@@ -1,11 +1,11 @@
 package guru.qa.niffler.data.dao.impl;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
-import java.sql.Connection;
+import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,6 +42,27 @@ public class CategoryDaoJdbc implements CategoryDao {
       }
       category.setId(generatedKey);
       return category;
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public Optional<CategoryEntity> findById(UUID id) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+        "SELECT * FROM category WHERE id = ?"
+    )) {
+      ps.setObject(1, id);
+      ps.execute();
+      try (ResultSet rs = ps.getResultSet()) {
+        if (rs.next()) {
+          return Optional.ofNullable(
+              CategoryEntityRowMapper.instance.mapRow(rs, rs.getRow())
+          );
+        } else {
+          return Optional.empty();
+        }
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

@@ -6,7 +6,11 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -26,22 +30,42 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
-        .filter(user -> user.spending().length > 0)
-        .ifPresent(anno -> {
-          Spending spendingAnno = anno.spending()[0];
-          SpendJson spend = new SpendJson(
-              null,
-              new Date(),
-              spendDbClient.findOrCreateCategoryByUsernameAndName(anno.username(), spendingAnno.category()),
-              CurrencyValues.RUB,
-              spendingAnno.amount(),
-              spendingAnno.description(),
-              anno.username()
-          );
-          context.getStore(NAMESPACE).put(
-              context.getUniqueId(),
-              spendDbClient.createSpend(spend)
-          );
+        .ifPresent(userAnno -> {
+          if (ArrayUtils.isNotEmpty(userAnno.spendings())) {
+            List<SpendJson> result = new ArrayList<>();
+            UserJson user = context.getStore(UserExtension.NAMESPACE)
+                .get(context.getUniqueId(), UserJson.class);
+
+            for (Spending spendAnno : userAnno.spendings()) {
+              SpendJson spend = new SpendJson(
+                  null,
+                  new Date(),
+                  new CategoryJson(
+                      null,
+                      spendAnno.category(),
+                      user != null ? user.username() : userAnno.username(),
+                      false
+                  ),
+                  CurrencyValues.RUB,
+                  spendAnno.amount(),
+                  spendAnno.description(),
+                  user != null ? user.username() : userAnno.username()
+              );
+
+              SpendJson createdSpend = spendDbClient.createSpend(spend);
+              result.add(createdSpend);
+            }
+
+
+            if (user != null) {
+              user.testData().spendings().addAll(result);
+            } else {
+              context.getStore(NAMESPACE).put(
+                  context.getUniqueId(),
+                  result
+              );
+            }
+          }
         });
   }
 

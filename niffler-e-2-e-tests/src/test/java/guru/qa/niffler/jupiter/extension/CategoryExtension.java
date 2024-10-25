@@ -1,13 +1,15 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendApiClient;
-import guru.qa.niffler.data.dao.CategoryDao;
-import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
+import static utils.RandomDataUtils.randomCategoryName;
+
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -15,7 +17,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
-import utils.RandomDataUtils;
 
 public class CategoryExtension implements AfterTestExecutionCallback, BeforeEachCallback,
     ParameterResolver {
@@ -28,24 +29,38 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
-        .filter(user -> user.categories().length > 0)
-        .ifPresent(anno -> {
-          UUID uuid = UUID.randomUUID();
-          Category categoryAnno = anno.categories()[0];
-          String title =
-              categoryAnno.title().isEmpty() ? RandomDataUtils.randomCategoryName()
-                  : categoryAnno.title();
-          CategoryJson category = new CategoryJson(
-              uuid,
-              title,
-              anno.username(),
-              categoryAnno.archived()
-          );
-          CategoryJson createdCategory = spendDbClient.createCategory(category);
-          context.getStore(NAMESPACE).put(
-              context.getUniqueId(),
-              createdCategory
-          );
+        .ifPresent(userAnno -> {
+          if (ArrayUtils.isNotEmpty(userAnno.categories())) {
+            List<CategoryJson> result = new ArrayList<>();
+
+            UserJson user = context.getStore(UserExtension.NAMESPACE)
+                .get(context.getUniqueId(), UserJson.class);
+
+            for (Category categoryAnno : userAnno.categories()) {
+              final String categoryName = "".equals(categoryAnno.name())
+                  ? randomCategoryName()
+                  : categoryAnno.name();
+
+              CategoryJson category = new CategoryJson(
+                  null,
+                  categoryName,
+                  user != null ? user.username() : userAnno.username(),
+                  categoryAnno.archived()
+              );
+
+              CategoryJson createdCategory = spendDbClient.createCategory(category);
+              result.add(createdCategory);
+            }
+
+            if (user != null) {
+              user.testData().categories().addAll(result);
+            } else {
+              context.getStore(NAMESPACE).put(
+                  context.getUniqueId(),
+                  result
+              );
+            }
+          }
         });
   }
 
@@ -55,7 +70,7 @@ public class CategoryExtension implements AfterTestExecutionCallback, BeforeEach
     CategoryJson categoryJson = context.getStore(NAMESPACE)
         .get(context.getUniqueId(), CategoryJson.class);
     if (categoryJson != null) {
-      spendDbClient.deleteCategory(categoryJson);
+      spendDbClient.removeCategory(categoryJson);
     }
   }
 

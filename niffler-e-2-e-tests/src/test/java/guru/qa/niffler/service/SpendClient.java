@@ -9,7 +9,7 @@ public interface SpendClient {
 
   CategoryJson createCategory(CategoryJson category);
 
-  void deleteCategory(CategoryJson category);
+  void removeCategory(CategoryJson category);
 
   CategoryJson findOrCreateCategoryByUsernameAndName(String username, String name);
 }

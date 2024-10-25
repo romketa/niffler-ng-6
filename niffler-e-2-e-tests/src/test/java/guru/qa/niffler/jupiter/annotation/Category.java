@@ -10,8 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith(CategoryExtension.class)
 public @interface Category {
-  String title() default "";
-  boolean archived();
+  String name() default "";
+  boolean archived() default false;
 }

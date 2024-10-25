@@ -1,12 +1,13 @@
 package guru.qa.niffler.data.dao.impl;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.data.mapper.AuthorityEntityRowMapper;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,11 +18,12 @@ import java.util.UUID;
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
   private static final Config CFG = Config.getInstance();
+  private final String url = CFG.authJdbcUrl();
 
   @Override
   public void create(AuthorityEntity... authority) {
     String sql = "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)";
-    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(sql)) {
+    try (PreparedStatement ps = holder(url).connection().prepareStatement(sql)) {
       for (AuthorityEntity entity : authority) {
         ps.setObject(1, entity.getUser().getId());
         ps.setString(2, entity.getAuthority().name());
@@ -36,7 +38,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
   @Override
   public List<AuthorityEntity> findAll() {
     String sql = "SELECT * FROM \"authority\"";
-    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(sql)) {
+    try (PreparedStatement ps = holder(url).connection().prepareStatement(sql)) {
 
       ps.execute();
       List<AuthorityEntity> authorityEntities = new ArrayList<>();
@@ -51,6 +53,24 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         }
         return authorityEntities;
       }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public List<AuthorityEntity> findAllByUserId(UUID userId) {
+    try (PreparedStatement ps = holder(url).connection().prepareStatement(
+        "SELECT * FROM authority where user_id = ?")) {
+      ps.setObject(1, userId);
+      ps.execute();
+      List<AuthorityEntity> result = new ArrayList<>();
+      try (ResultSet rs = ps.getResultSet()) {
+        while (rs.next()) {
+          result.add(AuthorityEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+        }
+      }
+      return result;
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

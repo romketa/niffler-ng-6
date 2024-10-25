@@ -5,7 +5,7 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface SendRepository {
+public interface SpendRepository {
 
   SpendEntity create(SpendEntity spend);
   SpendEntity update(SpendEntity spend);

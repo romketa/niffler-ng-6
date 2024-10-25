@@ -1,10 +1,11 @@
 package guru.qa.niffler.data.dao.impl;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
+import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import guru.qa.niffler.model.CurrencyValues;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,6 +44,26 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
+  @Override
+  public Optional<SpendEntity> findById(UUID id) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+        "SELECT * FROM spend WHERE id = ?"
+    )) {
+      ps.setObject(1, id);
+      ps.execute();
+      try (ResultSet rs = ps.getResultSet()) {
+        if (rs.next()) {
+          return Optional.ofNullable(
+              SpendEntityRowMapper.instance.mapRow(rs, rs.getRow())
+          );
+        } else {
+          return Optional.empty();
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
@@ -114,6 +135,30 @@ public class SpendDaoJdbc implements SpendDao {
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public SpendEntity update(SpendEntity spend) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+        """
+              UPDATE "spend"
+                SET spend_date  = ?,
+                    currency    = ?,
+                    amount      = ?,
+                    description = ?
+                WHERE id = ?
+            """);
+    ) {
+      ps.setDate(1, new java.sql.Date(spend.getSpendDate().getTime()));
+      ps.setString(2, spend.getCurrency().name());
+      ps.setDouble(3, spend.getAmount());
+      ps.setString(4, spend.getDescription());
+      ps.setObject(5, spend.getId());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    return spend;
   }
 
   private SpendEntity pullSpendEntity(ResultSet rs) throws SQLException {

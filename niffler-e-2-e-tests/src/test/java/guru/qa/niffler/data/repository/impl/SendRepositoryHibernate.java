@@ -5,13 +5,13 @@ import static guru.qa.niffler.data.jpa.EntityManagers.em;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-import guru.qa.niffler.data.repository.SendRepository;
+import guru.qa.niffler.data.repository.SpendRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SendRepositoryHibernate implements SendRepository {
+public class SendRepositoryHibernate implements SpendRepository {
 
   private static final Config CFG = Config.getInstance();
 
