@@ -31,7 +31,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
   @Override
   public AuthUserEntity update(AuthUserEntity user) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -61,6 +61,6 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
   @Override
   public void remove(AuthUserEntity user) {
-
+    throw new UnsupportedOperationException();
   }
 }
