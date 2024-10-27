@@ -6,23 +6,28 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
-import com.codeborne.selenide.SelenideElement;
-
 public class MainPage {
 
   private final String TABLE_ROWS = "#spendings tbody";
   private static final String STATISTICS_BLOCK_LOC = "//div[h2[contains(text(), 'Statistics')]]";
   private static final String HISTORY_OF_SPENDING_LOC = "//div[h2[contains(text(), 'History of Spendings')]]";
   private static final String NEW_SPENDING_BTN_LOC = "//a[contains(text(), 'New spending')]";
-  private final SelenideElement statComponent = $("#stat");
-  private final SelenideElement spendingTable = $("#spendings");
+  private static final String SEARCH_INPUT_LOC = "input[aria-label='search']";
+  private static final String STAT_COMP_LOC = "#stat";
+  private static final String SPENDING_TABLE_LOC = "#spendings";
+
+  public void searchForSpending(String spendingDescription) {
+    $(SEARCH_INPUT_LOC).setValue(spendingDescription).pressEnter();
+  }
 
   public EditSpendingPage editSpending(String spendingDescription) {
+    searchForSpending(spendingDescription);
     $(TABLE_ROWS).$$("tr").find(text(spendingDescription)).$$("td").get(5).click();
     return new EditSpendingPage();
   }
 
   public void checkThatTableContainsSpending(String spendingDescription) {
+    searchForSpending(spendingDescription);
     $(TABLE_ROWS).$$("tr").find(text(spendingDescription)).should(visible);
   }
 
@@ -34,8 +39,8 @@ public class MainPage {
   }
 
   public MainPage checkThatPageLoaded() {
-    statComponent.should(visible).shouldHave(text("Statistics"));
-    spendingTable.should(visible).shouldHave(text("History of Spendings"));
+    $(STAT_COMP_LOC).should(visible).shouldHave(text("Statistics"));
+    $(SPENDING_TABLE_LOC).should(visible).shouldHave(text("History of Spendings"));
     return this;
   }
 }
