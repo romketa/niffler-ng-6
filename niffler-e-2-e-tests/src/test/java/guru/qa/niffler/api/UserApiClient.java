@@ -3,41 +3,26 @@ package guru.qa.niffler.api;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.UserJson;
 import java.io.IOException;
 import java.util.List;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-
-public class SpendApiClient {
+public class UserApiClient {
 
   private final Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl(Config.getInstance().spendUrl())
+      .baseUrl(Config.getInstance().userdataUrl())
       .addConverterFactory(JacksonConverterFactory.create())
       .build();
 
-  private final SpendApi spendApi = retrofit.create(SpendApi.class);
+  private final UserApi usersApi = retrofit.create(UserApi.class);
 
-  public SpendJson createSpend(SpendJson spend) {
-    final Response<SpendJson> response;
+  public UserJson getCurrentUser(String username) {
+    final Response<UserJson> response;
     try {
-      response = spendApi.addSpend(spend)
-          .execute();
-    } catch (IOException e) {
-      throw new AssertionError(e);
-    }
-    assertEquals(201, response.code());
-    return response.body();
-  }
-
-  public SpendJson getSpendById(String id, String username) {
-    final Response<SpendJson> response;
-    try {
-      response = spendApi.getSpendById(id, username)
+      response = usersApi.currentUser(username)
           .execute();
     } catch (IOException e) {
       throw new AssertionError(e);
@@ -46,11 +31,10 @@ public class SpendApiClient {
     return response.body();
   }
 
-  public List<SpendJson> getAllSpend(String username, CurrencyValues filterCurrency, String from,
-      String to) {
-    final Response<List<SpendJson>> response;
+  public List<UserJson> getAllUsers(String username, String searchQuery) {
+    final Response<List<UserJson>> response;
     try {
-      response = spendApi.getAllSpend(username, filterCurrency, from, to)
+      response = usersApi.allUsers(username, searchQuery)
           .execute();
     } catch (IOException e) {
       throw new AssertionError(e);
@@ -59,10 +43,10 @@ public class SpendApiClient {
     return response.body();
   }
 
-  public SpendJson editSpend(SpendJson spendJson) {
-    final Response<SpendJson> response;
+  public UserJson updateUser(UserJson user) {
+    final Response<UserJson> response;
     try {
-      response = spendApi.editSpend(spendJson)
+      response = usersApi.updateUserInfo(user)
           .execute();
     } catch (IOException e) {
       throw new AssertionError(e);
@@ -71,10 +55,58 @@ public class SpendApiClient {
     return response.body();
   }
 
-  public void deleteSpend(String username, List<String> ids) {
+  public UserJson sendInvitation(String username, String targetUsername) {
+    final Response<UserJson> response;
+    try {
+      response = usersApi.sendInvitation(username, targetUsername)
+          .execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertEquals(200, response.code());
+    return response.body();
+  }
+
+  public UserJson acceptInvitation(String username, String targetUsername) {
+    final Response<UserJson> response;
+    try {
+      response = usersApi.acceptInvitation(username, targetUsername)
+          .execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertEquals(200, response.code());
+    return response.body();
+  }
+
+  public UserJson declineInvitation(String username, String targetUsername) {
+    final Response<UserJson> response;
+    try {
+      response = usersApi.declineInvitation(username, targetUsername)
+          .execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertEquals(200, response.code());
+    return response.body();
+  }
+
+  public List<UserJson> getFriends(String username, String searchQuery) {
+    final Response<List<UserJson>> response;
+    try {
+      response = usersApi.friends(username, searchQuery)
+          .execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertEquals(200, response.code());
+    return response.body();
+  }
+
+  public void removeFriend(String username, String targetUsername) {
     final Response<Void> response;
     try {
-      response = spendApi.deleteSpend(username, ids)
+      response = usersApi.removeFriend(username, targetUsername)
           .execute();
     } catch (IOException e) {
       throw new AssertionError(e);
@@ -82,39 +114,5 @@ public class SpendApiClient {
     assertEquals(200, response.code());
   }
 
-  public CategoryJson getCategories(String username, boolean excludeArchived) {
-    final Response<CategoryJson> response;
-    try {
-      response = spendApi.getCategories(username, excludeArchived)
-          .execute();
-    } catch (IOException e) {
-      throw new AssertionError(e);
-    }
-    assertEquals(200, response.code());
-    return response.body();
-  }
 
-  public CategoryJson addCategories(CategoryJson category) {
-    final Response<CategoryJson> response;
-    try {
-      response = spendApi.addCategories(category)
-          .execute();
-    } catch (IOException e) {
-      throw new AssertionError(e);
-    }
-    assertEquals(200, response.code());
-    return response.body();
-  }
-
-  public CategoryJson updateCategory(CategoryJson category) {
-    final Response<CategoryJson> response;
-    try {
-      response = spendApi.updateCategory(category)
-          .execute();
-    } catch (IOException e) {
-      throw new AssertionError(e);
-    }
-    assertEquals(200, response.code());
-    return response.body();
-  }
 }

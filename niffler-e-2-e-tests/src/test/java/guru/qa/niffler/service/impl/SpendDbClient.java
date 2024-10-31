@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
@@ -13,11 +13,12 @@ import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.service.SpendClient;
+import org.jetbrains.annotations.NotNull;
 
-public class SpendDbClient implements SpendClient{
+public class SpendDbClient implements SpendClient {
 
   private static final Config CFG = Config.getInstance();
-
   private final CategoryDao categoryDao = new CategoryDaoJdbc();
   private final SpendRepository spendRepository = new SpendRepositoryJdbc();
   private final JdbcTransactionTemplate jdbcTxTemplate = new JdbcTransactionTemplate(

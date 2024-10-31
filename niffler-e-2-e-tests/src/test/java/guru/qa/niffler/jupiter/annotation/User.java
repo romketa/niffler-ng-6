@@ -23,4 +23,8 @@ public @interface User {
   Category[] categories() default {};
 
   Spending[] spendings() default {};
+
+  int income() default 0;
+  int outcome() default 0;
+  int friends() default 0;
 }
