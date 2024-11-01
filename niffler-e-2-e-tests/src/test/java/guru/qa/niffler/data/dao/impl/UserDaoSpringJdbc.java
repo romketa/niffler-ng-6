@@ -1,25 +1,10 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
-<<<<<<<< HEAD:niffler-e-2-e-tests/src/test/java/guru/qa/niffler/data/dao/impl/UserDaoSpringJdbc.java
 import guru.qa.niffler.data.dao.UserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.jdbc.DataSources;
 import guru.qa.niffler.data.mapper.UserEntityRowMapper;
-========
-import guru.qa.niffler.data.dao.UserdataUserDao;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.jdbc.DataSources;
-import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
->>>>>>>> bdb30cb (7.2 framework di (#51)):niffler-e-2-e-tests/src/test/java/guru/qa/niffler/data/dao/impl/UserdataUserDaoSpringJdbc.java
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,16 +17,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-<<<<<<<< HEAD:niffler-e-2-e-tests/src/test/java/guru/qa/niffler/data/dao/impl/UserDaoSpringJdbc.java
 public class UserDaoSpringJdbc implements UserDao {
-========
-@ParametersAreNonnullByDefault
-public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
->>>>>>>> bdb30cb (7.2 framework di (#51)):niffler-e-2-e-tests/src/test/java/guru/qa/niffler/data/dao/impl/UserdataUserDaoSpringJdbc.java
 
   private static final Config CFG = Config.getInstance();
 
-  @Nonnull
   @Override
   public UserEntity createUser(UserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
@@ -68,7 +47,6 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
     return user;
   }
 
-  @Nonnull
   @Override
   public Optional<UserEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
@@ -149,58 +127,4 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
         });
     return user;
   }
-<<<<<<<< HEAD:niffler-e-2-e-tests/src/test/java/guru/qa/niffler/data/dao/impl/UserDaoSpringJdbc.java
-========
-
-  @Nonnull
-  @Override
-  public Optional<UserEntity> findById(UUID id) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
-    try {
-    return Optional.ofNullable(
-        jdbcTemplate.queryForObject(
-            """
-                   SELECT * FROM "user" WHERE id = ?
-                """,
-            UserdataUserEntityRowMapper.instance,
-            id
-        )
-    );
-    } catch (
-        EmptyResultDataAccessException e) {
-      return Optional.empty();
-    }
-  }
-
-  @Nonnull
-  @Override
-  public Optional<UserEntity> findByUsername(String username) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
-    try {
-    return Optional.ofNullable(
-        jdbcTemplate.queryForObject(
-            """
-                   SELECT * FROM "user" WHERE username = ?
-                """,
-            UserdataUserEntityRowMapper.instance,
-            username
-        )
-    );
-    } catch (EmptyResultDataAccessException e) {
-      return Optional.empty();
-    }
-  }
-
-  @Nonnull
-  @Override
-  public List<UserEntity> findAll() {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
-    return jdbcTemplate.query(
-        """
-                SELECT * FROM "user"
-            """,
-        UserdataUserEntityRowMapper.instance
-    );
-  }
->>>>>>>> bdb30cb (7.2 framework di (#51)):niffler-e-2-e-tests/src/test/java/guru/qa/niffler/data/dao/impl/UserdataUserDaoSpringJdbc.java
 }

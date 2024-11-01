@@ -1,6 +1,5 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.api.core.RestClient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import guru.qa.niffler.config.Config;
@@ -10,28 +9,19 @@ import guru.qa.niffler.model.SpendJson;
 import java.io.IOException;
 import java.util.List;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+public class SpendApiClient {
 
-@ParametersAreNonnullByDefault
-public class SpendApiClient extends RestClient {
+  private final Retrofit retrofit = new Retrofit.Builder()
+      .baseUrl(Config.getInstance().spendUrl())
+      .addConverterFactory(JacksonConverterFactory.create())
+      .build();
 
-  private final SpendApi spendApi;
+  private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
-  public SpendApiClient() {
-    super(CFG.spendUrl());
-    this.spendApi = retrofit.create(SpendApi.class);
-  }
-
-  @Nullable
   public SpendJson createSpend(SpendJson spend) {
     final Response<SpendJson> response;
     try {
@@ -44,7 +34,6 @@ public class SpendApiClient extends RestClient {
     return response.body();
   }
 
-  @Nullable
   public SpendJson getSpendById(String id, String username) {
     final Response<SpendJson> response;
     try {
@@ -57,8 +46,8 @@ public class SpendApiClient extends RestClient {
     return response.body();
   }
 
-  public List<SpendJson> getAllSpend(String username, @Nullable CurrencyValues filterCurrency, @Nullable String from,
-      @Nullable String to) {
+  public List<SpendJson> getAllSpend(String username, CurrencyValues filterCurrency, String from,
+      String to) {
     final Response<List<SpendJson>> response;
     try {
       response = spendApi.getAllSpend(username, filterCurrency, from, to)
@@ -67,9 +56,7 @@ public class SpendApiClient extends RestClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body() != null
-        ? response.body()
-        : Collections.emptyList();
+    return response.body();
   }
 
   public SpendJson editSpend(SpendJson spendJson) {
@@ -95,9 +82,7 @@ public class SpendApiClient extends RestClient {
     assertEquals(200, response.code());
   }
 
-  @Nullable
   public CategoryJson getCategories(String username, boolean excludeArchived) {
-  
     final Response<CategoryJson> response;
     try {
       response = spendApi.getCategories(username, excludeArchived)
@@ -121,7 +106,6 @@ public class SpendApiClient extends RestClient {
     return response.body();
   }
 
-  @Nullable
   public CategoryJson updateCategory(CategoryJson category) {
     final Response<CategoryJson> response;
     try {
@@ -132,20 +116,5 @@ public class SpendApiClient extends RestClient {
     }
     assertEquals(200, response.code());
     return response.body();
-  }
-
-  @Nonnull
-  public List<CategoryJson> allCategory(String username) {
-    final Response<List<CategoryJson>> response;
-    try {
-      response = spendApi.allCategories(username)
-          .execute();
-    } catch (IOException e) {
-      throw new AssertionError(e);
-    }
-    assertEquals(200, response.code());
-    return response.body() != null
-        ? response.body()
-        : Collections.emptyList();
   }
 }

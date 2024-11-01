@@ -16,21 +16,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-@ParametersAreNonnullByDefault
 public class SpendDaoSpringJdbc implements SpendDao {
 
 
   private static final Config CFG = Config.getInstance();
 
-  @Nonnull
   @Override
   public SpendEntity create(SpendEntity spend) {
     String sql = "INSERT INTO \"spend\" (username, spend_date, currency, amount, description, category_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -47,7 +37,6 @@ public class SpendDaoSpringJdbc implements SpendDao {
     return spend;
   }
 
-  @Nonnull
   @Override
   public Optional<SpendEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -65,7 +54,6 @@ public class SpendDaoSpringJdbc implements SpendDao {
     }
   }
 
-  @Nonnull
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     String sql = "SELECT * FROM \"spend\" WHERE id = ?";
@@ -79,7 +67,6 @@ public class SpendDaoSpringJdbc implements SpendDao {
     );
   }
 
-  @Nonnull
   @Override
   public List<SpendEntity> findAllByUsername(String username) {
     String sql = "SELECT * FROM \"spend\" WHERE username = ?";

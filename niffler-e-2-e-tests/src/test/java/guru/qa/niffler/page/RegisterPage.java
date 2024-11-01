@@ -1,14 +1,8 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.SelenideElement;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
 
-@ParametersAreNonnullByDefault
 public class RegisterPage {
 
   private static final String USERNAME_INPUT_LOC = "#username";
@@ -38,28 +32,5 @@ public class RegisterPage {
 
   public void verifyErrorMessage(String errorMessage) {
     $(ERROR_MESSAGE_LOC).shouldHave(exactText(errorMessage));
-  @Nonnull
-  public RegisterPage fillRegisterPage(String login, String password, String passwordSubmit) {
-    usernameInput.setValue(login);
-    passwordInput.setValue(password);
-    passwordSubmitInput.setValue(passwordSubmit);
-    return this;
-  }
-
-  @Nonnull
-  public LoginPage successSubmit() {
-    submit();
-    proceedLoginButton.click();
-    return new LoginPage();
-  }
-
-  public void submit() {
-    submitButton.click();
-  }
-
-  @Nonnull
-  public RegisterPage checkAlertMessage(String errorMessage) {
-    errorContainer.shouldHave(text(errorMessage));
-    return this;
   }
 }

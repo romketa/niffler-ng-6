@@ -24,14 +24,10 @@ public class ProfileTest {
   @Test
   void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin("duck", "12345")
-        .checkThatPageLoaded();
-
-    Selenide.open(CFG.frontUrl() + "profile", ProfilePage.class)
-        .checkArchivedCategoryExists(category.name())
-        .checkName("")
-        .checkAlert("")
-        .checkName("");
+        .login("moon", "moon123");
+    Selenide.open(CFG.profileUrl(), ProfilePage.class)
+        .showArchivedCategories()
+        .verifyThatCategoryDisplayed(category.name());
   }
 
   @User(

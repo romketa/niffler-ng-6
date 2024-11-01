@@ -1,16 +1,14 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.SelenideElement;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
-@ParametersAreNonnullByDefault
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
+
 public class FriendsPage {
 
   private static final String PEOPLE_TAB = "a[href='/people/friends']";
@@ -19,7 +17,6 @@ public class FriendsPage {
   private static final String ALL_TABLE = "#all";
   private static final String FRIENDS_TABLE = "#friends";
 
-  @Nonnull
   public FriendsPage checkExistingFriends(String... expectedUsernames) {
     $(FRIENDS_TABLE).$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
     return this;
@@ -30,7 +27,6 @@ public class FriendsPage {
     return this;
   }
 
-  @Nonnull
   public FriendsPage checkExistingInvitations(String... expectedUsernames) {
     $(REQUEST_TABLE).$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
     return this;

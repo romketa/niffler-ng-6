@@ -5,13 +5,6 @@ import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.jdbc.DataSources;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -22,12 +15,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-@ParametersAreNonnullByDefault
 public class CategoryDaoSpringJdbc implements CategoryDao {
 
   private static final Config CFG = Config.getInstance();
 
-  @Nonnull
   @Override
   public CategoryEntity create(CategoryEntity category) {
     String sql = "INSERT INTO \"category\" (username, name, archived) VALUES (?, ?, ?)";
@@ -46,7 +37,6 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     return category;
   }
 
-  @Nonnull
   @Override
   public Optional<CategoryEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -63,7 +53,6 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     }
   }
 
-  @Nonnull
   @Override
   public CategoryEntity update(CategoryEntity category) {
     String sql = "UPDATE \"category\" SET name = ?, username = ?, archived = ? where id = ?";
@@ -92,7 +81,6 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     );
   }
 
-  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username,
       String categoryName) {

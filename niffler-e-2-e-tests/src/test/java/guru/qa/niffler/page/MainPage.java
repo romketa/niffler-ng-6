@@ -1,18 +1,11 @@
 package guru.qa.niffler.page;
 
 import static com.codeborne.selenide.Condition.enabled;
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.SelenideElement;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
-@ParametersAreNonnullByDefault
 public class MainPage {
 
   private final String TABLE_ROWS = "#spendings tbody";
@@ -23,24 +16,10 @@ public class MainPage {
   private static final String STAT_COMP_LOC = "#stat";
   private static final String SPENDING_TABLE_LOC = "#spendings";
 
-  @Nonnull
-  public FriendsPage friendsPage() {
-    header.$("button").click();
-    headerMenu.$$("li").find(text("Friends")).click();
-    return new FriendsPage();
-  }
-
-  @Nonnull
-  public PeoplePage allPeoplesPage() {
-    header.$("button").click();
-    headerMenu.$$("li").find(text("All People")).click();
-    return new PeoplePage();
-    }
   public void searchForSpending(String spendingDescription) {
     $(SEARCH_INPUT_LOC).setValue(spendingDescription).pressEnter();
   }
 
-  @Nonnull
   public EditSpendingPage editSpending(String spendingDescription) {
     searchForSpending(spendingDescription);
     $(TABLE_ROWS).$$("tr").find(text(spendingDescription)).$$("td").get(5).click();
@@ -59,7 +38,6 @@ public class MainPage {
     return this;
   }
 
-  @Nonnull
   public MainPage checkThatPageLoaded() {
     $(STAT_COMP_LOC).should(visible).shouldHave(text("Statistics"));
     $(SPENDING_TABLE_LOC).should(visible).shouldHave(text("History of Spendings"));
