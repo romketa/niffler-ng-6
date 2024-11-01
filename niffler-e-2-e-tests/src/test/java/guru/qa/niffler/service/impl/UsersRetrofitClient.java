@@ -6,18 +6,23 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import utils.RandomDataUtils;
 
+@ParametersAreNonnullByDefault
 public class UsersRetrofitClient implements UsersClient {
 
   UserApiClient userApiClient = new UserApiClient();
 
   @Override
+  @Nonnull
   public UserJson createUser(String username, String password) {
     throw new UnsupportedOperationException("Can't create user by API");
   }
 
   @Override
+  @Nonnull
   public List<UserJson> createIncomeInvitations(UserJson targetUser, int count) {
     List<UserJson> users = new ArrayList<>();
     int limit = 0;
@@ -32,6 +37,7 @@ public class UsersRetrofitClient implements UsersClient {
   }
 
   @Override
+  @Nonnull
   public List<UserJson> createOutcomeInvitations(UserJson targetUser, int count) {
     List<UserJson> users = new ArrayList<>();
     int limit = 0;
@@ -46,6 +52,7 @@ public class UsersRetrofitClient implements UsersClient {
   }
 
   @Override
+  @Nonnull
   public List<UserJson> createFriends(UserJson targetUser, int count) {
     List<UserJson> users = new ArrayList<>();
     int limit = 0;

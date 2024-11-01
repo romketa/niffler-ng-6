@@ -11,16 +11,20 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+@ParametersAreNonnullByDefault
 public class SpendDaoSpringJdbc implements SpendDao {
 
 
   private static final Config CFG = Config.getInstance();
 
+  @Nonnull
   @Override
   public SpendEntity create(SpendEntity spend) {
     String sql = "INSERT INTO \"spend\" (username, spend_date, currency, amount, description, category_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -37,6 +41,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
     return spend;
   }
 
+  @Nonnull
   @Override
   public Optional<SpendEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -54,6 +59,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
     }
   }
 
+  @Nonnull
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     String sql = "SELECT * FROM \"spend\" WHERE id = ?";
@@ -67,6 +73,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
     );
   }
 
+  @Nonnull
   @Override
   public List<SpendEntity> findAllByUsername(String username) {
     String sql = "SELECT * FROM \"spend\" WHERE username = ?";
@@ -85,6 +92,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
     jdbcTemplate.update(sql, spend.getId());
   }
 
+  @Nonnull
   @Override
   public List<SpendEntity> findAll() {
     String sql = "SELECT * FROM \"spend\"";
@@ -92,6 +100,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
     return jdbcTemplate.query(sql, SpendEntityRowMapper.instance);
   }
 
+  @Nonnull
   @Override
   public SpendEntity update(SpendEntity spend) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));

@@ -17,7 +17,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryJdbc implements SpendRepository {
 
   private static final Config CFG = Config.getInstance();
@@ -27,6 +30,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
   private final CategoryDao categoryDao = new CategoryDaoJdbc();
 
   @Override
+  @Nonnull
   public SpendEntity create(SpendEntity spend) {
     final UUID categoryId = spend.getCategory().getId();
     if (categoryId == null && categoryDao.findById(categoryId).isEmpty()) {
@@ -38,6 +42,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
   }
 
   @Override
+  @Nonnull
   public SpendEntity update(SpendEntity spend) {
     spendDao.update(spend);
     categoryDao.update(spend.getCategory());
@@ -45,22 +50,26 @@ public class SpendRepositoryJdbc implements SpendRepository {
   }
 
   @Override
+  @Nonnull
   public CategoryEntity createCategory(CategoryEntity category) {
     return categoryDao.create(category);
   }
 
   @Override
+  @Nonnull
   public CategoryEntity updateCategory(CategoryEntity category) {
     categoryDao.update(category);
     return category;
   }
 
   @Override
+  @Nonnull
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     return categoryDao.findById(id);
   }
 
   @Override
+  @Nonnull
   public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(
         "SELECT * FROM category WHERE username = ? and name = ?"
@@ -83,11 +92,13 @@ public class SpendRepositoryJdbc implements SpendRepository {
   }
 
   @Override
+  @Nonnull
   public Optional<SpendEntity> findById(UUID id) {
     return spendDao.findById(id);
   }
 
   @Override
+  @Nonnull
   public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(
         "SELECT * FROM spend WHERE username = ? and description = ?"
@@ -110,6 +121,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
   }
 
   @Override
+  @Nonnull
   public void remove(SpendEntity spend) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(
         "DELETE FROM spend WHERE id = ?"

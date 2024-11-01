@@ -3,6 +3,10 @@ package guru.qa.niffler.page;
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class RegisterPage {
 
   private static final String USERNAME_INPUT_LOC = "#username";
@@ -13,6 +17,7 @@ public class RegisterPage {
   private static final String SING_IN_LOC = ".form_sign-in";
 
 
+  @Nonnull
   public RegisterPage fillRegisterPage(String username, String password, String passwordSubmit) {
     $(USERNAME_INPUT_LOC).setValue(username);
     $(PASSWORD_INPUT_LOC).setValue(password);
@@ -20,11 +25,13 @@ public class RegisterPage {
     return this;
   }
 
+  @Nonnull
   public RegisterPage submitRegistration() {
     $(SIGN_UP_BTN_LOC).click();
     return this;
   }
 
+  @Nonnull
   public LoginPage signInAfterRegistration() {
     $(SING_IN_LOC).click();
     return new LoginPage();

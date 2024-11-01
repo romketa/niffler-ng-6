@@ -1,12 +1,13 @@
 package guru.qa.niffler.data.jdbc;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 
 public class JdbcConnectionHolders implements AutoCloseable {
 
   private final List<JdbcConnectionHolder> holders;
 
-  public JdbcConnectionHolders(List<JdbcConnectionHolder> holders) {
+  public JdbcConnectionHolders(@Nonnull List<JdbcConnectionHolder> holders) {
     this.holders = holders;
   }
 

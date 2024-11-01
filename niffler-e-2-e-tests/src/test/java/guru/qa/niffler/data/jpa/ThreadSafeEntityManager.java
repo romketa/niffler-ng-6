@@ -17,13 +17,15 @@ import jakarta.persistence.metamodel.Metamodel;
 
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 
+@SuppressWarnings("resource")
 public class ThreadSafeEntityManager implements EntityManager {
 
   private final ThreadLocal<EntityManager> threadEm = new ThreadLocal<>();
   private final EntityManagerFactory emf;
 
-  public ThreadSafeEntityManager(EntityManager delegate) {
+  public ThreadSafeEntityManager(@Nonnull EntityManager delegate) {
     threadEm.set(delegate);
     emf = delegate.getEntityManagerFactory();
   }

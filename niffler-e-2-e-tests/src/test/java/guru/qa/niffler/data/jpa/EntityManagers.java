@@ -7,6 +7,7 @@ import jakarta.persistence.Persistence;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nonnull;
 
 public class EntityManagers {
   private EntityManagers() {
@@ -14,6 +15,8 @@ public class EntityManagers {
 
   private static final Map<String, EntityManagerFactory> emfs = new ConcurrentHashMap<>();
 
+  @SuppressWarnings("resource")
+  @Nonnull
   public static EntityManager em(String jdbcUrl) {
     return new ThreadSafeEntityManager(
         emfs.computeIfAbsent(

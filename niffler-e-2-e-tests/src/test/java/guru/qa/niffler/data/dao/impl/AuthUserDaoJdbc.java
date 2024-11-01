@@ -14,12 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class AuthUserDaoJdbc implements AuthUserDao {
 
   private static final Config CFG = Config.getInstance();
   private final String url = CFG.authJdbcUrl();
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public AuthUserEntity create(AuthUserEntity authUser) {
     String sql =
@@ -50,6 +55,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findById(UUID id) {
     String sql = "SELECT * FROM \"user\"  WHERE id = ?";
@@ -70,6 +77,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findByUsername(String username) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement("""
@@ -93,6 +102,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public List<AuthUserEntity> findAll() {
     String sql = "SELECT * FROM \"category\"";

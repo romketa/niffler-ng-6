@@ -15,11 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class SpendDaoJdbc implements SpendDao {
 
   private static final Config CFG = Config.getInstance();
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public SpendEntity create(SpendEntity spend) {
     String sql = "INSERT INTO \"spend\" (username, spend_date, currency, amount, description, category_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -44,6 +49,8 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public Optional<SpendEntity> findById(UUID id) {
     try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -65,6 +72,8 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     String sql = "SELECT * FROM \"spend\" WHERE id = ?";
@@ -85,6 +94,8 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public List<SpendEntity> findAllByUsername(String username) {
     String sql = "SELECT * FROM \"spend\" WHERE username = ?";
@@ -117,6 +128,8 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public List<SpendEntity> findAll() {
     String sql = "SELECT * FROM \"spend\"";
@@ -137,6 +150,8 @@ public class SpendDaoJdbc implements SpendDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public SpendEntity update(SpendEntity spend) {
     try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(

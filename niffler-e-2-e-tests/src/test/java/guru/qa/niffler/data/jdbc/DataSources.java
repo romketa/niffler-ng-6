@@ -4,6 +4,7 @@ import com.atomikos.jdbc.AtomikosDataSourceBean;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nonnull;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -15,6 +16,7 @@ public class DataSources {
 
   private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
 
+  @Nonnull
   public static DataSource dataSource(String jdbcUrl) {
     return dataSources.computeIfAbsent(
         jdbcUrl,

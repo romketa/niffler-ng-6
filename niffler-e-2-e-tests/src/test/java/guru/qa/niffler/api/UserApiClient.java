@@ -6,10 +6,14 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.UserJson;
 import java.io.IOException;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+@ParametersAreNonnullByDefault
 public class UserApiClient {
 
   private final Retrofit retrofit = new Retrofit.Builder()
@@ -19,6 +23,7 @@ public class UserApiClient {
 
   private final UserApi usersApi = retrofit.create(UserApi.class);
 
+  @Nullable
   public UserJson getCurrentUser(String username) {
     final Response<UserJson> response;
     try {
@@ -31,6 +36,7 @@ public class UserApiClient {
     return response.body();
   }
 
+  @Nullable
   public List<UserJson> getAllUsers(String username, String searchQuery) {
     final Response<List<UserJson>> response;
     try {
@@ -43,6 +49,7 @@ public class UserApiClient {
     return response.body();
   }
 
+  @Nullable
   public UserJson updateUser(UserJson user) {
     final Response<UserJson> response;
     try {
@@ -55,6 +62,7 @@ public class UserApiClient {
     return response.body();
   }
 
+  @Nullable
   public UserJson sendInvitation(String username, String targetUsername) {
     final Response<UserJson> response;
     try {
@@ -67,6 +75,7 @@ public class UserApiClient {
     return response.body();
   }
 
+  @Nullable
   public UserJson acceptInvitation(String username, String targetUsername) {
     final Response<UserJson> response;
     try {
@@ -79,6 +88,7 @@ public class UserApiClient {
     return response.body();
   }
 
+  @Nullable
   public UserJson declineInvitation(String username, String targetUsername) {
     final Response<UserJson> response;
     try {
@@ -91,6 +101,7 @@ public class UserApiClient {
     return response.body();
   }
 
+  @Nullable
   public List<UserJson> getFriends(String username, String searchQuery) {
     final Response<List<UserJson>> response;
     try {

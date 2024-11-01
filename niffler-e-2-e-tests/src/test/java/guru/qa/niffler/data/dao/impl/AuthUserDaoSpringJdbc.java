@@ -10,15 +10,19 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+@ParametersAreNonnullByDefault
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
   private static final Config CFG = Config.getInstance();
 
+  @Nonnull
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
@@ -44,6 +48,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     return user;
   }
 
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findByUsername(String username) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
@@ -62,6 +67,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     }
   }
 
+  @Nonnull
   @Override
   public Optional<AuthUserEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
@@ -74,6 +80,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     );
   }
 
+  @Nonnull
   @Override
   public List<AuthUserEntity> findAll() {
     String sql = "SELECT * FROM \"user\"";

@@ -10,15 +10,19 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+@ParametersAreNonnullByDefault
 public class CategoryDaoSpringJdbc implements CategoryDao {
 
   private static final Config CFG = Config.getInstance();
 
+  @Nonnull
   @Override
   public CategoryEntity create(CategoryEntity category) {
     String sql = "INSERT INTO \"category\" (username, name, archived) VALUES (?, ?, ?)";
@@ -37,6 +41,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     return category;
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -53,6 +58,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     }
   }
 
+  @Nonnull
   @Override
   public CategoryEntity update(CategoryEntity category) {
     String sql = "UPDATE \"category\" SET name = ?, username = ?, archived = ? where id = ?";
@@ -68,6 +74,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     return category;
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     String sql = "SELECT * FROM \"category\" WHERE id = ?";
@@ -81,6 +88,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     );
   }
 
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username,
       String categoryName) {
@@ -96,6 +104,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     );
   }
 
+  @Nonnull
   @Override
   public List<CategoryEntity> findAllByUsername(String username) {
     String sql = "SELECT * FROM \"category\" WHERE username = ?";
@@ -103,6 +112,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     return jdbcTemplate.query(sql, CategoryEntityRowMapper.instance, username);
   }
 
+  @Nonnull
   @Override
   public void deleteCategory(CategoryEntity category) {
     String sql = "DELETE FROM \"category\" WHERE id = ?";
@@ -110,6 +120,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     jdbcTemplate.update(sql, category.getId());
   }
 
+  @Nonnull
   @Override
   public List<CategoryEntity> findAll() {
     String sql = "SELECT * FROM \"category\"";

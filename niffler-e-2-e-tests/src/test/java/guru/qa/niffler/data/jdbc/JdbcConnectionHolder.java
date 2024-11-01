@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 
 public class JdbcConnectionHolder implements AutoCloseable {
@@ -12,7 +13,7 @@ public class JdbcConnectionHolder implements AutoCloseable {
   private final DataSource dataSource;
   private final Map<Long, Connection> threadConnections = new ConcurrentHashMap<>();
 
-  public JdbcConnectionHolder(DataSource dataSource) {
+  public JdbcConnectionHolder(@Nonnull DataSource dataSource) {
     this.dataSource = dataSource;
   }
 

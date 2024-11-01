@@ -6,6 +6,10 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class MainPage {
 
   private final String TABLE_ROWS = "#spendings tbody";
@@ -20,6 +24,7 @@ public class MainPage {
     $(SEARCH_INPUT_LOC).setValue(spendingDescription).pressEnter();
   }
 
+  @Nonnull
   public EditSpendingPage editSpending(String spendingDescription) {
     searchForSpending(spendingDescription);
     $(TABLE_ROWS).$$("tr").find(text(spendingDescription)).$$("td").get(5).click();
@@ -31,6 +36,7 @@ public class MainPage {
     $(TABLE_ROWS).$$("tr").find(text(spendingDescription)).should(visible);
   }
 
+  @Nonnull
   public MainPage verifyThatLoginWasSuccessful() {
     $x(STATISTICS_BLOCK_LOC).shouldBe(visible);
     $x(HISTORY_OF_SPENDING_LOC).shouldBe(visible);
@@ -38,6 +44,7 @@ public class MainPage {
     return this;
   }
 
+  @Nonnull
   public MainPage checkThatPageLoaded() {
     $(STAT_COMP_LOC).should(visible).shouldHave(text("Statistics"));
     $(SPENDING_TABLE_LOC).should(visible).shouldHave(text("History of Spendings"));

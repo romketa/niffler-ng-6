@@ -14,11 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class CategoryDaoJdbc implements CategoryDao {
 
   private static final Config CFG = Config.getInstance();
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public CategoryEntity create(CategoryEntity category) {
     try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -47,6 +52,8 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findById(UUID id) {
     try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -68,6 +75,8 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public CategoryEntity update(CategoryEntity category) {
     String sql = "UPDATE \"category\" SET name = ?, username = ?, archived = ? where id = ?";
@@ -90,6 +99,8 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     String sql = "SELECT * FROM \"category\" WHERE id = ?";
@@ -110,6 +121,8 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username,
       String categoryName) {
@@ -134,6 +147,8 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public List<CategoryEntity> findAllByUsername(String username) {
     String sql = "SELECT * FROM \"category\" WHERE username = ?";
@@ -167,6 +182,8 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
   }
 
+  @SuppressWarnings("resource")
+  @Nonnull
   @Override
   public List<CategoryEntity> findAll() {
     String sql = "SELECT * FROM \"category\"";

@@ -14,28 +14,35 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
   private final UserDao userDao = new UserDaoJdbc();
   private final Config CFG = Config.getInstance();
 
   @Override
+  @Nonnull
   public UserEntity create(UserEntity user) {
     return userDao.createUser(user);
   }
 
   @Override
+  @Nonnull
   public Optional<UserEntity> findById(UUID id) {
     return userDao.findById(id);
   }
 
   @Override
+  @Nonnull
   public Optional<UserEntity> findByUsername(String username) {
     return userDao.findByUsername(username);
   }
 
   @Override
+  @Nonnull
   public UserEntity update(UserEntity user) {
     throw new UnsupportedOperationException();
   }

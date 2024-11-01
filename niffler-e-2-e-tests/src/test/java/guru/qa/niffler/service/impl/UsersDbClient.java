@@ -19,10 +19,14 @@ import guru.qa.niffler.service.UsersClient;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import utils.RandomDataUtils;
 
+@ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 
   private static final Config CFG = Config.getInstance();
@@ -35,12 +39,14 @@ public class UsersDbClient implements UsersClient {
 
 
   @Override
+  @Nonnull
   public UserJson createUser(String username, String password) {
-    return xaJdbcTxTemplate.execute(
-        () -> UserJson.fromEntity(createNewUser(username, password), null));
+    return Objects.requireNonNull(xaJdbcTxTemplate.execute(
+        () -> UserJson.fromEntity(createNewUser(username, password), null)));
   }
 
   @Override
+  @Nonnull
   public List<UserJson> createIncomeInvitations(UserJson targetUser, int count) {
     List<UserJson> income = new ArrayList<>();
     if (count > 0) {
@@ -63,6 +69,7 @@ public class UsersDbClient implements UsersClient {
   }
 
   @Override
+  @Nonnull
   public List<UserJson> createOutcomeInvitations(UserJson targetUser, int count) {
     List<UserJson> outcome = new ArrayList<>();
     if (count > 0) {
@@ -85,6 +92,7 @@ public class UsersDbClient implements UsersClient {
   }
 
   @Override
+  @Nonnull
   public List<UserJson> createFriends(UserJson targetUser, int count) {
     List<UserJson> friends = new ArrayList<>();
     if (count > 0) {

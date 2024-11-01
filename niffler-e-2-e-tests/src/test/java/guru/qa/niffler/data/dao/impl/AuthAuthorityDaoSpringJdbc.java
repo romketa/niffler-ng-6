@@ -9,14 +9,19 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+@ParametersAreNonnullByDefault
 public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
   private static final Config CFG = Config.getInstance();
   private final String url = CFG.authJdbcUrl();
 
+  @Nonnull
   @Override
   public void create(AuthorityEntity... authority) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
@@ -37,6 +42,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     );
   }
 
+  @Nonnull
   @Override
   public List<AuthorityEntity> findAll() {
     String sql = "SELECT * from \"authority\"";
@@ -44,6 +50,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     return jdbcTemplate.query(sql, AuthorityEntityRowMapper.instance);
   }
 
+  @Nonnull
   @Override
   public List<AuthorityEntity> findAllByUserId(UUID userId) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));

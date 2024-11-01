@@ -18,15 +18,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
   private final AuthUserDao authUserDao = new AuthUserDaoJdbc();
   private final AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoJdbc();
 
   @Override
+  @Nonnull
   public AuthUserEntity create(AuthUserEntity user) {
     authUserDao.create(user);
     authAuthorityDao.create(user.getAuthorities().toArray(new AuthorityEntity[0]));
@@ -34,11 +38,13 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
   }
 
   @Override
+  @Nonnull
   public AuthUserEntity update(AuthUserEntity user) {
     throw new UnsupportedOperationException();
   }
 
   @Override
+  @Nonnull
   public Optional<AuthUserEntity> findById(UUID id) {
     Optional<AuthUserEntity> userEntity = authUserDao.findById(id);
     userEntity
@@ -51,6 +57,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
   }
 
   @Override
+  @Nonnull
   public Optional<AuthUserEntity> findByUsername(String username) {
     Optional<AuthUserEntity> userEntity = authUserDao.findByUsername(username);
     userEntity.ifPresent(authUserEntity ->

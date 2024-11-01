@@ -88,7 +88,7 @@ public class UserDaoJdbc implements UserDao {
   }
 
   @Override
-  public void delete(UserEntity user) {
+  public void remove(UserEntity user) {
     String sql = "DELETE FROM \"user\" WHERE id = ?";
     try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(sql)) {
 

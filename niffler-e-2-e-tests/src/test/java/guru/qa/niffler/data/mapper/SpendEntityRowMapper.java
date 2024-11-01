@@ -6,6 +6,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import org.springframework.jdbc.core.RowMapper;
 
 public class SpendEntityRowMapper implements RowMapper<SpendEntity> {
@@ -16,6 +17,7 @@ public class SpendEntityRowMapper implements RowMapper<SpendEntity> {
   }
 
   @Override
+  @Nonnull
   public SpendEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
     SpendEntity result = new SpendEntity();
     result.setId(rs.getObject("id", UUID.class));

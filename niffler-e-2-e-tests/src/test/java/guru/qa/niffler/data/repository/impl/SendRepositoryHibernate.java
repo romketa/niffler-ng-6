@@ -10,7 +10,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class SendRepositoryHibernate implements SpendRepository {
 
   private static final Config CFG = Config.getInstance();
@@ -18,6 +21,7 @@ public class SendRepositoryHibernate implements SpendRepository {
   private final EntityManager entityManager = em(CFG.spendUrl());
 
   @Override
+  @Nonnull
   public SpendEntity create(SpendEntity spend) {
     entityManager.joinTransaction();
     entityManager.persist(spend);
@@ -25,12 +29,14 @@ public class SendRepositoryHibernate implements SpendRepository {
   }
 
   @Override
+  @Nonnull
   public SpendEntity update(SpendEntity spend) {
     entityManager.joinTransaction();
     return entityManager.merge(spend);
   }
 
   @Override
+  @Nonnull
   public CategoryEntity createCategory(CategoryEntity category) {
     entityManager.joinTransaction();
     entityManager.persist(category);
@@ -38,12 +44,14 @@ public class SendRepositoryHibernate implements SpendRepository {
   }
 
   @Override
+  @Nonnull
   public CategoryEntity updateCategory(CategoryEntity category) {
     entityManager.joinTransaction();
     return entityManager.merge(category);
   }
 
   @Override
+  @Nonnull
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     return Optional.ofNullable(
         entityManager.find(CategoryEntity.class, id)
@@ -51,6 +59,7 @@ public class SendRepositoryHibernate implements SpendRepository {
   }
 
   @Override
+  @Nonnull
   public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username,
       String name) {
     try {
@@ -68,6 +77,7 @@ public class SendRepositoryHibernate implements SpendRepository {
   }
 
   @Override
+  @Nonnull
   public Optional<SpendEntity> findById(UUID id) {
     return Optional.ofNullable(
         entityManager.find(SpendEntity.class, id)
@@ -75,6 +85,7 @@ public class SendRepositoryHibernate implements SpendRepository {
   }
 
   @Override
+  @Nonnull
   public Optional<SpendEntity> findByUsernameAndSpendDescription(String username,
       String description) {
     try {
