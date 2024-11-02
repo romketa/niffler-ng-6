@@ -1,9 +1,10 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.Test;
@@ -57,5 +58,30 @@ public class RegistrationTest {
         .login(RandomDataUtils.randomUsername(), "12345");
 
     new LoginPage().verifyThatUserStayedOnLoginPageAfterUnsuccessfulLogin();
+  }
+
+  @User(
+      outcome = 1
+  )
+  @Test
+  void userShouldAcceptFriendInvitation(UserJson user) {
+
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+        .login(user.username(), user.testData().password())
+        .header()
+        .toFriendsPage()
+        .acceptFriend();
+  }
+
+  @User(
+      income = 1
+  )
+  @Test
+  void userShouldDeclineFriendInvitation(UserJson user) {
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+        .login(user.username(), user.testData().password())
+        .header()
+        .toFriendsPage()
+        .declineFriend();
   }
 }

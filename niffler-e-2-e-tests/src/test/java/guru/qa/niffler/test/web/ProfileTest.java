@@ -6,6 +6,7 @@ import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
@@ -42,5 +43,16 @@ public class ProfileTest {
         .login("moon", "moon123");
     Selenide.open(CFG.profileUrl(), ProfilePage.class)
         .verifyThatCategoryDisplayed(category.name());
+  }
+
+  @User
+  @Test
+  void userShouldEditProfile(UserJson user) {
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+        .login(user.username(), user.testData().password())
+        .header()
+        .toProfilePage()
+        .setName("Name")
+        .checkName("Name");
   }
 }
