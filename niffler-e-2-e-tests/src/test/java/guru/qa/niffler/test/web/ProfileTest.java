@@ -59,4 +59,14 @@ public class ProfileTest {
         .setName("Name")
         .checkName("Name");
   }
+
+  @Test
+  @User
+  public void sendInvitationAlertTest(UserJson user) {
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+        .login(user.username(), user.testData().password())
+        .allPeoplesPage()
+        .sendInvitation("moon")
+        .verifyAlertSentInvitation("moon");
+  }
 }
