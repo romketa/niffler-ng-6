@@ -6,6 +6,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
+import guru.qa.niffler.page.component.Header;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -49,5 +50,10 @@ public class MainPage {
     $(STAT_COMP_LOC).should(visible).shouldHave(text("Statistics"));
     $(SPENDING_TABLE_LOC).should(visible).shouldHave(text("History of Spendings"));
     return this;
+  }
+
+  @Nonnull
+  public Header header() {
+    return new Header();
   }
 }
