@@ -23,7 +23,7 @@ public class SpendingTable {
   @Nonnull
   public SpendingTable selectPeriod(DataFilterValues period) {
     periodSelector.click();
-    $(String.format(PERIOD_VALUE, period.getDataVal())).click();
+    $(String.format(PERIOD_VALUE, period.name())).click();
     return this;
   }
 
