@@ -9,7 +9,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface UsersClient {
 
   @Nonnull
-  UserJson createUser(String username, String password);
+  UserJson createUser(String username, String password) throws InterruptedException;
 
   @Nonnull
   List<UserJson> createIncomeInvitations(UserJson targetUser, int count);

@@ -13,9 +13,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class Calendar {
+public class Calendar extends BaseComponent{
 
-  private final SelenideElement self;
   private static final String YEAR_ARROW_DROP_DOWN_LOC = "svg[data-testid='ArrowDropDownIcon']";
   private static final String YEAR_LOC = ".MuiPickersYear-root";
   private static final String MONTH_LOC = ".MuiPickersCalendarHeader-label";
@@ -23,9 +22,8 @@ public class Calendar {
   private static final String MONTH_SELECT_LEFT_LOC = "svg[data-testid='ArrowLeftIcon']";
   private static final String DATE_PICKER_LOC = ".MuiPickersDay-root";
 
-
   public Calendar(SelenideElement self) {
-    this.self = self;
+    super(self);
   }
 
   @Nonnull

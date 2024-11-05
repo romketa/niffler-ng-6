@@ -15,7 +15,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.junit.jupiter.api.Assertions;
 
 @ParametersAreNonnullByDefault
-public class FriendsPage {
+public class FriendsPage extends BasePage<FriendsPage> {
 
   private static final String PEOPLE_TAB = "a[href='/people/friends']";
   private static final String ALL_TAB = "a[href='/people/all']";

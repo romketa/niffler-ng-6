@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class LoginPage {
+public class LoginPage extends BasePage<LoginPage>  {
 
   private static final String USERNAME_INPUT_LOC = "input[name='username']";
   private static final String PASSWORD_INPUT_LOC = "input[name='password']";

@@ -14,13 +14,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class Header {
+public class Header extends BaseComponent {
 
   private final SelenideElement self = $("#root header");
   private final SelenideElement menu = $("button[aria-label='Menu']");
   private static final String NEW_SPENDING_LOC = "a[href='/spending']";
   private static final String TO_MAIN_PAGE_LOC = "a[href='/main']";
   private static final String MENU_ITEM_LOC = "li[role='menuitem']";
+
 
   public void checkHeaderText() {
     self.$("h1").shouldHave(text("Niffler"));

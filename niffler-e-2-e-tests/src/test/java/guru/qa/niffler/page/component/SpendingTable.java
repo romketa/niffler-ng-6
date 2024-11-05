@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class SpendingTable {
+public class SpendingTable extends BaseComponent{
 
   private final SelenideElement periodSelector = $("#period");
   private static final String PERIOD_VALUE = "li[data-value='%s']";

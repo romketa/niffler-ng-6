@@ -4,9 +4,13 @@ import com.codeborne.selenide.SelenideElement;
 
 public class BaseComponent {
 
-  protected final SelenideElement self;
+  protected SelenideElement self;
 
   public BaseComponent(SelenideElement self) {
     this.self = self;
   }
+
+  public BaseComponent() {
+
+  };
 }
