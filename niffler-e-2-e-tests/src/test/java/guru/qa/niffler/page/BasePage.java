@@ -9,7 +9,9 @@ import static com.codeborne.selenide.Selenide.$;
 public abstract class BasePage<T extends BasePage<?>> {
 
   protected final Header header = new Header();
-  protected final SelenideElement alert = $("");
+  protected final SelenideElement alert = $(".MuiAlert-message");
+
+  public abstract T checkThatPageLoaded();
 
   @SuppressWarnings("unchecked")
   public T checkAlert(String message) {

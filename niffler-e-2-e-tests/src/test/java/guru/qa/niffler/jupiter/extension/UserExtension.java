@@ -4,7 +4,7 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.impl.UsersRetrofitClient;
+import guru.qa.niffler.service.impl.UsersRestClient;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -21,7 +21,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
       UserExtension.class);
   private static final String defaultPassword = "12345";
 
-  private final UsersClient userClient = new UsersRetrofitClient();
+  private final UsersClient userClient = new UsersRestClient();
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {

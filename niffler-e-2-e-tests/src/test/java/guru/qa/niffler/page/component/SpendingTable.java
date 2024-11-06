@@ -12,18 +12,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class SpendingTable {
+public class SpendingTable extends BaseComponent<SpendingTable>{
 
   private final SelenideElement periodSelector = $("#period");
-  private static final String PERIOD_VALUE = "li[data-value='%s']";
   private final SelenideElement editSpend = $("button[aria-label='Edit spending']");
   private final SelenideElement tableSpending = $("table[aria-labelledby='tableTitle']");
-  private static final String CHECK_BOX_LOC = "input[type='checkbox']";
+
+  public SpendingTable() {
+    super($("spendings"));
+  }
 
   @Nonnull
   public SpendingTable selectPeriod(DataFilterValues period) {
     periodSelector.click();
-    $(String.format(PERIOD_VALUE, period.name())).click();
+    $(String.format("li[data-value='%s']", period.name())).click();
     return this;
   }
 
@@ -37,7 +39,7 @@ public class SpendingTable {
   @Nonnull
   public SpendingTable deleteSpending(String description) {
     searchSpendingByDescription(description);
-    getSpendingElByDesc(description).$(CHECK_BOX_LOC).click();
+    getSpendingElByDesc(description).$("input[type='checkbox']").click();
     return this;
   }
 

@@ -18,6 +18,23 @@ public class SpendingWebTest {
 
   private static final Config CFG = Config.getInstance();
 
+  @Test
+  @User
+  void newSpendingAlertTest(UserJson user) {
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+        .login(user.username(), user.testData().password())
+        .header()
+        .addSpendingPage()
+        .addAmount("100")
+        .addCategoryName("Category name")
+        .addDate(new Date())
+        .addDescription("Description")
+        .save();
+
+    new MainPage().checkThatTableContainsSpending("Category name")
+        .verifyAlertCreatedSpending();
+  }
+
   @User(
       username = "moon",
       spendings = @Spending(
