@@ -35,10 +35,10 @@ public class AuthApiClient extends RestClient {
 
 
   @Step("User registration")
-  public void register(@Nonnull String username, @Nonnull String password, @Nonnull String passwordSubmit, @Nonnull String _csrf) {
+  public void register(@Nonnull String username, @Nonnull String password, @Nonnull String passwordSubmit, @Nonnull String csrf) {
     final Response<Void> response;
     try {
-      response = authApi.register(username, password, passwordSubmit, _csrf)
+      response = authApi.register(username, password, passwordSubmit, csrf)
           .execute();
     } catch (IOException e) {
       throw new AssertionError(e);

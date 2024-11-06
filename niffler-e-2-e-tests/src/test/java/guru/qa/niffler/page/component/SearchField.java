@@ -7,19 +7,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class SearchField extends BaseComponent{
+public class SearchField extends BaseComponent<SearchField>{
 
-  private final SelenideElement searchInput = $("input[aria-label='search']");
+
+  public SearchField() {
+    super($("input[aria-label='search']"));
+  }
+
 
   @Nonnull
   public SearchField doSearch(String value) {
-    searchInput.setValue(value).pressEnter();
+    self.setValue(value).pressEnter();
     return this;
   }
 
   @Nonnull
   public SearchField clearIfNotEmpty() {
-    searchInput.clear();
+    self.clear();
     return this;
   }
 

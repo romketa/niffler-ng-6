@@ -6,26 +6,26 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.page.component.Header;
+import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class LoginPage extends BasePage<LoginPage>  {
 
-  private static final String USERNAME_INPUT_LOC = "input[name='username']";
-  private static final String PASSWORD_INPUT_LOC = "input[name='password']";
-  private static final String SUBMIT_BTN_LOC = "button[type='submit']";
-  private static final String CREATE_NEW_ACC = ".form__register";
-  private static final String TITLE_EL = "h1";
-  private static final String ERROR_MESSAGE = ".form__error";
+  private final SelenideElement usernameInput = $("input[name='username']");
+  private final SelenideElement passwordInput = $("input[name='password']");
+  private final SelenideElement submitBtn = $("button[type='submit']");
+  private final SelenideElement createNewAcc = $(".form__register");
+  private final SelenideElement titleEl = $("h1");
+  private final SelenideElement errorMessage = $(".form__error");
   private final SelenideElement errorContainer = $(".form__error");
 
   @Nonnull
   public MainPage login(String username, String password) {
-    $(USERNAME_INPUT_LOC).setValue(username);
-    $(PASSWORD_INPUT_LOC).setValue(password);
-    $(SUBMIT_BTN_LOC).click();
+    usernameInput.setValue(username);
+    passwordInput.setValue(password);
+    submitBtn.click();
     return new MainPage();
   }
 
@@ -37,13 +37,13 @@ public class LoginPage extends BasePage<LoginPage>  {
 
   @Nonnull
   public RegisterPage createNewAccount() {
-    $(CREATE_NEW_ACC).shouldBe(visible).click();
+    createNewAcc.shouldBe(visible).click();
     return new RegisterPage();
   }
 
   public void verifyThatUserStayedOnLoginPageAfterUnsuccessfulLogin() {
-    $(TITLE_EL).shouldHave(exactText("Log in"));
-    $(ERROR_MESSAGE).shouldBe(visible);
+    titleEl.shouldHave(exactText("Log in"));
+    errorMessage.shouldBe(visible);
   }
 
   @Nonnull
@@ -52,5 +52,19 @@ public class LoginPage extends BasePage<LoginPage>  {
     return this;
   }
 
+  @Step("Submit login")
+  @Nonnull
+  public <T extends BasePage<?>> T submit(T expectedPage) {
+    submitBtn.click();
+    return expectedPage;
+  }
 
+  @Step("Check that page is loaded")
+  @Override
+  @Nonnull
+  public LoginPage checkThatPageLoaded() {
+    usernameInput.should(visible);
+    passwordInput.should(visible);
+    return this;
+  }
 }

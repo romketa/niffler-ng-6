@@ -1,58 +1,56 @@
 package guru.qa.niffler.page;
 
-import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
-import java.util.Arrays;
-import java.util.List;
+import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.junit.jupiter.api.Assertions;
 
 @ParametersAreNonnullByDefault
 public class FriendsPage extends BasePage<FriendsPage> {
 
-  private static final String PEOPLE_TAB = "a[href='/people/friends']";
-  private static final String ALL_TAB = "a[href='/people/all']";
-  private static final String REQUEST_TABLE = "#requests";
-  private static final String ALL_TABLE = "#all";
-  private static final String FRIENDS_TABLE = "#friends";
+  private final SelenideElement peopleTab = $("a[href='/people/friends']");
+  private final SelenideElement allTab = $("a[href='/people/all']");
+  private final SelenideElement requestTable = $("#requests");
+  private final SelenideElement allTable = $("#all");
+  private final SelenideElement friendsTable = $("#friends");
   private final SelenideElement accept = $(byText("Accept"));
   private final SelenideElement decline = $(byText("Decline"));
 
 
   @Nonnull
   public FriendsPage checkExistingFriends(String... expectedUsernames) {
-    $(FRIENDS_TABLE).$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
+    friendsTable.$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
     return this;
   }
 
   @Nonnull
   public FriendsPage checkNotExistingFriends() {
-    $(FRIENDS_TABLE).$$("tr").shouldHave(size(0));
+    friendsTable.$$("tr").shouldHave(size(0));
     return this;
   }
 
   @Nonnull
   public FriendsPage checkExistingInvitations(String... expectedUsernames) {
-    $(REQUEST_TABLE).$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
+    requestTable.$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
     return this;
   }
 
   @Nonnull
   public FriendsPage selectAllPeopleTab() {
-    $(ALL_TAB).click();
+    allTab.click();
     return this;
   }
 
   @Nonnull
   public FriendsPage checkExistingOutcomeInvitations(String... expectedUsernames) {
-    $(ALL_TABLE)
+    allTable
         .$$("tr")
         .filterBy(text("Waiting"))
         .shouldHave(textsInAnyOrder(expectedUsernames));
@@ -68,6 +66,15 @@ public class FriendsPage extends BasePage<FriendsPage> {
   @Nonnull
   public FriendsPage declineFriend() {
     decline.click();
+    return this;
+  }
+
+  @Step("Check that the page is loaded")
+  @Override
+  @Nonnull
+  public FriendsPage checkThatPageLoaded() {
+    peopleTab.shouldBe(Condition.visible);
+    allTab.shouldBe(Condition.visible);
     return this;
   }
 }

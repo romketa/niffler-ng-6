@@ -5,6 +5,7 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.component.Calendar;
 
+import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -17,10 +18,6 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.$x;
 
-import com.codeborne.selenide.SelenideElement;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 @ParametersAreNonnullByDefault
 public class ProfilePage extends BasePage<ProfilePage> {
 
@@ -29,7 +26,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
   private final SelenideElement userName = $("#username");
   private final SelenideElement nameInput = $("#name");
   private final SelenideElement photoInput = $("input[type='file']");
-  private static final String SHOW_ARCHIVED_LOC = "//span[contains(text(), 'archived')]/preceding-sibling::span";
+  private final SelenideElement showArchived = $x("//span[contains(text(), 'archived')]/preceding-sibling::span");
   private final SelenideElement submitButton = $("button[type='submit']");
   private final SelenideElement categoryInput = $("input[name='category']");
   private final SelenideElement archivedSwitcher = $(".MuiSwitch-input");
@@ -38,6 +35,14 @@ public class ProfilePage extends BasePage<ProfilePage> {
 
 
   private final Calendar calendar = new Calendar($(".ProfileCalendar"));
+
+  @Step("Check that page is loaded")
+  @Override
+  @Nonnull
+  public ProfilePage checkThatPageLoaded() {
+    userName.should(visible);
+    return this;
+  }
 
   @Nonnull
   public ProfilePage setName(String name) {

@@ -1,11 +1,9 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.SearchField;
 import io.qameta.allure.Step;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -16,15 +14,24 @@ import static com.codeborne.selenide.Selenide.$;
 @ParametersAreNonnullByDefault
 public class PeoplePage extends BasePage<PeoplePage> {
 
-  private static final String PEOPLE_TAB_LOC = "a[href='/people/friends']";
-  private static final String ALL_TAB_LOC = "a[href='/people/all']";
-  private static final String PEOPLE_TABLE_LOC = "#all";
-  private static final String SEARCH_LOC = "input[aria-label='search']";
+  private final SelenideElement friendsTab = $("a[href='/people/friends']");
+  private final SelenideElement allTab = $("a[href='/people/all']");
+  private final SelenideElement peopleTab = $("#all");
+  private final SelenideElement search = $("input[aria-label='search']");
+
+  @Step("Check that the page is loaded")
+  @Override
+  @Nonnull
+  public PeoplePage checkThatPageLoaded() {
+    peopleTab.shouldBe(Condition.visible);
+    allTab.shouldBe(Condition.visible);
+    return this;
+  }
 
   @Nonnull
   @Step("Check that invitation sent to user {username}")
   public PeoplePage checkInvitationSentToUser(@Nonnull String username) {
-    SelenideElement friendRow = $(PEOPLE_TABLE_LOC).$$("tr").find(text(username));
+    SelenideElement friendRow = friendsTab.$$("tr").find(text(username));
     friendRow.shouldHave(text("Waiting..."));
     return this;
   }
@@ -32,7 +39,7 @@ public class PeoplePage extends BasePage<PeoplePage> {
   @Step("Send invitation to user {username}")
   public PeoplePage sendInvitation(@Nonnull String username) {
     new SearchField().doSearch(username);
-    $(PEOPLE_TABLE_LOC).$$("tr").find(text(username)).$("button")
+    friendsTab.$$("tr").find(text(username)).$("button")
         .click();
     return this;
   }
@@ -47,14 +54,14 @@ public class PeoplePage extends BasePage<PeoplePage> {
   @Nonnull
   @Step("Verify that user {username} exist in people list")
   public PeoplePage verifyThatUserExistInPeopleList(@Nonnull String username) {
-    $(PEOPLE_TAB_LOC).$$("tr").find(text(username)).shouldBe(exist);
+    peopleTab.$$("tr").find(text(username)).shouldBe(exist);
     return this;
   }
 
   @Nonnull
   @Step("Filter by username {username}")
   public PeoplePage filterByUsername(@Nonnull String username) {
-    $(SEARCH_LOC).setValue(username).pressEnter();
+    search.setValue(username).pressEnter();
     return this;
   }
 
