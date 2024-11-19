@@ -95,4 +95,10 @@ public class UsersRestClient implements UsersClient {
       limit++;
     }
   }
+
+  @Nonnull
+  @Override
+  public List<UserJson> findAll(String username, String searchQuery) {
+    return userApiClient.findAll(username, searchQuery);
+  }
 }

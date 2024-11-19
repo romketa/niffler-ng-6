@@ -3,6 +3,7 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.model.UserJson;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -19,5 +20,7 @@ public interface UsersClient {
 
   @Nonnull
   void addFriends(UserJson targetUser, int count);
+
+  List<UserJson> findAll(String username, @Nullable String searchQuery);
 
 }
