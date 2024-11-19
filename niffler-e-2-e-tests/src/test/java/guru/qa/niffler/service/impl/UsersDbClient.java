@@ -17,6 +17,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -119,6 +120,11 @@ public class UsersDbClient implements UsersClient {
                 FriendState.FRIEND));
       }
     }
+  }
+
+  @Override
+  public List<UserJson> findAll(String username, String searchQuery) {
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   private UserEntity createNewUser(String username, String password) {

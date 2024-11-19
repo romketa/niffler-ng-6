@@ -124,5 +124,15 @@ public class UserApiClient extends RestClient {
     assertEquals(200, response.code());
   }
 
+  public List<UserJson> findAll(String username, String searchQuery) {
+    final Response<List<UserJson>> response;
+    try {
+      response = usersApi.allUsers(username, searchQuery).execute();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    assertEquals(200, response.code());
+    return response.body() != null ? response.body() : List.of();
+  }
 
 }
