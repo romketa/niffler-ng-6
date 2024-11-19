@@ -6,8 +6,13 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.component.Calendar;
 
 import io.qameta.allure.Step;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.imageio.ImageIO;
+import utils.ScreenDiffResult;
 
 import static com.codeborne.selenide.Condition.attributeMatching;
 import static com.codeborne.selenide.Condition.disabled;
@@ -17,6 +22,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.$x;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
 public class ProfilePage extends BasePage<ProfilePage> {
@@ -104,6 +110,16 @@ public class ProfilePage extends BasePage<ProfilePage> {
   @Nonnull
   public ProfilePage submitProfile() {
     submitButton.click();
+    return this;
+  }
+
+  @Step("Check avatar image matches the expected image")
+  public ProfilePage checkAvatarImg(BufferedImage expectedAvatar) throws IOException {
+    BufferedImage actual = ImageIO.read(Objects.requireNonNull($(".MuiAvatar-img").screenshot()));
+    assertFalse(new ScreenDiffResult(
+        actual,
+        expectedAvatar
+    ));
     return this;
   }
 }

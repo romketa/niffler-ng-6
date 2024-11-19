@@ -1,16 +1,24 @@
 package guru.qa.niffler.page;
 
 import static com.codeborne.selenide.Condition.enabled;
+import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
+import guru.qa.niffler.page.component.SpendingTable;
 import io.qameta.allure.Step;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.imageio.ImageIO;
+import utils.ScreenDiffResult;
 
 @ParametersAreNonnullByDefault
 public class MainPage extends BasePage<MainPage> {
@@ -22,12 +30,19 @@ public class MainPage extends BasePage<MainPage> {
   private final SelenideElement newSpendingBtn = $x("//a[contains(text(), 'New spending')]");
   private final SelenideElement searchInput = $("input[aria-label='search']");
   private final SelenideElement statComp = $("#stat");
-  private final SelenideElement spendingTable = $("#spendings");
+  private final SelenideElement statImg = $("canvas[role='img']");
+  private final SelenideElement statCell = $("#legend-container");
   protected final Header header = new Header();
+  protected final SpendingTable spendingTable = new SpendingTable();
 
   @Nonnull
   public Header getHeader() {
     return header;
+  }
+
+  @Nonnull
+  public SpendingTable getSpendingTable() {
+    return spendingTable;
   }
 
   @Step("Search spending {spendingDescription}")
@@ -62,8 +77,8 @@ public class MainPage extends BasePage<MainPage> {
   @Nonnull
   @Step("Check that page is loaded")
   public MainPage checkThatPageLoaded() {
-    statComp.should(visible).shouldHave(text("Statistics"));
-    spendingTable.should(visible).shouldHave(text("History of Spendings"));
+    statComp.shouldBe(visible).shouldHave(text("Statistics"));
+    spendingTable.getSelf().shouldBe(visible).shouldHave(text("History of Spendings"));
     return this;
   }
 
@@ -71,6 +86,25 @@ public class MainPage extends BasePage<MainPage> {
   @Step("Verify that alert of created spending is shown")
   public MainPage verifyAlertCreatedSpending() {
     checkAlert("New spending is successfully created");
+    return this;
+  }
+
+  @Nonnull
+  @Step("Verify statistic image")
+  public MainPage checkStatImg(BufferedImage expected) throws IOException {
+    BufferedImage actual = ImageIO.read(Objects.requireNonNull(statImg.screenshot()));
+    assertFalse(new ScreenDiffResult(
+        actual,
+        expected
+    ));
+    return this;
+  }
+
+  @Step("Check that statistic cell have text {text}")
+  public MainPage checkStatCell(String... text) {
+    for (String s : text) {
+      statCell.shouldHave(exactText(s));
+    }
     return this;
   }
 }
