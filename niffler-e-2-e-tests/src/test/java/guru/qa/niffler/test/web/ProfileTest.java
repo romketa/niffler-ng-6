@@ -81,7 +81,6 @@ public class ProfileTest {
     profilePage.checkName(newName)
         .checkPhotoExist()
         .checkAvatarImg(expectedAvatar);
-    ;
   }
 
   @User
@@ -114,19 +113,5 @@ public class ProfileTest {
         .toAllPeoplesPage()
         .sendInvitation("moon")
         .verifyAlertSentInvitation("moon");
-  }
-
-  @User
-  @Test
-  @ScreenShotTest("img/cat.png")
-  void shouldUpdateProfileWithAllFieldsSet(@Nonnull UserJson user, BufferedImage expectedAvatar) throws IOException {
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .toProfilePage()
-        .checkPhotoExist()
-        .checkAvatarImg(expectedAvatar);
   }
 }
