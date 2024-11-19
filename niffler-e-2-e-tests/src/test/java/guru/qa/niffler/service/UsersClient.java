@@ -9,15 +9,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface UsersClient {
 
   @Nonnull
-  UserJson createUser(String username, String password) throws InterruptedException;
+  UserJson createUser(String username, String password);
 
   @Nonnull
-  List<UserJson> createIncomeInvitations(UserJson targetUser, int count);
+  void addIncomeInvitations(UserJson targetUser, int count);
 
   @Nonnull
-  List<UserJson> createOutcomeInvitations(UserJson targetUser, int count);
+  void addOutcomeInvitations(UserJson targetUser, int count);
 
   @Nonnull
-  List<UserJson> createFriends(UserJson targetUser, int count);
+  void addFriends(UserJson targetUser, int count);
 
 }

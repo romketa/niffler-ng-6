@@ -1,5 +1,6 @@
 package guru.qa.niffler.page;
 
+import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
 import static com.codeborne.selenide.Condition.text;
@@ -17,11 +18,10 @@ public class FriendsPage extends BasePage<FriendsPage> {
 
   private final SelenideElement peopleTab = $("a[href='/people/friends']");
   private final SelenideElement allTab = $("a[href='/people/all']");
-  private final SelenideElement requestTable = $("#requests");
+  private final SelenideElement requestsTable = $("#requests");
   private final SelenideElement allTable = $("#all");
   private final SelenideElement friendsTable = $("#friends");
-  private final SelenideElement accept = $(byText("Accept"));
-  private final SelenideElement decline = $(byText("Decline"));
+  private final SelenideElement popup = $("div[role='dialog']");
 
 
   @Nonnull
@@ -38,7 +38,21 @@ public class FriendsPage extends BasePage<FriendsPage> {
 
   @Nonnull
   public FriendsPage checkExistingInvitations(String... expectedUsernames) {
-    requestTable.$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
+    requestsTable.$$("tr").shouldHave(textsInAnyOrder(expectedUsernames));
+    return this;
+  }
+
+  @Step("Check that income invitations count is equal to {expectedCount}")
+  @Nonnull
+  public FriendsPage checkExistingInvitationsCount(int expectedCount) {
+    requestsTable.$$("tr").shouldHave(size(expectedCount));
+    return this;
+  }
+
+  @Step("Check that friends count is equal to {expectedCount}")
+  @Nonnull
+  public FriendsPage checkExistingFriendsCount(int expectedCount) {
+    friendsTable.$$("tr").shouldHave(size(expectedCount));
     return this;
   }
 
@@ -57,15 +71,20 @@ public class FriendsPage extends BasePage<FriendsPage> {
     return this;
   }
 
+  @Step("Accept invitation from user: {username}")
   @Nonnull
-  public FriendsPage acceptFriend() {
-    accept.click();
+  public FriendsPage acceptFriendInvitationFromUser(String username) {
+    SelenideElement friendRow = requestsTable.$$("tr").find(text(username));
+    friendRow.$(byText("Accept")).click();
     return this;
   }
 
+  @Step("Decline invitation from user: {username}")
   @Nonnull
-  public FriendsPage declineFriend() {
-    decline.click();
+  public FriendsPage declineFriendInvitationFromUser(String username) {
+    SelenideElement friendRow = requestsTable.$$("tr").find(text(username));
+    friendRow.$(byText("Decline")).click();
+    popup.$(byText("Decline")).click(usingJavaScript());
     return this;
   }
 

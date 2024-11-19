@@ -3,21 +3,22 @@ package guru.qa.niffler.page.component;
 import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class Calendar extends BaseComponent<Calendar>{
+public class Calendar extends BaseComponent<Calendar> {
 
-  private final SelenideElement yearArrowDropDown = self.find("svg[data-testid='ArrowDropDownIcon']");
+  private final SelenideElement yearArrowDropDown = self.find(
+      "svg[data-testid='ArrowDropDownIcon']");
   private final ElementsCollection year = self.findAll(".MuiPickersYear-root");
   private final SelenideElement month = self.find(".MuiPickersCalendarHeader-label");
   private final SelenideElement monthSelectRight = self.find("svg[data-testid='ArrowRightIcon']");
@@ -31,9 +32,11 @@ public class Calendar extends BaseComponent<Calendar>{
   @Nonnull
   public Calendar selectDateInCalendar(Date date) {
     LocalDate lDate = LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
+    ZonedDateTime zdt = lDate.atStartOfDay(ZoneId.systemDefault());
+    long unixTime = zdt.toInstant().toEpochMilli();
     selectYear(lDate);
     selectMonth(lDate);
-    selectDate(lDate.toEpochDay());
+    selectDate(unixTime);
     return this;
   }
 

@@ -4,6 +4,7 @@ import com.google.common.base.Stopwatch;
 import guru.qa.niffler.api.AuthApiClient;
 import guru.qa.niffler.api.UserApiClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
+import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
@@ -17,8 +18,8 @@ import utils.RandomDataUtils;
 @ParametersAreNonnullByDefault
 public class UsersRestClient implements UsersClient {
 
+  private static final String defaultPassword = "12345";
   UserApiClient userApiClient = new UserApiClient();
-
   AuthApiClient authApiClient = new AuthApiClient();
 
   @Override
@@ -26,18 +27,24 @@ public class UsersRestClient implements UsersClient {
   @Step("Create a new user {username}")
   public UserJson createUser(String username, String password) {
     authApiClient.requestRegisterForm();
-    authApiClient.register(username, password, password, ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN"));
+    authApiClient.register(username, password, password,
+        ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN"));
     Stopwatch sw = Stopwatch.createStarted();
     long maxWaitTime = 5000L;
-    while(sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
+    while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
       UserJson user = userApiClient.currentUser(username);
-      if(user != null && user.id() != null) {
-        return user;
+      if (user != null && user.id() != null) {
+        return user.addTestData(
+            new TestData(
+                password
+            )
+        );
       } else {
         try {
           Thread.sleep(100);
         } catch (InterruptedException e) {
-          throw new RuntimeException("Error occurred while executing request of getting current user");
+          throw new RuntimeException(
+              "Error occurred while executing request of getting current user");
         }
       }
     }
@@ -47,49 +54,45 @@ public class UsersRestClient implements UsersClient {
   @Override
   @Nonnull
   @Step("Create {count} income invitations for user {targetUser}")
-  public List<UserJson> createIncomeInvitations(UserJson targetUser, int count) {
-    List<UserJson> users = new ArrayList<>();
+  public void addIncomeInvitations(UserJson targetUser, int count) {
     int limit = 0;
     while (count > limit) {
       final String username = RandomDataUtils.randomUsername();
-      final UserJson user = createUser(username, "12345");
-      userApiClient.sendInvitation(user.username(), targetUser.username());
-      users.add(user);
+      final UserJson newUser = createUser(username, defaultPassword);
+      userApiClient.sendInvitation(newUser.username(), targetUser.username());
+      targetUser.testData().incomeInvitations().add(newUser);
       limit++;
     }
-    return users;
   }
 
   @Override
   @Nonnull
   @Step("Create {count} outcome invitations for user {targetUser}")
-  public List<UserJson> createOutcomeInvitations(UserJson targetUser, int count) {
-    List<UserJson> users = new ArrayList<>();
+  public void addOutcomeInvitations(UserJson targetUser, int count) {
     int limit = 0;
     while (count > limit) {
       final String username = RandomDataUtils.randomUsername();
-      final UserJson user = createUser(username, "12345");
-      userApiClient.sendInvitation(targetUser.username(), user.username());
-      users.add(user);
+      final UserJson newUser = createUser(username, defaultPassword);
+      userApiClient.sendInvitation(targetUser.username(), newUser.username());
+      targetUser.testData().outcomeInvitations().add(newUser);
       limit++;
     }
-    return users;
   }
 
   @Override
   @Nonnull
   @Step("Create {count} friends for {targetUser} user")
-  public List<UserJson> createFriends(UserJson targetUser, int count) {
-    List<UserJson> users = new ArrayList<>();
+  public void addFriends(UserJson targetUser, int count) {
     int limit = 0;
     while (count > limit) {
       final String username = RandomDataUtils.randomUsername();
-      final UserJson user = createUser(username, "12345");
-      userApiClient.sendInvitation(targetUser.username(), user.username());
-      userApiClient.sendInvitation(user.username(), targetUser.username());
-      users.add(user);
+      final UserJson newUser = createUser(username, defaultPassword);
+      userApiClient.sendInvitation(targetUser.username(), newUser.username());
+      userApiClient.sendInvitation(newUser.username(), targetUser.username());
+      targetUser.testData()
+          .friends()
+          .add(newUser);
       limit++;
     }
-    return users;
   }
 }

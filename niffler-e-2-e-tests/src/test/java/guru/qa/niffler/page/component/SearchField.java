@@ -2,7 +2,6 @@ package guru.qa.niffler.page.component;
 
 import static com.codeborne.selenide.Selenide.$;
 
-import com.codeborne.selenide.SelenideElement;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -16,7 +15,7 @@ public class SearchField extends BaseComponent<SearchField>{
 
 
   @Nonnull
-  public SearchField doSearch(String value) {
+  public SearchField search(String value) {
     self.setValue(value).pressEnter();
     return this;
   }

@@ -45,7 +45,7 @@ public class SpendingTable extends BaseComponent<SpendingTable>{
 
   @Nonnull
   public SpendingTable searchSpendingByDescription(String description) {
-    new SearchField().doSearch(description);
+    new SearchField().search(description);
     return this;
   }
 

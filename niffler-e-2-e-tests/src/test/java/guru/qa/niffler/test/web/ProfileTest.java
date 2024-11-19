@@ -1,13 +1,15 @@
 package guru.qa.niffler.test.web;
 
+import static utils.RandomDataUtils.randomName;
+
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
 
@@ -17,54 +19,85 @@ public class ProfileTest {
   private static final Config CFG = Config.getInstance();
 
   @User(
-      username = "moon",
       categories = @Category(
           archived = true
       )
   )
   @Test
-  void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
+  void archivedCategoryShouldPresentInCategoriesList(UserJson user) {
+    final String categoryName = user.testData().categoryDescriptions()[0];
+
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin("duck", "12345")
+        .successLogin(user.username(), user.testData().password())
         .checkThatPageLoaded();
 
     Selenide.open(CFG.frontUrl() + "profile", ProfilePage.class)
-        .checkArchivedCategoryExists(category.name())
-        .checkName("")
-        .checkAlert("")
-        .checkName("");
+        .checkArchivedCategoryExists(categoryName);
   }
 
   @User(
-      username = "moon",
       categories = @Category(
           archived = false
       )
   )
   @Test
-  void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
+  void activeCategoryShouldPresentInCategoriesList(UserJson user) {
+    final String categoryName = user.testData().categoryDescriptions()[0];
+
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login("moon", "moon123");
+        .fillLoginPage(user.username(), user.testData().password());
     Selenide.open(CFG.profileUrl(), ProfilePage.class)
-        .checkCategoryExists(category.name());
+        .checkCategoryExists(categoryName);
   }
 
   @User
   @Test
-  void userShouldEditProfile(UserJson user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
-        .header()
+  void shouldUpdateProfileWithAllFieldsSet(UserJson user) {
+    final String newName = randomName();
+
+    ProfilePage profilePage = Selenide.open(LoginPage.URL, LoginPage.class)
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .checkThatPageLoaded()
+        .getHeader()
         .toProfilePage()
-        .setName("Name")
-        .checkName("Name");
+        .uploadPhotoFromClasspath("img/cat.jpeg")
+        .setName(newName)
+        .submitProfile()
+        .checkAlert("Profile successfully updated");
+
+    Selenide.refresh();
+
+    profilePage.checkName(newName)
+        .checkPhotoExist();
+  }
+
+  @User
+  @Test
+  void shouldUpdateProfileWithOnlyRequiredFields(UserJson user) {
+    final String newName = randomName();
+
+    ProfilePage profilePage = Selenide.open(LoginPage.URL, LoginPage.class)
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .checkThatPageLoaded()
+        .getHeader()
+        .toProfilePage()
+        .setName(newName)
+        .submitProfile()
+        .checkAlert("Profile successfully updated");
+
+    Selenide.refresh();
+
+    profilePage.checkName(newName);
   }
 
   @Test
   @User
   public void sendInvitationAlertTest(UserJson user) {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
         .allPeoplesPage()
         .sendInvitation("moon")
         .verifyAlertSentInvitation("moon");

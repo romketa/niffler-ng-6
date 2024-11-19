@@ -99,4 +99,11 @@ public class ProfilePage extends BasePage<ProfilePage> {
     categoryInput.should(disabled);
     return this;
   }
+
+  @Step("Save profile")
+  @Nonnull
+  public ProfilePage submitProfile() {
+    submitButton.click();
+    return this;
+  }
 }

@@ -17,10 +17,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class Header extends BaseComponent<Header> {
 
-  private final SelenideElement menu = $("button[aria-label='Menu']");
+//  private final SelenideElement menu = $("button[aria-label='Menu']");
   private final SelenideElement newSpending = self.find("a[href='/spending']");
   private final SelenideElement toMainPage = self.find("a[href='/main']");
-  private final ElementsCollection menuItem = self.findAll("li[role='menuitem']");
+  private final SelenideElement menuBtn = self.$("button");
+  private final SelenideElement menu = $("ul[role='menu']");
+  private final ElementsCollection menuItems = menu.$$("li");
 
   public Header() {
     super($("#root header"));
@@ -33,29 +35,29 @@ public class Header extends BaseComponent<Header> {
 
   @Nonnull
   public FriendsPage toFriendsPage() {
-    menu.click();
-    menuItem.get(1).click();
+    menuBtn.click();
+    menuItems.get(1).click();
     return new FriendsPage();
   }
 
   @Nonnull
   public PeoplePage toAllPeoplesPage() {
-    menu.click();
-    menuItem.get(2).click();
+    menuBtn.click();
+    menuItems.get(2).click();
     return new PeoplePage();
   }
 
   @Nonnull
   public ProfilePage toProfilePage() {
-    menu.click();
-    menuItem.first().click();
+    menuBtn.click();
+    menuItems.first().click();
     return new ProfilePage();
   }
 
   @Nonnull
   public LoginPage signOut() {
-    menu.click();
-    menuItem.get(3).click();
+    menuBtn.click();
+    menuItems.get(3).click();
     return new LoginPage();
   }
 

@@ -45,6 +45,13 @@ public class RegisterPage extends BasePage<RegisterPage>  {
     return new LoginPage();
   }
 
+  @Step("Submit register")
+  @Nonnull
+  public RegisterPage errorSubmit() {
+    submitButton.click();
+    return this;
+  }
+
   public void submit() {
     submitButton.click();
   }

@@ -9,7 +9,6 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.page.ProfilePage;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
 
@@ -22,8 +21,9 @@ public class SpendingWebTest {
   @User
   void newSpendingAlertTest(UserJson user) {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
-        .header()
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .getHeader()
         .addSpendingPage()
         .addAmount("100")
         .addCategoryName("Category name")
@@ -36,20 +36,20 @@ public class SpendingWebTest {
   }
 
   @User(
-      username = "moon",
       spendings = @Spending(
-          category = "New category",
+          category = "Some category",
           description = "Keep",
           amount = 990
       )
   )
   @Test
-  void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
-    final String newDescription = "some desc";
+  void categoryDescriptionShouldBeChangedFromTable(UserJson user) {
+    final String newDescription = "some desc 1";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login("moon", "moon123")
-        .editSpending(spend.description())
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .editSpending("Some category")
         .setNewSpendingDescription(newDescription)
         .save();
 
@@ -60,8 +60,9 @@ public class SpendingWebTest {
   @Test
   void userShouldAddNewSpending(UserJson user) {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
-        .header()
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .getHeader()
         .addSpendingPage()
         .addAmount("100")
         .addCategoryName("Category name")

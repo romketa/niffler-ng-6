@@ -1,15 +1,13 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.page.component.Calendar;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
+import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.Calendar;
 import java.util.Date;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class EditSpendingPage extends BasePage<EditSpendingPage> {
@@ -17,10 +15,10 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
   private final SelenideElement descInput = $("#description");
   private final SelenideElement saveBtn = $("#save");
   private final Calendar calendar = new Calendar($(".MuiPickersLayout-root"));
-  private final SelenideElement calendarPick = $("button[aria-label='Choose date']");
+  private final SelenideElement calendarPick = $("button[aria-label^='Choose date']");
   private final SelenideElement amountInput = $("#amount");
   private final SelenideElement categoryInput = $("#category");
-  private final SelenideElement descriptionEl = $("#desscription");
+  private final SelenideElement descriptionEl = $("#description");
 
   @Override
   @Nonnull

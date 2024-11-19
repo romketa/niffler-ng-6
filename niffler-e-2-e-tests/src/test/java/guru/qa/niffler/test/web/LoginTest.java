@@ -41,7 +41,7 @@ public class LoginTest {
   @Test
   void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
     LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
-    loginPage.login(randomUsername(), "BAD");
+    loginPage.fillLoginPage(randomUsername(), "BAD");
     loginPage.checkError("Bad credentials");
   }
 }

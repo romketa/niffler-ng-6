@@ -9,21 +9,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
 public class PeoplePage extends BasePage<PeoplePage> {
 
+  public static final String URL = CFG.frontUrl() + "people/all";
   private final SelenideElement friendsTab = $("a[href='/people/friends']");
   private final SelenideElement allTab = $("a[href='/people/all']");
-  private final SelenideElement peopleTab = $("#all");
-  private final SelenideElement search = $("input[aria-label='search']");
+  private final SelenideElement peopleTable = $("#all");
+  private final SearchField searchInput = new SearchField();
 
   @Step("Check that the page is loaded")
   @Override
   @Nonnull
   public PeoplePage checkThatPageLoaded() {
-    peopleTab.shouldBe(Condition.visible);
+    peopleTable.shouldBe(Condition.visible);
     allTab.shouldBe(Condition.visible);
     return this;
   }
@@ -38,7 +40,7 @@ public class PeoplePage extends BasePage<PeoplePage> {
 
   @Step("Send invitation to user {username}")
   public PeoplePage sendInvitation(@Nonnull String username) {
-    new SearchField().doSearch(username);
+    new SearchField().search(username);
     friendsTab.$$("tr").find(text(username)).$("button")
         .click();
     return this;
@@ -54,15 +56,21 @@ public class PeoplePage extends BasePage<PeoplePage> {
   @Nonnull
   @Step("Verify that user {username} exist in people list")
   public PeoplePage verifyThatUserExistInPeopleList(@Nonnull String username) {
-    peopleTab.$$("tr").find(text(username)).shouldBe(exist);
+    peopleTable.$$("tr").find(text(username)).shouldBe(exist);
     return this;
   }
 
   @Nonnull
   @Step("Filter by username {username}")
   public PeoplePage filterByUsername(@Nonnull String username) {
-    search.setValue(username).pressEnter();
+    searchInput.search(username);
     return this;
   }
 
+  @Nonnull
+  public PeoplePage checkExistingUser(String username) {
+    searchInput.search(username);
+    peopleTable.$$("tr").find(text(username)).should(visible);
+    return this;
+  }
 }

@@ -89,7 +89,7 @@ public class MainPage extends BasePage<MainPage> {
   }
 
   @Nonnull
-  public Header header() {
+  public Header getHeader() {
     return new Header();
   }
 }

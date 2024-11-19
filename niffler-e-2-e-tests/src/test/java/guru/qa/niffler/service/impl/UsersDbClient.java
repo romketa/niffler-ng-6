@@ -1,5 +1,6 @@
 package guru.qa.niffler.service.impl;
 
+import static java.util.Objects.requireNonNull;
 import static utils.RandomDataUtils.randomUsername;
 
 import guru.qa.niffler.config.Config;
@@ -11,25 +12,23 @@ import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
-import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import jaxb.userdata.FriendState;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import utils.RandomDataUtils;
 
 @ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 
   private static final Config CFG = Config.getInstance();
+  private static final String defaultPassword = "12345";
   private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
   private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
   private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
@@ -47,71 +46,79 @@ public class UsersDbClient implements UsersClient {
 
   @Override
   @Nonnull
-  public List<UserJson> createIncomeInvitations(UserJson targetUser, int count) {
-    List<UserJson> income = new ArrayList<>();
+  public void addIncomeInvitations(UserJson targetUser, int count) {
     if (count > 0) {
       UserEntity targetEntity = userdataUserRepository.findById(targetUser.id()).orElseThrow();
-
       for (int i = 0; i < count; i++) {
-        xaJdbcTxTemplate.execute(() -> {
-          final String username = randomUsername();
-          final UserEntity user = createNewUser(username, "12345");
-          userdataUserRepository.sendInvitation(
-              user,
-              targetEntity
-          );
-          income.add(UserJson.fromEntity(user, null));
-          return null;
-        });
+        targetUser.testData()
+            .incomeInvitations()
+            .add(UserJson.fromEntity(
+                requireNonNull(xaJdbcTxTemplate.execute(() -> {
+                      final String username = randomUsername();
+                      final UserEntity newUser = createNewUser(username, defaultPassword);
+                      userdataUserRepository.sendInvitation(
+                          newUser,
+                          targetEntity
+                      );
+                      return newUser;
+                    }
+                )),
+                FriendState.INVITE_RECEIVED
+            ));
       }
     }
-    return income;
   }
 
   @Override
   @Nonnull
-  public List<UserJson> createOutcomeInvitations(UserJson targetUser, int count) {
-    List<UserJson> outcome = new ArrayList<>();
+  public void addOutcomeInvitations(UserJson targetUser, int count) {
     if (count > 0) {
       UserEntity targetEntity = userdataUserRepository.findById(targetUser.id()).orElseThrow();
 
       for (int i = 0; i < count; i++) {
-        xaJdbcTxTemplate.execute(() -> {
-          final String username = randomUsername();
-          final UserEntity user = createNewUser(username, "12345");
-          userdataUserRepository.sendInvitation(
-              targetEntity,
-              user
-          );
-          outcome.add(UserJson.fromEntity(user, null));
-          return null;
-        });
+        targetUser.testData()
+            .outcomeInvitations()
+            .add(UserJson.fromEntity(
+                requireNonNull(
+                    xaJdbcTxTemplate.execute(() -> {
+                          final String username = randomUsername();
+                          final UserEntity newUser = createNewUser(username, defaultPassword);
+                          userdataUserRepository.sendInvitation(
+                              targetEntity,
+                              newUser
+                          );
+                          return newUser;
+                        }
+                    )
+                ), FriendState.INVITE_RECEIVED));
       }
     }
-    return outcome;
   }
 
   @Override
   @Nonnull
-  public List<UserJson> createFriends(UserJson targetUser, int count) {
-    List<UserJson> friends = new ArrayList<>();
+  public void addFriends(UserJson targetUser, int count) {
     if (count > 0) {
       UserEntity targetEntity = userdataUserRepository.findById(targetUser.id()).orElseThrow();
 
       for (int i = 0; i < count; i++) {
-        xaJdbcTxTemplate.execute(() -> {
-          final String username = randomUsername();
-          final UserEntity user = createNewUser(username, "12345");
-          userdataUserRepository.addFriend(
-              targetEntity,
-              user
-          );
-          friends.add(UserJson.fromEntity(user, null));
-          return null;
-        });
+        targetUser.testData()
+            .friends()
+            .add(UserJson.fromEntity(
+                requireNonNull(xaJdbcTxTemplate.execute(() -> {
+                          final String username = randomUsername();
+                          final UserEntity newUser = createNewUser(username, "12345");
+                          userdataUserRepository.addFriend(
+                              targetEntity,
+                              newUser
+                          );
+                          return newUser;
+                        }
+                    )
+                ),
+                FriendState.FRIEND));
       }
     }
-    return friends;
   }
 
   private UserEntity createNewUser(String username, String password) {
