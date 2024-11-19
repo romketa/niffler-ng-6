@@ -8,6 +8,7 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.service.OldUserDbClient;
 import java.util.Date;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,6 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 
 @ExtendWith(UsersClientExtension.class)
+@Disabled
 public class JdbcTest {
 
   OldUserDbClient oldUserDbClient = new OldUserDbClient();

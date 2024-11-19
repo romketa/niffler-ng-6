@@ -87,8 +87,8 @@ public class UsersRestClient implements UsersClient {
     while (count > limit) {
       final String username = RandomDataUtils.randomUsername();
       final UserJson newUser = createUser(username, defaultPassword);
-      userApiClient.sendInvitation(targetUser.username(), newUser.username());
       userApiClient.sendInvitation(newUser.username(), targetUser.username());
+      userApiClient.acceptInvitation(targetUser.username(), newUser.username());
       targetUser.testData()
           .friends()
           .add(newUser);

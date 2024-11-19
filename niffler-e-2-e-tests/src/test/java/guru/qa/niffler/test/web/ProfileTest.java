@@ -28,10 +28,11 @@ public class ProfileTest {
     final String categoryName = user.testData().categoryDescriptions()[0];
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin(user.username(), user.testData().password())
-        .checkThatPageLoaded();
-
-    Selenide.open(CFG.frontUrl() + "profile", ProfilePage.class)
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .checkThatPageLoaded()
+        .getHeader()
+        .toProfilePage()
         .checkArchivedCategoryExists(categoryName);
   }
 
@@ -45,8 +46,11 @@ public class ProfileTest {
     final String categoryName = user.testData().categoryDescriptions()[0];
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password());
-    Selenide.open(CFG.profileUrl(), ProfilePage.class)
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .checkThatPageLoaded()
+        .getHeader()
+        .toProfilePage()
         .checkCategoryExists(categoryName);
   }
 
@@ -98,7 +102,8 @@ public class ProfileTest {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .fillLoginPage(user.username(), user.testData().password())
         .submit(new MainPage())
-        .allPeoplesPage()
+        .getHeader()
+        .toAllPeoplesPage()
         .sendInvitation("moon")
         .verifyAlertSentInvitation("moon");
   }

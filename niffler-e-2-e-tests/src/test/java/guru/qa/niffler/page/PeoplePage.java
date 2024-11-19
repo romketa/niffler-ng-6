@@ -41,7 +41,7 @@ public class PeoplePage extends BasePage<PeoplePage> {
   @Step("Send invitation to user {username}")
   public PeoplePage sendInvitation(@Nonnull String username) {
     new SearchField().search(username);
-    friendsTab.$$("tr").find(text(username)).$("button")
+    peopleTable.$$("tr").find(text(username)).$("button")
         .click();
     return this;
   }

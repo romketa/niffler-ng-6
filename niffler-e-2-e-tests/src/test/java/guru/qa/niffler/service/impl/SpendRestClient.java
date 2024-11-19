@@ -15,14 +15,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class SpendRestClient implements SpendClient {
 
-  private static final Config CFG = Config.getInstance();
   private final SpendApiClient spendApi = new SpendApiClient();
 
   @Override
   @Nonnull
   @Step("Create new spend {spend}")
   public SpendJson createSpend(SpendJson spend) {
-    return spendApi.createSpend(spend);
+    return Objects.requireNonNull(spendApi.createSpend(spend));
   }
 
   @Override

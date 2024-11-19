@@ -1,6 +1,8 @@
 package guru.qa.niffler.api;
 
 import guru.qa.niffler.api.core.RestClient;
+
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import guru.qa.niffler.config.Config;
@@ -114,7 +116,17 @@ public class SpendApiClient extends RestClient {
       throw new AssertionError(e);
     }
     assertEquals(200, response.code());
-    return response.body();
+    CategoryJson result = requireNonNull(response.body());
+
+    return category.archived()
+        ? updateCategory(
+        new CategoryJson(
+            result.id(),
+            result.name(),
+            result.username(),
+            true
+        )
+    ) : result;
   }
 
   @Nullable

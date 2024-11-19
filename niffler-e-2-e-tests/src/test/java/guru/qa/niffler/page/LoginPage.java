@@ -53,12 +53,6 @@ public class LoginPage extends BasePage<LoginPage>  {
   }
 
   @Nonnull
-  public MainPage successLogin(String username, String password) {
-    fillLoginPage(username, password);
-    return new MainPage();
-  }
-
-  @Nonnull
   public RegisterPage createNewAccount() {
     createNewAcc.shouldBe(visible).click();
     return new RegisterPage();

@@ -7,7 +7,6 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.service.impl.SpendRestClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class CategoryExtension implements
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
       CategoryExtension.class);
 
-  private final SpendClient spendDbClient = new SpendRestClient();
+  private final SpendClient spendClient = new SpendRestClient();
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
@@ -49,7 +48,7 @@ public class CategoryExtension implements
                   categoryAnno.archived()
               );
 
-              CategoryJson createdCategory = spendDbClient.createCategory(category);
+              CategoryJson createdCategory = spendClient.createCategory(category);
               result.add(createdCategory);
             }
 
