@@ -14,6 +14,7 @@ import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.ProfilePage;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
 
 @WebTest
@@ -113,5 +114,19 @@ public class ProfileTest {
         .toAllPeoplesPage()
         .sendInvitation("moon")
         .verifyAlertSentInvitation("moon");
+  }
+
+  @User
+  @Test
+  @ScreenShotTest("img/cat.png")
+  void shouldUpdateProfileWithAllFieldsSet(@Nonnull UserJson user, BufferedImage expectedAvatar) throws IOException {
+    Selenide.open(LoginPage.URL, LoginPage.class)
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .checkThatPageLoaded()
+        .getHeader()
+        .toProfilePage()
+        .checkPhotoExist()
+        .checkAvatarImg(expectedAvatar);
   }
 }
