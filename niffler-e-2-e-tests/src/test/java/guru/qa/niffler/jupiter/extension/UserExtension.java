@@ -31,10 +31,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
             usersClient.addIncomeInvitations(testUser, userAnno.incomeInvitations());
             usersClient.addOutcomeInvitations(testUser, userAnno.outcomeInvitations());
             usersClient.addFriends(testUser, userAnno.friends());
-            context.getStore(NAMESPACE).put(
-                context.getUniqueId(),
-                testUser
-            );
+            setUser(testUser);
           }
         });
   }
@@ -46,8 +43,20 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
   }
 
   @Override
-  public UserJson resolveParameter(ParameterContext parameterContext,
-      ExtensionContext extensionContext) throws ParameterResolutionException {
-    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), UserJson.class);
+  public UserJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    return getUserJson();
+  }
+
+  public static void setUser(UserJson testUser) {
+    final ExtensionContext context = TestMethodContextExtension.context();
+    context.getStore(NAMESPACE).put(
+        context.getUniqueId(),
+        testUser
+    );
+  }
+
+  public static UserJson getUserJson() {
+    final ExtensionContext context = TestMethodContextExtension.context();
+    return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
   }
 }

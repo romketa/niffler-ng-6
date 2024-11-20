@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jaxb.userdata.FriendState;
 
 public record UserJson(
@@ -45,6 +47,14 @@ public record UserJson(
         friendState,
         null
     );
+  }
+
+  public UserJson(@Nonnull String username) {
+    this(username, null);
+  }
+
+  public UserJson(@Nonnull String username, @Nullable TestData testData) {
+    this(null, username, null, null, null, null, null, null, null, testData);
   }
 
   public UserJson addTestData(TestData testData) {

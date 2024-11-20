@@ -10,6 +10,7 @@ import io.qameta.allure.Step;
 import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
+import retrofit2.http.Field;
 
 public class AuthApiClient extends RestClient {
 
@@ -31,6 +32,18 @@ public class AuthApiClient extends RestClient {
     final Response<Void> response;
     try {
       response = authApi.requestRegisterForm()
+          .execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertEquals(200, response.code());
+  }
+
+  @Step("Register")
+  public void register(String username, String password, String passwordSubmit, String csrf) {
+    final Response<Void> response;
+    try {
+      response = authApi.register(username, password, passwordSubmit, csrf)
           .execute();
     } catch (IOException e) {
       throw new AssertionError(e);

@@ -8,7 +8,6 @@ import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;

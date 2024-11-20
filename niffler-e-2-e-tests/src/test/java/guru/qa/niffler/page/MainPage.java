@@ -24,6 +24,7 @@ import utils.ScreenDiffResult;
 @ParametersAreNonnullByDefault
 public class MainPage extends BasePage<MainPage> {
 
+  public static final String URL = CFG.frontUrl() + "main";
   private final SelenideElement tableRows = $("#spendings tbody");
   private SelenideElement statisticsBlock = $x("//div[h2[contains(text(), 'Statistics')]]");
   private final SelenideElement historyOfSpending = $x(

@@ -6,7 +6,7 @@ import guru.qa.niffler.api.AuthApiClient;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.Test;
-import utils.OauthUtils;
+import utils.OAuthUtils;
 
 public class OAuthTest {
 
@@ -14,8 +14,8 @@ public class OAuthTest {
 
   @Test
   void oauthTest() throws IOException, NoSuchAlgorithmException {
-    String codeVerifier = OauthUtils.generateCodeVerifier();
-    String codeChallenge = OauthUtils.generateCodeChallenge(codeVerifier);
+    String codeVerifier = OAuthUtils.generateCodeVerifier();
+    String codeChallenge = OAuthUtils.generateCodeChallenge(codeVerifier);
 
     apiClient.authorize(codeChallenge);
     apiClient.login("moon", "moon123");

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @ParametersAreNonnullByDefault
 public class ProfilePage extends BasePage<ProfilePage> {
 
-  public static String url = Config.getInstance().frontUrl() + "profile";
+  public static final String URL = CFG.frontUrl() + "profile";
   private final SelenideElement avatar = $("#image__input").parent().$("img");
   private final SelenideElement userName = $("#username");
   private final SelenideElement nameInput = $("#name");
