@@ -5,12 +5,16 @@ import static utils.RandomDataUtils.randomName;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.ProfilePage;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
 
 @WebTest
@@ -56,7 +60,9 @@ public class ProfileTest {
 
   @User
   @Test
-  void shouldUpdateProfileWithAllFieldsSet(UserJson user) {
+  @ScreenShotTest("img/expected-cat.png")
+  void shouldUpdateProfileWithAllFieldsSet(UserJson user, BufferedImage expectedAvatar)
+      throws IOException {
     final String newName = randomName();
 
     ProfilePage profilePage = Selenide.open(LoginPage.URL, LoginPage.class)
@@ -73,7 +79,8 @@ public class ProfileTest {
     Selenide.refresh();
 
     profilePage.checkName(newName)
-        .checkPhotoExist();
+        .checkPhotoExist()
+        .checkAvatarImg(expectedAvatar);
   }
 
   @User

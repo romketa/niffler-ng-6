@@ -1,7 +1,9 @@
 package guru.qa.niffler.page.component;
 
+import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.CollectionCondition.texts;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.Condition;
@@ -17,9 +19,11 @@ public class SpendingTable extends BaseComponent<SpendingTable>{
   private final SelenideElement periodSelector = $("#period");
   private final SelenideElement editSpend = $("button[aria-label='Edit spending']");
   private final SelenideElement tableSpending = $("table[aria-labelledby='tableTitle']");
+  private final SelenideElement deleteBtn = self.$("#delete");
+  private final SelenideElement popup = $("div[role='dialog']");
 
   public SpendingTable() {
-    super($("spendings"));
+    super($("#spendings"));
   }
 
   @Nonnull
@@ -40,6 +44,8 @@ public class SpendingTable extends BaseComponent<SpendingTable>{
   public SpendingTable deleteSpending(String description) {
     searchSpendingByDescription(description);
     getSpendingElByDesc(description).$("input[type='checkbox']").click();
+    deleteBtn.click();
+    popup.$(byText("Delete")).click(usingJavaScript());
     return this;
   }
 
