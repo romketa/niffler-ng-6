@@ -33,7 +33,7 @@ spring:
 
 logging:
   file:
-    path: ./logs/niffler-spend
+    path: ./logs/niffler-gateway
   level:
     root: INFO
     org.springframework.web: INFO
