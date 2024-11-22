@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.SpendingTable;
+import guru.qa.niffler.page.component.StatComponent;
 import io.qameta.allure.Step;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class MainPage extends BasePage<MainPage> {
   private final SelenideElement statCell = $("#legend-container");
   protected final Header header = new Header();
   protected final SpendingTable spendingTable = new SpendingTable();
+  private final StatComponent statComponent = new StatComponent();
 
   @Nonnull
   public Header getHeader() {

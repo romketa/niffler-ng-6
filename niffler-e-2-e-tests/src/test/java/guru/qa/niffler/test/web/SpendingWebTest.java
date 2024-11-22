@@ -13,8 +13,7 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.component.StatComponent;
-import guru.qa.niffler.utils.RandomDataUtils;
-import guru.qa.niffler.utils.ScreenDiffResult;
+import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
@@ -65,14 +64,28 @@ public class SpendingWebTest {
   }
 
 
-  @User(spendings = @Spending(category = "Обучение", description = "Обучение Advanced 2.0", amount = 79990))
+  @User(
+      spendings = @Spending(
+          category = "Обучение",
+          description = "Обучение Advanced 2.0",
+          amount = 79990
+      )
+  )
   @ScreenShotTest("img/expected-stat.png")
-  void checkStatComponentTest(UserJson user, BufferedImage expectedStat) throws IOException {
-    Selenide.open(LoginPage.URL, LoginPage.class)
+  void checkStatComponentTest(UserJson user, BufferedImage expectedStat, BufferedImage expected) throws IOException, InterruptedException {
+    StatComponent statComponent = Selenide.open(LoginPage.URL, LoginPage.class)
         .fillLoginPage(user.username(), user.testData().password())
         .submit(new MainPage())
-        .checkStatImg(expectedStat)
-        .checkStatCell("Обучение 79990 ₽");
+        .getStatComponent();
+
+    Thread.sleep(3000);
+
+    assertFalse(new ScreenDiffResult(
+        expected,
+        statComponent.chartScreenshot()
+    ), "Screen comparison failure");
+
+    statComponent.checkBubbles(Color.yellow);
   }
 
   @User(
@@ -92,29 +105,6 @@ public class SpendingWebTest {
         .getSpendingTable()
         .deleteSpending("Обучение Advanced 2.0")
         .checkTableSize(0);
-
-  @User(
-      spendings = @Spending(
-          category = "Обучение",
-          description = "Обучение Advanced 2.0",
-          amount = 79990
-      )
-  )
-  @ScreenShotTest("img/expected-stat.png")
-  void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException, InterruptedException {
-    StatComponent statComponent = Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .getStatComponent();
-
-    Thread.sleep(3000);
-
-    assertFalse(new ScreenDiffResult(
-        expected,
-        statComponent.chartScreenshot()
-    ), "Screen comparison failure");
-
-    statComponent.checkBubbles(Color.yellow);
   }
 }
 
