@@ -29,24 +29,24 @@ public class StatComponent extends BaseComponent<StatComponent> {
     return ImageIO.read(requireNonNull(chart.screenshot()));
   }
 
-  @Step("Check that stat bubbles contains Bubbles {expectedBubbles}")
+  @Step("Check that stat bubbles have fixed Bubbles {expectedBubbles}")
   @Nonnull
   public StatComponent checkFixedStatBubbles(Bubble... expectedBubbles) {
     bubbles.should(StatConditions.statBubbles(expectedBubbles));
     return this;
   }
 
-  @Step("Check that stat bubbles contains Bubbles {expectedBubbles} in any order")
+  @Step("Check that stat bubbles have Bubbles {expectedBubbles} in any order")
   @Nonnull
   public StatComponent checkStatBubblesAnyOrder(Bubble... expectedBubbles) {
-    bubbles.should(StatConditions.statBubbles(expectedBubbles));
+    bubbles.should(StatConditions.statBubblesInAnyOrder(expectedBubbles));
     return this;
   }
 
-  @Step("Check that stat bubbles contains Bubbles {expectedBubbles} in any order")
+  @Step("Check that stat bubble(s) contains Bubbles {expectedBubbles}")
   @Nonnull
   public StatComponent checkStatBubblesContains(Bubble... expectedBubbles) {
-    bubbles.should(StatConditions.statBubbles(expectedBubbles));
+    bubbles.should(StatConditions.statBubblesContains(expectedBubbles));
     return this;
   }
 }

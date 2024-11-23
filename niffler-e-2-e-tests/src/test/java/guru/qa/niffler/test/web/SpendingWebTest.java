@@ -57,7 +57,6 @@ public class SpendingWebTest {
     new MainPage().checkThatTableContainsSpending("Category name");
   }
 
-
   @User(
       spendings = {
           @Spending(
@@ -86,6 +85,70 @@ public class SpendingWebTest {
     Bubble bubblePiano = new Bubble(Color.green, "Цифровое пианино 50000 ₽");
 
     statComponent.checkFixedStatBubbles(bubbleStudy, bubblePiano);
+  }
+
+  @User(
+      spendings = {
+          @Spending(
+              category = "Обучение",
+              description = "Обучение Advanced 2.0",
+              amount = 79990
+          ),
+          @Spending(
+              category = "Цифровое пианино",
+              description = "Casio CW-100",
+              amount = 50000
+          )
+      }
+  )
+  @Test
+  void checkStatComponentAnyOrderTest(UserJson user)
+      throws InterruptedException {
+    StatComponent statComponent = Selenide.open(LoginPage.URL, LoginPage.class)
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .getStatComponent();
+
+    Thread.sleep(3000);
+
+    Bubble bubbleStudy = new Bubble(Color.yellow, "Обучение 79990 ₽");
+    Bubble bubblePiano = new Bubble(Color.green, "Цифровое пианино 50000 ₽");
+
+    statComponent.checkStatBubblesAnyOrder(bubblePiano, bubbleStudy);
+  }
+
+  @User(
+      spendings = {
+          @Spending(
+              category = "Обучение",
+              description = "Обучение Advanced 2.0",
+              amount = 79990
+          ),
+          @Spending(
+              category = "Цифровое пианино",
+              description = "Casio CW-100",
+              amount = 50000
+          ),
+          @Spending(
+              category = "Гитара",
+              description = "Fender CS60",
+              amount = 30000
+          )
+      }
+  )
+  @Test
+  void checkContainsStatComponentTest(UserJson user)
+      throws InterruptedException {
+    StatComponent statComponent = Selenide.open(LoginPage.URL, LoginPage.class)
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .getStatComponent();
+
+    Thread.sleep(3000);
+
+    Bubble bubbleStudy = new Bubble(Color.yellow, "Обучение 79990 ₽");
+
+    statComponent.checkStatBubblesContains(bubbleStudy);
   }
 
   @User(
