@@ -8,8 +8,11 @@ import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.condition.SpendCondition;
 import guru.qa.niffler.data.DataFilterValues;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -64,6 +67,12 @@ public class SpendingTable extends BaseComponent<SpendingTable>{
   @Nonnull
   public SpendingTable checkTableSize(int expectedSize) {
     tableSpending.$$("tr").shouldHave(size(expectedSize));
+    return this;
+  }
+
+  @Nonnull
+  public SpendingTable checkSpends(List<SpendJson> spends) {
+    tableSpending.$$("tbody tr").should(SpendCondition.spends(spends));
     return this;
   }
 

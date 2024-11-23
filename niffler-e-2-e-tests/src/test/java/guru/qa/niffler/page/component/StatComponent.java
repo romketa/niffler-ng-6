@@ -3,7 +3,7 @@ package guru.qa.niffler.page.component;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.condition.StatConditions;
-import guru.qa.niffler.condition.StatConditions.Bubble;
+import guru.qa.niffler.condition.Bubble;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;

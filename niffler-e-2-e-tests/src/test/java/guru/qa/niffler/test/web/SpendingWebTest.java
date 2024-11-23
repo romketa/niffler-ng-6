@@ -2,7 +2,7 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.condition.Color;
-import guru.qa.niffler.condition.StatConditions.Bubble;
+import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
@@ -11,6 +11,7 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import guru.qa.niffler.page.component.SpendingTable;
 import guru.qa.niffler.page.component.StatComponent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -149,6 +150,39 @@ public class SpendingWebTest {
     Bubble bubbleStudy = new Bubble(Color.yellow, "Обучение 79990 ₽");
 
     statComponent.checkStatBubblesContains(bubbleStudy);
+  }
+
+  @User(
+      spendings = {
+          @Spending(
+              category = "Обучение",
+              description = "Обучение Advanced 2.0",
+              amount = 79990
+          )
+          ,
+          @Spending(
+              category = "Цифровое пианино",
+              description = "Casio CW-100",
+              amount = 50000
+          ),
+          @Spending(
+              category = "Гитара",
+              description = "Fender CS60",
+              amount = 30000
+          )
+      }
+  )
+  @Test
+  void checkSpendsTest(UserJson user)
+      throws InterruptedException {
+    SpendingTable spendingTable = Selenide.open(LoginPage.URL, LoginPage.class)
+        .fillLoginPage(user.username(), user.testData().password())
+        .submit(new MainPage())
+        .getSpendingTable();
+
+    Thread.sleep(3000);
+
+    spendingTable.checkSpends(user.testData().spends());
   }
 
   @User(
