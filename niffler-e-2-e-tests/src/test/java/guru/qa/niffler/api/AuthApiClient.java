@@ -2,14 +2,12 @@ package guru.qa.niffler.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
-import guru.qa.niffler.config.Config;
 import io.qameta.allure.Step;
 import java.io.IOException;
-import java.util.List;
-import javax.annotation.Nonnull;
-import retrofit2.Call;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class AuthApiClient extends RestClient {
@@ -33,16 +31,42 @@ public class AuthApiClient extends RestClient {
     assertEquals(200, response.code());
   }
 
+  @Step("Authorize")
+  public void authorize(String codeChallenge) {
+    final Response<ResponseBody> response;
+    try {
+      response = authApi.authorize("code", "client", "openid",
+          "http://127.0.0.1:3000/authorized", codeChallenge,
+          "S256").execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertEquals(200, response.code());
+  }
 
-  @Step("User registration")
-  public void register(@Nonnull String username, @Nonnull String password, @Nonnull String passwordSubmit, @Nonnull String csrf) {
+  @Step("Login")
+  public void login() {
     final Response<Void> response;
     try {
-      response = authApi.register(username, password, passwordSubmit, csrf)
+      response = authApi.login("moon", "moon123",
+              ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN"))
           .execute();
     } catch (IOException e) {
       throw new AssertionError(e);
     }
-    assertEquals(201, response.code());
+    assertEquals(200, response.code());
+  }
+
+  @Step("Get token")
+  public String token(String codeChallenge, String codeVerifier) {
+    final Response<JsonNode> response;
+    try {
+      response = authApi.token(codeChallenge, "http://127.0.0.1:3000/authorized", codeVerifier,
+          "authorization_code", "client").execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertEquals(200, response.code());
+    return response.body().get("id_token").toString();
   }
 }
