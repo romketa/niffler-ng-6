@@ -1,6 +1,7 @@
 package guru.qa.niffler.config;
 
 import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 enum DockerConfig implements Config {
   INSTANCE;
@@ -8,6 +9,12 @@ enum DockerConfig implements Config {
   @Nonnull
   @Override
   public String frontUrl() {
+    return "";
+  }
+
+  @NotNull
+  @Override
+  public String authorizedUrl() {
     return "";
   }
 
