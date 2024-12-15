@@ -14,6 +14,9 @@ public interface Config {
   String frontUrl();
 
   @Nonnull
+  String authorizedUrl();
+
+  @Nonnull
   String registerUrl();
 
   @Nonnull

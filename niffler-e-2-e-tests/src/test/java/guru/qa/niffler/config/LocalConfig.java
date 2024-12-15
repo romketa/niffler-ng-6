@@ -1,6 +1,7 @@
 package guru.qa.niffler.config;
 
 import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 enum LocalConfig implements Config {
   INSTANCE;
@@ -9,6 +10,12 @@ enum LocalConfig implements Config {
   @Override
   public String frontUrl() {
     return "http://127.0.0.1:3000/";
+  }
+
+  @NotNull
+  @Override
+  public String authorizedUrl() {
+    return "http://127.0.0.1:3000/authorized";
   }
 
   @Nonnull
