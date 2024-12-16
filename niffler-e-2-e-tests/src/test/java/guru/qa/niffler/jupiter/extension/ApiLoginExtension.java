@@ -9,7 +9,7 @@ import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.service.impl.AuthApiClient;
+import guru.qa.niffler.service.impl.AuthRestClient;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -24,7 +24,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
   private static final Config CFG = Config.getInstance();
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApiLoginExtension.class);
 
-  private final AuthApiClient authApiClient = new AuthApiClient();
+  private final AuthRestClient authApiClient = new AuthRestClient();
   private final boolean setupBrowser;
 
   private ApiLoginExtension(boolean setupBrowser) {

@@ -28,16 +28,12 @@ public class ProfileTest {
           archived = true
       )
   )
+  @ApiLogin
   @Test
   void archivedCategoryShouldPresentInCategoriesList(UserJson user) {
     final String categoryName = user.testData().categoryDescriptions()[0];
 
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .toProfilePage()
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
         .checkArchivedCategoryExists(categoryName);
   }
 
@@ -46,16 +42,12 @@ public class ProfileTest {
           archived = false
       )
   )
+  @ApiLogin
   @Test
   void activeCategoryShouldPresentInCategoriesList(UserJson user) {
     final String categoryName = user.testData().categoryDescriptions()[0];
 
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .toProfilePage()
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
         .checkCategoryExists(categoryName);
   }
 
@@ -81,16 +73,12 @@ public class ProfileTest {
   }
 
   @User
+  @ApiLogin
   @Test
   void shouldUpdateProfileWithOnlyRequiredFields(UserJson user) {
     final String newName = randomName();
 
-    ProfilePage profilePage = Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .toProfilePage()
+    ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
         .setName(newName)
         .submitProfile()
         .checkAlert("Profile successfully updated");
@@ -103,9 +91,7 @@ public class ProfileTest {
   @Test
   @User
   public void sendInvitationAlertTest(UserJson user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
+    Selenide.open(MainPage.URL, MainPage.class)
         .getHeader()
         .toAllPeoplesPage()
         .sendInvitation("moon")
