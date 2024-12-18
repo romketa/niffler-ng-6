@@ -13,8 +13,10 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -78,5 +80,17 @@ public class SpendDbClient implements SpendClient {
         () -> categoryDao.findCategoryByUsernameAndCategoryName(username, name)
             .map(CategoryJson::fromEntity)
             .orElse(new CategoryJson(null, name, username, false))));
+  }
+
+  @NotNull
+  @Override
+  public List<CategoryJson> getCategories(String username) {
+    throw new UnsupportedOperationException("Unsupported yet");
+  }
+
+  @NotNull
+  @Override
+  public List<SpendJson> getSpends(String username) {
+    throw new UnsupportedOperationException("Unsupported yet");
   }
 }

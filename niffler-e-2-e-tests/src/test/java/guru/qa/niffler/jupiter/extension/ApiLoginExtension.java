@@ -6,10 +6,16 @@ import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
+import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.service.impl.AuthRestClient;
+import guru.qa.niffler.service.impl.SpendRestClient;
+import guru.qa.niffler.service.impl.UsersRestClient;
+import java.util.List;
+import jaxb.userdata.FriendState;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -22,9 +28,12 @@ import org.openqa.selenium.Cookie;
 public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver {
 
   private static final Config CFG = Config.getInstance();
-  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApiLoginExtension.class);
+  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(
+      ApiLoginExtension.class);
 
   private final AuthRestClient authApiClient = new AuthRestClient();
+  private final SpendRestClient spendApiClient = new SpendRestClient();
+  private final UsersRestClient usersApiClient = new UsersRestClient();
   private final boolean setupBrowser;
 
   private ApiLoginExtension(boolean setupBrowser) {
@@ -48,18 +57,40 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
           final UserJson userFromUserExtension = UserExtension.getUserJson();
           if ("".equals(apiLogin.username()) || "".equals(apiLogin.password())) {
             if (userFromUserExtension == null) {
-              throw new IllegalStateException("@User must be present in case that @ApiLogin is empty!");
+              throw new IllegalStateException(
+                  "@User must be present in case that @ApiLogin is empty!");
             }
             userToLogin = userFromUserExtension;
           } else {
+            List<CategoryJson> categories = spendApiClient.getCategories(apiLogin.username());
+            List<SpendJson> spends = spendApiClient.getSpends(apiLogin.username());
+            List<UserJson> incomeInvitation = usersApiClient.getFriends(apiLogin.username(), null)
+                .stream()
+                .filter(userJson -> userJson.friendState().equals(FriendState.INVITE_RECEIVED))
+                .toList();
+            List<UserJson> outcomeInvitation = usersApiClient.getFriends(apiLogin.username(), null)
+                .stream()
+                .filter(userJson -> userJson.friendState().equals(FriendState.INVITE_SENT))
+                .toList();
+            List<UserJson> friends = usersApiClient.getFriends(apiLogin.username(), null)
+                .stream()
+                .filter(userJson -> userJson.friendState().equals(FriendState.FRIEND))
+                .toList();;
+
             UserJson fakeUser = new UserJson(
                 apiLogin.username(),
                 new TestData(
-                    apiLogin.password()
+                    apiLogin.password(),
+                    categories,
+                    spends,
+                    incomeInvitation,
+                    outcomeInvitation,
+                    friends
                 )
             );
             if (userFromUserExtension != null) {
-              throw new IllegalStateException("@User must not be present in case that @ApiLogin contains username or password!");
+              throw new IllegalStateException(
+                  "@User must not be present in case that @ApiLogin contains username or password!");
             }
             UserExtension.setUser(fakeUser);
             userToLogin = fakeUser;
@@ -85,13 +116,15 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
   }
 
   @Override
-  public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+  public boolean supportsParameter(ParameterContext parameterContext,
+      ExtensionContext extensionContext) throws ParameterResolutionException {
     return parameterContext.getParameter().getType().isAssignableFrom(String.class)
-           && AnnotationSupport.isAnnotated(parameterContext.getParameter(), Token.class);
+        && AnnotationSupport.isAnnotated(parameterContext.getParameter(), Token.class);
   }
 
   @Override
-  public String resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+  public String resolveParameter(ParameterContext parameterContext,
+      ExtensionContext extensionContext) throws ParameterResolutionException {
     return getToken();
   }
 
