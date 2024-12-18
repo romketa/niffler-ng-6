@@ -11,7 +11,7 @@ public class RandomDataUtils {
 
   @Nonnull
   public static String randomUsername() {
-    return fakeData.pokemon().name();
+    return fakeData.name().username();
   }
 
   @Nonnull

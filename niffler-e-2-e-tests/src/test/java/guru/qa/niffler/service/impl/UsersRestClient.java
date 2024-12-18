@@ -8,7 +8,9 @@ import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -99,5 +101,11 @@ public class UsersRestClient implements UsersClient {
   @Override
   public List<UserJson> findAll(String username, String searchQuery) {
     return userApiClient.findAll(username, searchQuery);
+  }
+
+  @Override
+  @Nonnull
+  public List<UserJson> getFriends(String username, String searchQuery) {
+    return Objects.requireNonNull(userApiClient.getFriends(username, searchQuery));
   }
 }

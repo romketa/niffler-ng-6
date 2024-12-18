@@ -21,6 +21,9 @@ public interface UsersClient {
   @Nonnull
   void addFriends(UserJson targetUser, int count);
 
+  @Nonnull
   List<UserJson> findAll(String username, @Nullable String searchQuery);
 
+  @Nonnull
+  List<UserJson> getFriends(String username, @Nullable String searchQuery);
 }

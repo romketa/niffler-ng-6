@@ -1,7 +1,6 @@
 package guru.qa.niffler.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -24,7 +23,7 @@ public interface AuthApi {
   );
 
   @GET("oauth2/authorize")
-  Call<ResponseBody> authorize(
+  Call<Void> authorize(
       @Query("response_type") String responseType,
       @Query("client_id") String clientId,
       @Query("scope") String scope,
@@ -43,11 +42,10 @@ public interface AuthApi {
 
   @POST("oauth2/token")
   @FormUrlEncoded
-  Call<JsonNode> token(
-      @Field("code") String code,
+  Call<JsonNode> token(@Field("code") String code,
       @Field(value = "redirect_uri", encoded = true) String redirectUri,
+      @Field("client_id") String clientId,
       @Field("code_verifier") String codeVerifier,
-      @Field("grant_type") String grantType,
-      @Field("client_id") String clientId
+      @Field("grant_type") String grantType
   );
 }

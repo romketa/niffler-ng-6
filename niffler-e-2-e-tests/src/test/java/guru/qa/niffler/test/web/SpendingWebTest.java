@@ -1,20 +1,19 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.condition.Bubble;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.EditSpendingPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.component.SpendingTable;
 import guru.qa.niffler.page.component.StatComponent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Date;
 import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
@@ -25,35 +24,41 @@ public class SpendingWebTest {
   private static final Config CFG = Config.getInstance();
 
   @Test
+  @ApiLogin
   @User
-  void newSpendingAlertTest(UserJson user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password()).submit(new MainPage())
-        .getHeader().addSpendingPage().addAmount("100").addCategoryName("Category name")
-        .addDate(new Date()).addDescription("Description").save();
+  void newSpendingAlertTest() {
+    Selenide.open(EditSpendingPage.URL, EditSpendingPage.class)
+        .addAmount("100")
+        .addCategoryName("Category name")
+        .addDate(new Date())
+        .addDescription("Description").save();
 
     new MainPage().checkThatTableContainsSpending("Category name").verifyAlertCreatedSpending();
   }
 
   @User(spendings = @Spending(category = "Some category", description = "Keep", amount = 990))
+  @ApiLogin
   @Test
-  void categoryDescriptionShouldBeChangedFromTable(UserJson user) {
+  void categoryDescriptionShouldBeChangedFromTable() {
     final String newDescription = "some desc 1";
 
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password()).submit(new MainPage())
-        .editSpending("Some category").setNewSpendingDescription(newDescription).save();
+    Selenide.open(MainPage.URL, MainPage.class)
+        .editSpending("Some category")
+        .setNewSpendingDescription(newDescription).save();
 
     new MainPage().checkThatTableContainsSpending(newDescription);
   }
 
   @User
+  @ApiLogin
   @Test
-  void userShouldAddNewSpending(UserJson user) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password()).submit(new MainPage())
-        .getHeader().addSpendingPage().addAmount("100").addCategoryName("Category name")
-        .addDate(new Date()).addDescription("Description").save();
+  void userShouldAddNewSpending() {
+    Selenide.open(EditSpendingPage.URL, EditSpendingPage.class)
+        .addAmount("100")
+        .addCategoryName("Category name")
+        .addDate(new Date())
+        .addDescription("Description")
+        .save();
 
     new MainPage().checkThatTableContainsSpending("Category name");
   }
@@ -72,12 +77,11 @@ public class SpendingWebTest {
           )
       }
   )
+  @ApiLogin
   @Test
-  void checkStatComponentTest(UserJson user)
+  void checkStatComponentTest()
       throws InterruptedException {
-    StatComponent statComponent = Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
+    StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
         .getStatComponent();
 
     Thread.sleep(3000);
@@ -102,12 +106,11 @@ public class SpendingWebTest {
           )
       }
   )
+  @ApiLogin
   @Test
-  void checkStatComponentAnyOrderTest(UserJson user)
+  void checkStatComponentAnyOrderTest()
       throws InterruptedException {
-    StatComponent statComponent = Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
+    StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
         .getStatComponent();
 
     Thread.sleep(3000);
@@ -137,12 +140,11 @@ public class SpendingWebTest {
           )
       }
   )
+  @ApiLogin
   @Test
-  void checkContainsStatComponentTest(UserJson user)
+  void checkContainsStatComponentTest()
       throws InterruptedException {
-    StatComponent statComponent = Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
+    StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
         .getStatComponent();
 
     Thread.sleep(3000);
@@ -172,12 +174,11 @@ public class SpendingWebTest {
           )
       }
   )
+  @ApiLogin
   @Test
   void checkSpendsTest(UserJson user)
       throws InterruptedException {
-    SpendingTable spendingTable = Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
+    SpendingTable spendingTable = Selenide.open(MainPage.URL, MainPage.class)
         .getSpendingTable();
 
     Thread.sleep(3000);
@@ -192,13 +193,12 @@ public class SpendingWebTest {
           amount = 79990
       )
   )
+  @ApiLogin
   @Test
   @ScreenShotTest(value = "img/clear-stat.png",
       rewriteExpected = true)
-  void deleteSpendingTest(@Nonnull UserJson user, BufferedImage clearStat) throws IOException {
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .fillLoginPage(user.username(), user.testData().password())
-        .submit(new MainPage())
+  void deleteSpendingTest(@Nonnull UserJson user) {
+    Selenide.open(MainPage.URL, MainPage.class)
         .getSpendingTable()
         .deleteSpending("Обучение Advanced 2.0")
         .checkTableSize(0);

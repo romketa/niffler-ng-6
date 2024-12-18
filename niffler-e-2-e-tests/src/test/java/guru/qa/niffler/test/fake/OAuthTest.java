@@ -1,22 +1,25 @@
 package guru.qa.niffler.test.fake;
 
-import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.annotation.ApiLogin;
-import guru.qa.niffler.jupiter.annotation.Token;
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.impl.AuthApiClient;
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import guru.qa.niffler.api.AuthApiClient;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.Test;
+import utils.OAuthUtils;
 
 public class OAuthTest {
 
-  private static final Config CFG = Config.getInstance();
-  private final AuthApiClient authApiClient = new AuthApiClient();
+  private AuthApiClient apiClient = new AuthApiClient();
 
   @Test
-  @ApiLogin(username = "duck", password = "12345")
-  void oauthTest(@Token String token, UserJson user) {
-    System.out.println(user);
-    Assertions.assertNotNull(token);
+  void oauthTest() throws IOException, NoSuchAlgorithmException {
+    String codeVerifier = OAuthUtils.generateCodeVerifier();
+    String codeChallenge = OAuthUtils.generateCodeChallenge(codeVerifier);
+
+    apiClient.authorize(codeChallenge);
+    apiClient.login("moon", "moon123");
+    String token = apiClient.token(codeChallenge, codeVerifier);
+    assertNotNull(token);
   }
 }

@@ -12,6 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class EditSpendingPage extends BasePage<EditSpendingPage> {
 
+  public static final String URL = CFG.frontUrl() + "spending";
   private final SelenideElement descInput = $("#description");
   private final SelenideElement saveBtn = $("#save");
   private final Calendar calendar = new Calendar($(".MuiPickersLayout-root"));
