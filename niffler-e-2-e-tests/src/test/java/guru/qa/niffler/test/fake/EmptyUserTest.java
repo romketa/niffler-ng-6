@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.web;
+package guru.qa.niffler.test.fake;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

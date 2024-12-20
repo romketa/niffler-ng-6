@@ -8,9 +8,11 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 import io.qameta.allure.Step;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.jetbrains.annotations.NotNull;
 
 @ParametersAreNonnullByDefault
 public class SpendRestClient implements SpendClient {
@@ -42,5 +44,17 @@ public class SpendRestClient implements SpendClient {
   @Step("Find or create category by presented username {username} and name {name}")
   public CategoryJson findOrCreateCategoryByUsernameAndName(String username, String name) {
     throw new UnsupportedOperationException("Can't find or create category by API yet");
+  }
+
+  @NotNull
+  @Override
+  public List<CategoryJson> getCategories(String username) {
+    return spendApi.allCategory(username);
+  }
+
+  @NotNull
+  @Override
+  public List<SpendJson> getSpends(String username) {
+    return spendApi.allSpends(username, null, null, null);
   }
 }
