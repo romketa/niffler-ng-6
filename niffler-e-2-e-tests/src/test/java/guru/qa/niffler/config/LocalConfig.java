@@ -1,5 +1,8 @@
 package guru.qa.niffler.config;
 
+
+import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 
@@ -88,5 +91,17 @@ enum LocalConfig implements Config {
   @Override
   public String currencyJdbcUrl() {
     return "jdbc:postgresql://127.0.0.1:5432/niffler-currency";
+  }
+
+  @NotNull
+  @Override
+  public String currencyGrpcAddress() {
+    return "127.0.0.1";
+  }
+
+  @Nonnull
+  @Override
+  public String ghUrl() {
+    return "https://api.github.com/";
   }
 }
