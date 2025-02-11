@@ -22,6 +22,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import jaxb.userdata.FriendState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -125,6 +127,12 @@ public class UsersDbClient implements UsersClient {
   @Override
   public List<UserJson> findAll(String username, String searchQuery) {
     throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @NotNull
+  @Override
+  public List<UserJson> getFriends(String username, @Nullable String searchQuery) {
+    return null;
   }
 
   private UserEntity createNewUser(String username, String password) {

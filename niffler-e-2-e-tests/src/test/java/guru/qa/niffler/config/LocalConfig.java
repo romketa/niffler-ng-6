@@ -98,10 +98,4 @@ enum LocalConfig implements Config {
   public String currencyGrpcAddress() {
     return "127.0.0.1";
   }
-
-  @Nonnull
-  @Override
-  public String ghUrl() {
-    return "https://api.github.com/";
-  }
 }
