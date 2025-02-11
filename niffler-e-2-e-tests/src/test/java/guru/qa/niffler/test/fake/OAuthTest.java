@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.Test;
 import utils.OAuthUtils;
 
+@ExtendWith(ApiLoginExtension.class)
 public class OAuthTest {
 
   private AuthApiClient apiClient = new AuthApiClient();
