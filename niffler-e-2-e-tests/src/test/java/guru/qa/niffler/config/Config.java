@@ -38,11 +38,14 @@ public interface Config {
   String currencyJdbcUrl();
 
   @Nonnull
-  String ghUrl();
-  
-  String registerUrl();
+  String currencyGrpcAddress();
 
-  String profileUrl();
+  default int currencyGrpcPort() {
+    return 8092;
+  }
 
-  String friendsUrl();
+  @Nonnull
+  default String ghUrl() {
+    return "https://api.github.com/";
+  }
 }
