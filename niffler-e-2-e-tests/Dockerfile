@@ -4,6 +4,7 @@ ARG GITHUB_TOKEN
 ARG BUILD_URL
 ARG HEAD_COMMIT_MESSAGE
 ARG EXECUTION_TYPE
+ARG BROWSER  # Добавляем аргумент для браузера
 
 FROM ${DOCKER}
 
@@ -12,6 +13,7 @@ ENV GITHUB_TOKEN=${GITHUB_TOKEN}
 ENV BUILD_URL=${BUILD_URL}
 ENV HEAD_COMMIT_MESSAGE=${HEAD_COMMIT_MESSAGE}
 ENV EXECUTION_TYPE=${EXECUTION_TYPE}
+ENV BROWSER=${BROWSER}  # Передаем переменную окружения
 
 WORKDIR /niffler
 COPY ./gradle ./gradle
@@ -22,4 +24,4 @@ COPY ./build.gradle ./
 COPY ./settings.gradle ./
 COPY ./gradle.properties ./
 
-CMD ./gradlew test -Dtest.env=docker -Duser.timezone=Europe/Moscow
+CMD ./gradlew test -Dtest.env=docker -Duser.timezone=Europe/Moscow -Dbrowser=${BROWSER}

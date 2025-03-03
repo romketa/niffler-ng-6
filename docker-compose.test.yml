@@ -169,6 +169,7 @@ services:
         HEAD_COMMIT_MESSAGE: ${HEAD_COMMIT_MESSAGE}
         EXECUTION_TYPE: ${EXECUTION_TYPE}
     environment:
+      - BROWSER=${BROWSER}  # Передаем переменную окружения
       - ALLURE_DOCKER_API=${ALLURE_DOCKER_API}
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - BUILD_URL=${BUILD_URL}
