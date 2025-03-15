@@ -9,7 +9,7 @@ services:
       - TZ=GMT+3
       - PGTZ=GMT+3
     volumes:
-      - ./postgres/init-database.sh:/docker-entrypoint-initdb.d
+      - ./postgres/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
       - pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
@@ -41,3 +41,12 @@ services:
       - "9092:9092"
     depends_on:
       - zookeeper
+    networks:
+      - niffler-network
+
+volumes:
+  pgdata:
+
+networks:
+  niffler-network:
+    driver: bridge
