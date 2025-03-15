@@ -3,9 +3,11 @@ package guru.qa.niffler.test.fake;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import guru.qa.niffler.api.AuthApiClient;
+import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import utils.OAuthUtils;
 
 @ExtendWith(ApiLoginExtension.class)

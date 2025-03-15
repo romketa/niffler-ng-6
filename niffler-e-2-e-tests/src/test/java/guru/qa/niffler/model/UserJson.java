@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jaxb.userdata.FriendState;
 
 public record UserJson(
     @JsonProperty("id")
